@@ -16,13 +16,16 @@ import Churos from "../../assets/OutletMenu/Churos.png"
 import MieGoreng from "../../assets/OutletMenu/MieGoreng.png"
 import AyamGoreng from "../../assets/OutletMenu/AyamGoreng.png"
 import BaksoKomplit from "../../assets/OutletMenu/BaksoKomplit.png"
-import { actions } from '../../store';
+
+
 
 // sessionLogin
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import loginSessionAuth from '../../Auth/LoginSession';
 import { Link, useNavigate } from 'react-router-dom'
+
+import { actions } from '../../store';
 
 
 const OutletMenu = ()=>{

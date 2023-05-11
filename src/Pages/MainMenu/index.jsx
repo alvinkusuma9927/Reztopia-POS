@@ -32,7 +32,7 @@ import EmptyCart from "../../assets/EmptyCart.png"
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import loginSessionAuth from '../../Auth/LoginSession';
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 
 
 
@@ -69,12 +69,13 @@ const MainMenu = ()=>{
       },
     ]
   )
-  
+  const url = useParams()
+  console.log(url.section)
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const cart = useSelector((state)=>state.cart)
   const [searchInput,setSearchInput] = useState('')
-  const [selectedBottomNavbar,setSelectedBottomNavbar] = useState('main-menu')
+  
   const getTotalPayment = ()=>{
     let totalPrice = 0
     for (let item of cart) {
@@ -110,7 +111,7 @@ const MainMenu = ()=>{
     <>
       
       {
-        (selectedBottomNavbar === 'main-menu') ?
+        (url.section === 'dashboard' || url.section === undefined) ?
           <div className="main-menu">
             <Text as='b' fontSize='22px'>Selamat Datang di</Text>
             <Text as='b' fontSize='22px' color='blue.500' marginBottom='20px'>Kedai Tangsi !</Text>
@@ -133,7 +134,7 @@ const MainMenu = ()=>{
               )}
             </div>    
           </div>
-        : (selectedBottomNavbar === 'order') ?
+        : (url.section === 'order') ?
 
           <div className="main-menu">
             <HStack width='100%' justifyContent='center' alignItems='center' marginBottom='20px'>  
@@ -259,7 +260,7 @@ const MainMenu = ()=>{
 
 
         // Status Pesanan
-        : (selectedBottomNavbar === 'status-pesanan')?
+        : (url.section === 'status-pesanan')?
         
           <div className="main-menu">
             <HStack width='100%' justifyContent='center' alignItems='center' marginBottom='20px'>  
@@ -308,7 +309,7 @@ const MainMenu = ()=>{
 
 
         // Riwayat
-        : (selectedBottomNavbar === 'riwayat') ?
+        : (url.section === 'riwayat') ?
 
           <div className="main-menu">
             <HStack width='100%' justifyContent='center' alignItems='center' marginBottom='20px'>  
@@ -327,6 +328,7 @@ const MainMenu = ()=>{
                   
                   <Button colorScheme='blue' variant='ghost'>Selesai</Button>
                 </div>
+
                 <div style={{ display:'flex',marginBottom:'20px' }}>
                   <Image
                     height='71px'
@@ -351,10 +353,12 @@ const MainMenu = ()=>{
                     <Text>Total Belanja : </Text>
                     <Text as='b'>Rp.100000</Text>
                   </div>
-                  <Button colorScheme='blue' variant='outline'>Detail</Button>
+
+                  <Link to='/MainMenu/DetailOrder/idOrder'>
+                    <Button   colorScheme='blue' variant='outline'>Detail</Button>
+                  </Link>
+                  
                 </HStack>
-                
-                
               </div>
             )}
 
@@ -367,17 +371,17 @@ const MainMenu = ()=>{
 
 
       <div className='bottom-navigation-bar'>
-        <Link className='link' onClick={()=>setSelectedBottomNavbar('main-menu')}>
-          <HomeOutlinedIcon sx={{ color: (selectedBottomNavbar==='main-menu')?'#6898C0':'#B7B7B7' }} />
+        <Link to='/MainMenu/dashboard' className='link'>
+          <HomeOutlinedIcon sx={{ color: (url.section === 'dashboard' || url.section === undefined)?'#6898C0':'#B7B7B7' }} />
         </Link>
-        <Link className='link' onClick={()=>setSelectedBottomNavbar('order')}>
-          <ContentPasteOutlinedIcon sx={{ color:(selectedBottomNavbar==='order')?'#6898C0':'#B7B7B7' }} />
+        <Link to='/MainMenu/order' className='link'>
+          <ContentPasteOutlinedIcon sx={{ color:(url.section === 'order')?'#6898C0':'#B7B7B7' }} />
         </Link>
-        <Link className='link' onClick={()=>setSelectedBottomNavbar('status-pesanan')}>
-          <RestaurantOutlinedIcon  sx={{ color:(selectedBottomNavbar==='status-pesanan')?'#6898C0':'#B7B7B7' }} />
+        <Link to='/MainMenu/status-pesanan' className='link'>
+          <RestaurantOutlinedIcon  sx={{ color:(url.section === 'status-pesanan')?'#6898C0':'#B7B7B7' }} />
         </Link>
-        <Link className='link' onClick={()=>setSelectedBottomNavbar('riwayat')}>
-          <HistoryOutlinedIcon  sx={{ color:(selectedBottomNavbar==='riwayat')?'#6898C0':'#B7B7B7' }} />
+        <Link to='/MainMenu/riwayat' className='link'>
+          <HistoryOutlinedIcon  sx={{ color:(url.section === 'riwayat')?'#6898C0':'#B7B7B7' }} />
         </Link>
         
       </div>
