@@ -1,5 +1,5 @@
 import "../../assets/MainMenu.css"
-import { HStack, IconButton, Input, InputGroup, InputLeftElement, Stack, Text,Modal,ModalOverlay,ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton } from '@chakra-ui/react';
+import { HStack, IconButton, Input, InputGroup, InputLeftElement, Stack, Text,Modal,ModalOverlay,ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton, Box, Select } from '@chakra-ui/react';
 import {AddIcon, MinusIcon, SearchIcon} from '@chakra-ui/icons';
 import ProductImg from '../../assets/product.png'
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -12,6 +12,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import {Table,  Thead,  Tbody,  Tfoot,  Tr,  Th,  Td,  TableCaption,  TableContainer,} from '@chakra-ui/react'
 import { actions } from '../../store';
+
+import {Step,StepDescription,StepIcon,StepIndicator,StepNumber,StepSeparator,StepStatus,StepTitle,Stepper,useSteps,
+} from '@chakra-ui/react'
 
 // gambar
 import BaksoMercon from "../../assets/OutletMenu/BaksoMercon.png"
@@ -80,6 +83,19 @@ const MainMenu = ()=>{
     return totalPrice
   }
 
+  const steps = [
+    { title: 'Pesanan sedang Diantar', description: 'Atas : nama Ara - Meja no 26', time:'11.05' },
+    { title: 'Pesanan sedang Dimasak', description: 'Atas : nama Ara - Meja no 26', time:'10.05' },
+    { title: 'Pesanan Dikonfirmasi', description: 'Atas : nama Ara - Meja no 26', time:'09.05' },
+    { title: 'Pembayaran Berhasil', description: 'Melalui QR Code, Atas : nama Ara - Meja no 26', time:'08.05' },
+    { title: 'Pembayaran Menunggu Konfirmasi', description: 'Atas : nama Ara - Meja no 26', time:'07.05' },
+  ]
+  const [stepActive,setStepActive] = useState(3);
+  const { activeStep } = useSteps({
+    index: stepActive,
+    count: steps.length,
+  })
+
 
   // Check sessionLogin
   const loginSession = useSelector((state)=>state.loginSession)
@@ -145,13 +161,13 @@ const MainMenu = ()=>{
                   <div style={{ display:'flex',flexDirection:'column',justifyContent:'space-between' }}>
                       <Text fontSize='16px' as='b' >{item.name}</Text>
     
-                      <Text>Rp.{item.discountPrice * item.count}</Text>
+                      <Text fontSize='14px'>Rp.{item.discountPrice * item.count}</Text>
                       <InputGroup backgroundColor='white' marginBottom='10px'>
-                        <InputLeftElement children={ <CreateIcon sx={{ color:'gray' }}/> } />
+                        <InputLeftElement children={ <CreateIcon sx={{ width:'14px',color:'gray' }}/> } />
                         <Input onChange={
                           (e)=> dispatch(actions.writeNote({ id:item.id,note:e.target.value }))
                           } 
-                          variant='flushed' value={item.note}  placeholder='search' />
+                          variant='flushed' fontSize='14px' value={item.note}  placeholder='search' />
                       </InputGroup>
     
                       <HStack justifyContent='space-between'>
@@ -175,10 +191,21 @@ const MainMenu = ()=>{
               <>
                 <div style={{ borderRadius:'20px',backgroundColor:'rgba(159, 188, 213, 0.19)',width:'100%',padding:'16px',marginBottom:'20px' }}>
                   
-                  <Table variant='simple'>
+                  <Table variant='simple' width='100%'>
                     <Tr>
                       <Td>Nama Pemesan</Td>
                       <Td isNumeric><Input  variant='flushed' textAlign='center' defaultValue='Ara' /></Td>
+                    </Tr>
+                    <Tr>
+                      <Tr>
+                        
+                        <Td isNumeric>
+                          <Select size='sm' width='200%'>
+                            <option value='dineIn' selected>Dine In</option>
+                            <option value='takeAway'>Take Away</option>
+                          </Select>
+                        </Td>
+                      </Tr>
                     </Tr>
                     <Tr>
                       <Td>Nomor Meja</Td>
@@ -231,7 +258,56 @@ const MainMenu = ()=>{
           </div>
 
 
+        // Status Pesanan
+        : (selectedBottomNavbar === 'status-pesanan')?
+        
+          <div className="main-menu">
+            <HStack width='100%' justifyContent='center' alignItems='center' marginBottom='20px'>  
+              <Text fontSize='22px' as='b'>Status Pesanan</Text>   
+            </HStack>
 
+            <Stack>
+              <Text as='b'>Status Pemesanan</Text>
+            </Stack>
+            <Stepper index={activeStep} orientation='vertical' gap='0' marginTop='20px' marginBottom='40px'  width='100%' minHeight='400px'>
+              {steps.map((step, index) => (
+                <Step key={index} width='100%'>
+                  <StepIndicator>
+                    <StepStatus
+                      complete={<StepIcon />}
+                      incomplete={<StepNumber />}
+                      active={<StepNumber />}
+                    />
+                  </StepIndicator>
+
+                  <Box flexShrink='0'>
+                    <StepTitle>
+                        <HStack>
+                          <Text fontSize='12px'>{step.title}</Text>
+                          <Text fontSize='12px' color='#7C7979'> ({step.time})</Text>
+                        </HStack>
+                        
+                    </StepTitle>
+                    <StepDescription><Text fontSize='10px'>{step.description}</Text></StepDescription>
+                  </Box>
+
+                  <StepSeparator />
+                </Step>
+              ))}
+            </Stepper>
+
+            {
+              stepActive === steps.length ?
+              <Button colorScheme="blue">Beri Penilaian</Button>
+              :null
+            }
+            
+          </div>
+
+
+
+
+        // Riwayat
         : (selectedBottomNavbar === 'riwayat') ?
 
           <div className="main-menu">
