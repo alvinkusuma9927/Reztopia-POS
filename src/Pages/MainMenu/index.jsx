@@ -1,5 +1,5 @@
 import "../../assets/MainMenu.css"
-import { HStack, IconButton, Input, InputGroup, InputLeftElement, Stack, Text,Modal,ModalOverlay,ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton, Box, Select } from '@chakra-ui/react';
+import { HStack, IconButton, Input, InputGroup, InputLeftElement, Stack, Text,Modal,ModalOverlay,ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton, Box, Select,Center } from '@chakra-ui/react';
 import {AddIcon, MinusIcon, SearchIcon} from '@chakra-ui/icons';
 import ProductImg from '../../assets/product.png'
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -10,7 +10,9 @@ import { Image,Button} from '@chakra-ui/react'
 import CreateIcon from '@mui/icons-material/Create';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
-import {Table,  Thead,  Tbody,  Tfoot,  Tr,  Th,  Td,  TableCaption,  TableContainer,} from '@chakra-ui/react'
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import StarIcon from '@mui/icons-material/Star';
+import {Table,  Thead,  Tbody,  Tfoot,  Tr,  Th,  Td,  TableCaption,  TableContainer,useDisclosure} from '@chakra-ui/react'
 import { actions } from '../../store';
 
 import {Step,StepDescription,StepIcon,StepIndicator,StepNumber,StepSeparator,StepStatus,StepTitle,Stepper,useSteps,
@@ -24,6 +26,7 @@ import MieGoreng from "../../assets/OutletMenu/MieGoreng.png"
 import AyamGoreng from "../../assets/OutletMenu/AyamGoreng.png"
 import BaksoKomplit from "../../assets/OutletMenu/BaksoKomplit.png"
 import EmptyCart from "../../assets/EmptyCart.png"
+import UcapanTerimakasih from "../../assets/UcapanTerimakasih.png"
 
 
 
@@ -70,7 +73,6 @@ const MainMenu = ()=>{
     ]
   )
   const url = useParams()
-  console.log(url.section)
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const cart = useSelector((state)=>state.cart)
@@ -91,11 +93,19 @@ const MainMenu = ()=>{
     { title: 'Pembayaran Berhasil', description: 'Melalui QR Code, Atas : nama Ara - Meja no 26', time:'08.05' },
     { title: 'Pembayaran Menunggu Konfirmasi', description: 'Atas : nama Ara - Meja no 26', time:'07.05' },
   ]
-  const [stepActive,setStepActive] = useState(3);
+  const [stepActive,setStepActive] = useState(5);
   const { activeStep } = useSteps({
     index: stepActive,
     count: steps.length,
   })
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [modalPenilaian,setModalPenilaian] = useState({
+    foodRate : 3,
+    serviceRate : 2,
+    modalPenilaianContent:'rate'
+  })
+  console.log(modalPenilaian.modalPenilaianContent === 'rate')
+  const  starIconSelected = [1,2,3,4,5]
 
 
   // Check sessionLogin
@@ -104,7 +114,6 @@ const MainMenu = ()=>{
     if(!loginSessionAuth(window.location.href.split('/')[3],loginSession)){
       navigate('/Login')
     }
-    console.log(loginSessionAuth(window.location.href.split('/')[3],loginSession))
   }, [loginSession]);
   // }
   return(
@@ -146,7 +155,7 @@ const MainMenu = ()=>{
 
             {cart.map(
               (item)=>
-                <div style={{ display:'flex',backgroundColor:'white',padding:'10px',borderRadius:'20px',marginBottom:'20px' }}>
+                <div style={{ display:'flex',backgroundColor:'white',padding:'10px',borderRadius:'20px',marginBottom:'20px',boxShadow:'0px 0px 25px rgba(192, 192, 192, 0.2)' }}>
                   <Image
                     height='154px'
                     aspectRatio='1/1'
@@ -299,7 +308,89 @@ const MainMenu = ()=>{
 
             {
               stepActive === steps.length ?
-              <Button colorScheme="blue">Beri Penilaian</Button>
+              <>
+                <Button onClick={onOpen} colorScheme="blue">Beri Penilaian</Button>
+                <Modal isOpen={isOpen} onClose={onClose}>
+                  <ModalOverlay />
+
+                  {modalPenilaian.modalPenilaianContent === 'rate' ? 
+                    <ModalContent width='414px'>
+                      <ModalHeader>Beri Penilaian</ModalHeader>
+                      <ModalCloseButton />
+                      <ModalBody>
+
+                        <Text fontSize='14px' color='#707070'>Bagaimana Masakan Kami?</Text>
+
+                        <HStack>
+                          {starIconSelected.map(index=>
+                            index <= modalPenilaian.foodRate ?
+                            <StarIcon onClick={()=>
+                              setModalPenilaian((modalPenilaian) => ({
+                                  ...modalPenilaian,
+                                  foodRate:index
+                                }))
+                            } sx={{ color:'#FFD201',fontSize:'40px',cursor:'pointer' }} />
+                            :
+                            <StarBorderIcon onClick={()=>
+                              setModalPenilaian((modalPenilaian) => ({
+                                ...modalPenilaian,
+                                foodRate:index
+                              }))
+                            } sx={{ color:'#FFD201',fontSize:'40px',cursor:'pointer' }} />
+                          )}
+                        </HStack>
+
+                        <hr style={{ marginBottom:'20px',marginTop:'20px' }}/>
+                        <Text fontSize='14px' color='#707070'>Bagaimana Pelayanan Kami?</Text>
+
+                        <HStack>
+                          {starIconSelected.map(index=>
+                            index <= modalPenilaian.serviceRate ?
+                            <StarIcon onClick={()=>
+                              setModalPenilaian((modalPenilaian) => ({
+                                ...modalPenilaian,
+                                serviceRate:index
+                              }))
+                            } sx={{ color:'#FFD201',fontSize:'40px',cursor:'pointer' }} />
+                            :
+                            <StarBorderIcon onClick={()=>
+                              setModalPenilaian((modalPenilaian) => ({
+                                ...modalPenilaian,
+                                serviceRate:index
+                              }))
+                            } sx={{ color:'#FFD201',fontSize:'40px',cursor:'pointer' }} />
+                          )}
+                        </HStack>
+
+                      </ModalBody>
+                      <ModalFooter width='100%'>
+                        <Center>
+                          <Button onClick={ ()=> {
+                            setModalPenilaian((modalPenilaian) => ({
+                              ...modalPenilaian,
+                              modalPenilaianContent:'ucapan terimakasih'
+                            }))
+                          } } colorScheme='blue'>Kirim Penilaian</Button>
+                        </Center>
+                      </ModalFooter>
+                    </ModalContent>
+
+                    :
+                    <ModalContent width='414px' height='300px'>
+                      <ModalCloseButton />
+                      <ModalBody display='flex' flexDirection='column' justifyContent='center' alignItems='center' height='100%'>
+                        <img src={UcapanTerimakasih} alt="" style={{ width:'100px',objectFit:'contain' }} />
+                        <Text fontSize='22px' as='b'>Terimakasih</Text>
+                        <Text>sudah memberikan penilaian</Text>
+                      </ModalBody>
+                      
+                    </ModalContent>
+                  }
+                  
+
+                  
+                </Modal>
+              </>
               :null
             }
             
@@ -311,14 +402,14 @@ const MainMenu = ()=>{
         // Riwayat
         : (url.section === 'riwayat') ?
 
-          <div className="main-menu">
+          <div className="main-menu" style={{ paddingBottom:'70px' }}>
             <HStack width='100%' justifyContent='center' alignItems='center' marginBottom='20px'>  
               <Text fontSize='22px' as='b'>Riwayat</Text>   
             </HStack>
             
             {products.map(
               (item)=>
-              <div style={{ backgroundColor:'white',padding:'10px',borderRadius:'20px',marginBottom:'80px' }}>
+              <div style={{ backgroundColor:'white',padding:'10px',borderRadius:'20px',marginBottom:'20px',boxShadow:'0px 0px 25px rgba(192, 192, 192, 0.2)' }}>
 
                 <div style={{ display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'20px' }}>
                   <HStack>

@@ -112,7 +112,7 @@ const DetailOrder = ()=>{
         </HStack>
       </Box>
 
-      <Box borderRadius='20px' backgroundColor='white' padding='25px' boxShadow='0px 0px 25px rgba(192, 192, 192, 0.2)' >
+      <Box borderRadius='20px' backgroundColor='white' padding='25px' boxShadow='0px 0px 25px rgba(192, 192, 192, 0.2)' marginBottom='60px'>
         <Text as='b'>Rincian Pembayaran</Text>
         <HStack marginTop='20px' justifyContent='space-between'>
           <Text fontSize='12px' color='#7C7979'>Nama Pemesan</Text>
