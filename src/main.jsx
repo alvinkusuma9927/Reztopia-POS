@@ -10,9 +10,10 @@ import Login from './Pages/Login';
 import SignUp from './Pages/Login/SignUp';
 import MainMenu from './Pages/MainMenu';
 import OutletMenu from './Pages/MainMenu/OutletMenu';
+import Logout from './Auth/Logout';
 const router = createBrowserRouter([
   {
-    path: "/MainMenu",
+    path: "/",
     element: <MainMenu />
   },
   {
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
     path: "/MainMenu/OutletMenu/:idOutlet",
     element: <OutletMenu />
   },
+  {
+    path: "/Logout",
+    element: <Logout/>
+  }
   
 
 ]);

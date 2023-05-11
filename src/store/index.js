@@ -17,6 +17,12 @@ const states = createSlice({
       localStorage.email = state.email
       localStorage.password = state.password
     },
+    logout:(state)=>{
+      state.loginSession.email = '',
+      state.loginSession.password = ''
+      localStorage.email = ''
+      localStorage.password = ''
+    },
     insertCart: (state,action)=>{
       let indexCart = state.cart.findIndex((item)=> item.id === action.payload.id )
       if(indexCart === -1){
