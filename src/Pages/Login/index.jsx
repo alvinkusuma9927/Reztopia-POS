@@ -1,4 +1,4 @@
-import { Button, Center, HStack, Input, Text } from '@chakra-ui/react'
+import { Button, Center,Input, Text } from '@chakra-ui/react'
 import '../../assets/Login.css'
 import LogoImg from '../../assets/Logo.png'
 import WelcomeImg from '../../assets/Welcome.png'
@@ -13,9 +13,7 @@ import loginSessionAuth from '../../Auth/LoginSession'
 const Login = ()=>{
   
   const navigate = useNavigate()
-  const dispatch = useDispatch()
-  const [emailInput,setEmailInput] = useState('')
-  const [passwordInput,setPasswordInput] = useState('')
+  
 
   // Check sessionLogin {
   const loginSession = useSelector((state)=>state.loginSession)
@@ -25,6 +23,10 @@ const Login = ()=>{
     }
   }, [loginSession]);
   // }
+
+  const dispatch = useDispatch()
+  const [emailInput,setEmailInput] = useState('')
+  const [passwordInput,setPasswordInput] = useState('')
 
   const submitLogin = ()=>{
     event.preventDefault()

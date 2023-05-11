@@ -27,6 +27,7 @@ import AyamGoreng from "../../assets/OutletMenu/AyamGoreng.png"
 import BaksoKomplit from "../../assets/OutletMenu/BaksoKomplit.png"
 import EmptyCart from "../../assets/EmptyCart.png"
 import UcapanTerimakasih from "../../assets/UcapanTerimakasih.png"
+import Carousel1 from "../../assets/Carousel1.png"
 
 
 
@@ -36,6 +37,16 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import loginSessionAuth from '../../Auth/LoginSession';
 import { Link, useNavigate, useParams } from 'react-router-dom'
+
+// carousel
+import React, { useRef } from "react";
+// Import Swiper React components
+import { Swiper, SwiperSlide } from "swiper/react";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/pagination";
+import { Pagination } from "swiper";
 
 
 
@@ -125,14 +136,20 @@ const MainMenu = ()=>{
             <Text as='b' fontSize='22px'>Selamat Datang di</Text>
             <Text as='b' fontSize='22px' color='blue.500' marginBottom='20px'>Kedai Tangsi !</Text>
 
-            <InputGroup backgroundColor='white'>
+            <InputGroup backgroundColor='white' marginBottom='20px'>
               <InputLeftElement children={ <SearchIcon/> } />
               <Input value={searchInput} onChange={(e)=>setSearchInput(e.target.value)} placeholder='search' />
             </InputGroup>
 
+            <Swiper spaceBetween={30} loop={true} pagination={{clickable: true}}  modules={[Pagination]} className="mySwiper" >
+              <SwiperSlide><img src={Carousel1} alt="" srcset="" /></SwiperSlide>
+              <SwiperSlide><img src={BaksoKomplit} alt="" srcset="" /></SwiperSlide>
+              <SwiperSlide><img src={MieGoreng} alt="" srcset="" /></SwiperSlide>
+            </Swiper>
 
-            <Text color='blue.500'>Tenant</Text>
-            <div style={{ display:'flex',justifyContent:'space-between',flexWrap:'wrap',width:'100%',paddingBottom:'70px',marginTop:'20px' }}>
+
+            <Text color='blue.500' as='b' marginTop='20px'>Tenant</Text>
+            <div style={{ display:'flex',justifyContent:'space-between',flexWrap:'wrap',width:'100%',paddingBottom:'70px',marginTop:'10px' }}>
               {products.map((product)=>
                 product.name.toLowerCase().includes(searchInput.toLocaleLowerCase())?
                 <Link to={`/MainMenu/OutletMenu/${product.name}`} style={{ marginBottom:'20px' }}>

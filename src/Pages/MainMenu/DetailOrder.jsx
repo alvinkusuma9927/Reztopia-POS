@@ -28,6 +28,15 @@ import { actions } from '../../store';
 
 const DetailOrder = ()=>{
   const navigate = useNavigate();
+  // Check sessionLogin
+  const loginSession = useSelector((state)=>state.loginSession)
+  useEffect(() => {
+    if(!loginSessionAuth(window.location.href.split('/')[3],loginSession)){
+      navigate('/Login')
+    }
+    console.log(loginSessionAuth(window.location.href.split('/')[3],loginSession))
+  }, [loginSession]);
+  // }
   return (
     <div className="main-menu">
       <HStack width='100%' justifyContent='space-between' alignItems='center' marginBottom='40px'>
