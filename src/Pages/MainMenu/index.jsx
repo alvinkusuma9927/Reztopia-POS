@@ -182,9 +182,9 @@ const MainMenu = ()=>{
     
                       <HStack justifyContent='space-between'>
                         <HStack>
-                          <IconButton onClick={()=>dispatch(actions.editCount({id:item.id,count:item.count - 1}))} size='sm' colorScheme='blue' variant='outline' borderRadius='50%' icon={<MinusIcon />} />
+                          <IconButton onClick={()=>dispatch(actions.editCount({id:item.id,count:item.count - 1}))} size='xs' colorScheme='blue' variant='outline' borderRadius='50%' icon={<MinusIcon />} />
                           <Text>{item.count}</Text>
-                          <IconButton onClick={()=>dispatch(actions.editCount({id:item.id,count:item.count+1}))} size='sm' colorScheme='blue' variant='solid' borderRadius='50%' icon={<AddIcon/>} />
+                          <IconButton onClick={()=>dispatch(actions.editCount({id:item.id,count:item.count+1}))} size='xs' colorScheme='blue' variant='solid' borderRadius='50%' icon={<AddIcon/>} />
                         </HStack>
                         <IconButton onClick={()=>dispatch(actions.removeCart({id:item.id}))} colorScheme='red' variant='ghost'icon={<DeleteIcon/>} />
                       </HStack>
@@ -383,7 +383,6 @@ const MainMenu = ()=>{
                         <Text fontSize='22px' as='b'>Terimakasih</Text>
                         <Text>sudah memberikan penilaian</Text>
                       </ModalBody>
-                      
                     </ModalContent>
                   }
                   

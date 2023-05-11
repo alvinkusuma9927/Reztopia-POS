@@ -36,14 +36,20 @@ const Login = ()=>{
         title: 'Wrong email/password ! .',
         description: "Try Again input",
         status: 'error',
-        duration: 3000,
+        duration: 1500,
         isClosable: true,
         variant:'subtle',
       })
 
     }
   }
-  const toast = useToast()
+  const toast = useToast(
+    {
+      containerStyle: {
+        width: '380px',
+      },
+    }
+  )
   return(
     <form action='' className="main-login" onSubmit={()=>submitLogin()}>
       <Center>

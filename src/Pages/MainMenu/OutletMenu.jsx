@@ -37,7 +37,13 @@ const OutletMenu = ()=>{
   const [modal,setModal] = useState('')
   const [filterDataMenu,setFilterDataMenu] = useState('') 
   const dispatch = useDispatch()
-  const toast = useToast()
+  const toast = useToast(
+    {
+      containerStyle: {
+        width: '380px',
+      },
+    }
+  )
 
   // Check sessionLogin
   const loginSession = useSelector((state)=>state.loginSession)
@@ -258,7 +264,7 @@ const OutletMenu = ()=>{
                   {
                     dispatch(actions.insertCart(modal));
                     onClose()
-                    toast({title: `Item sudah ditambahkan ke keranjang`,status: 'success',isClosable: true,duration:2000})
+                    toast({title: `Item sudah ditambahkan ke keranjang`,status: 'success',isClosable: true,duration:1500})
                   }
                 } colorScheme='blue'>Tambah</Button>
               </Center>
