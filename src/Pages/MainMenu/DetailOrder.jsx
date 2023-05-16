@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom'
-import "../../assets/MainMenu.css"
+import "../../../public/assets/MainMenu.css"
 import { Image,Button, Center, HStack, Input, InputGroup, InputLeftElement, Stack, Text, useDisclosure,  Modal,ModalOverlay,ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton, useToast, Box, } from '@chakra-ui/react';
 import {SearchIcon} from '@chakra-ui/icons';
 
@@ -7,15 +7,6 @@ import LocalGroceryStoreOutlinedIcon from '@mui/icons-material/LocalGroceryStore
 import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
-
-// gambar
-import BaksoMercon from "../../assets/OutletMenu/BaksoMercon.png"
-import Capcay from "../../assets/OutletMenu/Capcay.png"
-import Churos from "../../assets/OutletMenu/Churos.png"
-import MieGoreng from "../../assets/OutletMenu/MieGoreng.png"
-import AyamGoreng from "../../assets/OutletMenu/AyamGoreng.png"
-import BaksoKomplit from "../../assets/OutletMenu/BaksoKomplit.png"
-
 
 
 // sessionLogin
@@ -25,6 +16,7 @@ import loginSessionAuth from '../../Auth/LoginSession';
 import { Link, useNavigate } from 'react-router-dom'
 
 import { actions } from '../../store';
+import getStaticImg from "../../Function/getStaticImg";
 
 const DetailOrder = ()=>{
   const navigate = useNavigate();
@@ -64,7 +56,7 @@ const DetailOrder = ()=>{
             aspectRatio='1/1'
             objectFit='cover'
             maxW={{ base: '100%', sm: '200px' }}
-            src={MieGoreng}
+            src={getStaticImg('MieGoreng')}
             alt='Caffe Latte'
             borderRadius='20px'
             alignItems='flex-start'
@@ -82,7 +74,7 @@ const DetailOrder = ()=>{
             aspectRatio='1/1'
             objectFit='cover'
             maxW={{ base: '100%', sm: '200px' }}
-            src={MieGoreng}
+            src={getStaticImg('MieGoreng')}
             alt='Caffe Latte'
             borderRadius='20px'
             alignItems='flex-start'
@@ -100,7 +92,7 @@ const DetailOrder = ()=>{
             aspectRatio='1/1'
             objectFit='cover'
             maxW={{ base: '100%', sm: '200px' }}
-            src={MieGoreng}
+            src={getStaticImg('MieGoreng')}
             alt='Caffe Latte'
             borderRadius='20px'
             alignItems='flex-start'

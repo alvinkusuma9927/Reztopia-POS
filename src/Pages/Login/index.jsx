@@ -1,7 +1,6 @@
 import { Button, Center,Input, Text } from '@chakra-ui/react'
-import '../../assets/Login.css'
-import LogoImg from '../../assets/Logo.png'
-import WelcomeImg from '../../assets/Welcome.png'
+import '../../../public/assets/Login.css'
+
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { useToast } from '@chakra-ui/react'
@@ -9,6 +8,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { actions } from '../../store'
 import { useEffect } from 'react'
 import loginSessionAuth from '../../Auth/LoginSession'
+import axios from 'axios'
+import getStaticImg from "../../Function/getStaticImg";
 
 const Login = ()=>{
   
@@ -27,23 +28,41 @@ const Login = ()=>{
   const dispatch = useDispatch()
   const [emailInput,setEmailInput] = useState('')
   const [passwordInput,setPasswordInput] = useState('')
+  const [isLoading,setIsLoading] = useState(false)
 
   const submitLogin = ()=>{
     event.preventDefault()
-    if(emailInput === 'admin@email.com' && passwordInput === '12345'){
-      dispatch(actions.login({email:emailInput,password:passwordInput}))
-    }
-    else{
-      toast({
-        title: 'Wrong email/password ! .',
-        description: "Try Again input",
-        status: 'error',
-        duration: 1500,
-        isClosable: true,
-        variant:'subtle',
-      })
-
-    }
+    const requestLoginBody = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: emailInput,password:passwordInput })
+    };
+    fetch(
+      "http://127.0.0.1:8000/api/login",
+        requestLoginBody
+      ).then(response => response.json())
+        .then(response=> {
+          // console.log(response.data)
+          if(response.data !== undefined){
+            let dataLogin = response.data
+            dataLogin.token = response.meta
+            dispatch(actions.login({dataLogin : dataLogin}))
+            // console.log("login success")
+          }
+          else{
+            toast({
+              title: 'Wrong email/password ! .',
+              description: "Try again input",
+              status: 'error',
+              duration: 1500,
+              isClosable: true,
+              variant:'subtle',
+            })
+      
+          }
+        }
+      )
+    
   }
   const toast = useToast(
     {
@@ -55,9 +74,9 @@ const Login = ()=>{
   return(
     <form action='' className="main-login" onSubmit={()=>submitLogin()}>
       <Center>
-        <img src={LogoImg} className='logo-img' alt="" />
+        <img src={getStaticImg('Logo')} className='logo-img' alt="" />
       </Center>
-      <img src={WelcomeImg} className='welcome-img' marginBottom='40px' alt="" />
+      <img src={getStaticImg('Welcome')} className='welcome-img' marginBottom='40px' alt="" />
       
       
       <Text as='b' alignSelf='flex-start' color='#6597BF'>Email</Text>

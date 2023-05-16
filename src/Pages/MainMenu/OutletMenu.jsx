@@ -1,6 +1,6 @@
 
 import { useParams } from 'react-router-dom'
-import "../../assets/MainMenu.css"
+import "../../../public/assets/MainMenu.css"
 import { Button, Center, HStack, Input, InputGroup, InputLeftElement, Stack, Text, useDisclosure,  Modal,ModalOverlay,ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton, useToast, } from '@chakra-ui/react';
 import {SearchIcon} from '@chakra-ui/icons';
 
@@ -9,13 +9,7 @@ import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
 
-// gambar
-import BaksoMercon from "../../assets/OutletMenu/BaksoMercon.png"
-import Capcay from "../../assets/OutletMenu/Capcay.png"
-import Churos from "../../assets/OutletMenu/Churos.png"
-import MieGoreng from "../../assets/OutletMenu/MieGoreng.png"
-import AyamGoreng from "../../assets/OutletMenu/AyamGoreng.png"
-import BaksoKomplit from "../../assets/OutletMenu/BaksoKomplit.png"
+
 
 
 
@@ -26,14 +20,18 @@ import loginSessionAuth from '../../Auth/LoginSession';
 import { Link, useNavigate } from 'react-router-dom'
 
 import { actions } from '../../store';
+import getStaticImg from "../../Function/getStaticImg";
 
 
 const OutletMenu = ()=>{
   const outletName = useParams()
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const [dataMenu,setDataMenu] = useState([])
   const navigate = useNavigate()
   const [searchInput,setSearchInput] = useState('')
   const typeMenu = ['Daging','Sayuran','Snack','Mie'];
+
+  
   const [modal,setModal] = useState('')
   const [filterDataMenu,setFilterDataMenu] = useState('') 
   const dispatch = useDispatch()
@@ -45,87 +43,40 @@ const OutletMenu = ()=>{
     }
   )
 
-  // Check sessionLogin
   const loginSession = useSelector((state)=>state.loginSession)
   useEffect(() => {
+    // Check sessionLogin
     if(!loginSessionAuth(window.location.href.split('/')[3],loginSession)){
       navigate('/Login')
     }
-    console.log(loginSessionAuth(window.location.href.split('/')[3],loginSession))
+    else{
+      fetch(`http://127.0.0.1:8000/api/menu/${outletName.idOutlet}`,{
+        method:'GET',
+        headers:{
+          Authorization: `${JSON.parse(loginSession).token.token_type} ${JSON.parse(loginSession).token.access_token}`
+        }
+      })
+        .then( response=> response.json() )
+          .then(response=> {
+              if(response.data !== undefined){
+                setDataMenu(response.data);
+              }
+            }
+          )
+      
+      
+    }
   }, [loginSession]);
-  // }
+
   const openModal = (modalParam)=>{
     setModal(modalParam)
     onOpen();
   }
-  const [dataMenu,setDataMenu] = useState(
-    [
-      {
-        id:1,
-        outletName:outletName.idOutlet,
-        name:'Bakso Mercon',
-        imgUrl:BaksoMercon,
-        normalPrice:18300,
-        discountPrice:15400,
-        type:'Daging',
-        description:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam, nemo!',
-      },
-      {
-        id:2,
-        outletName:outletName.idOutlet,
-        name:'Capcay',
-        imgUrl:Capcay,
-        normalPrice:16800,
-        discountPrice:15300,
-        type:'Sayuran',
-        description:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam, nemo!'
-      },
-      {
-        id:3,
-        outletName:outletName.idOutlet,
-        name:'Churos',
-        imgUrl:Churos,
-        normalPrice:19300,
-        discountPrice:14300,
-        type:'Snack',
-        description:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam, nemo!'
-      },
-      {
-        id:4,
-        outletName:outletName.idOutlet,
-        name:'Mie Goreng',
-        imgUrl:MieGoreng,
-        normalPrice:23300,
-        discountPrice:20300,
-        type:'Mie',
-        description:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam, nemo!'
-      },
-      {
-        id:5,
-        outletName:outletName.idOutlet,
-        name:'Ayam Goreng',
-        imgUrl:AyamGoreng,
-        normalPrice:20300,
-        discountPrice:15200,
-        type:'Daging',
-        description:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam, nemo!'
-      },
-      {
-        id:6,
-        outletName:outletName.idOutlet,
-        name:'Bakso Komplit',
-        imgUrl:BaksoKomplit,
-        normalPrice:17300,
-        discountPrice:11300,
-        type:'Daging',
-        description:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam, nemo!'
-      }
-    ]
-  )
+  
   const sortingDataMenuTerendah = (arr)=>{
     for (var i = 0; i < arr.length; i++) {
       for (var j = 0; j < (arr.length - i - 1); j++) {
-          if (arr[j].discountPrice > arr[j + 1].discountPrice) {
+          if (arr[j].price_product > arr[j + 1].price_product) {
               var temp = arr[j]
               arr[j] = arr[j + 1]
               arr[j + 1] = temp
@@ -137,7 +88,7 @@ const OutletMenu = ()=>{
   const sortingDataMenuTertinggi = (arr)=>{
     for (var i = 0; i < arr.length; i++) {
       for (var j = 0; j < (arr.length - i - 1); j++) {
-          if (arr[j].discountPrice < arr[j + 1].discountPrice) {
+          if (arr[j].price_product < arr[j + 1].price_product) {
               var temp = arr[j]
               arr[j] = arr[j + 1]
               arr[j + 1] = temp
@@ -156,6 +107,8 @@ const OutletMenu = ()=>{
     }
     onClose()
   }, [urutanData]);
+
+
   return(
     <div className="main-menu">
       <HStack width='100%' justifyContent='space-between' alignItems='center' marginBottom='20px'>
@@ -163,33 +116,40 @@ const OutletMenu = ()=>{
         <Text fontSize='22px' as='b'>Menu</Text>
         <LocalGroceryStoreOutlinedIcon sx={{ color:'#6697BF' }}/>
       </HStack>
-
-      <InputGroup backgroundColor='white' marginBottom='20px'>
-        <InputLeftElement children={ <SearchIcon/> } />
-        <Input value={searchInput} onChange={(e)=>setSearchInput(e.target.value)} placeholder='search' />
-      </InputGroup>
       
-      <HStack>
-        <Button colorScheme='blue' onClick={()=>openModal('filter')  }>
-          <TuneOutlinedIcon/>
-          Filter
-        </Button>
-        <Button colorScheme='blue' onClick={()=>openModal('urutan')  } >
-          <FilterAltOutlinedIcon />
-          Urutkan
-        </Button>
-      </HStack>
+      {
+        dataMenu.length > 0 ?
+        <>
+          <InputGroup backgroundColor='white' marginBottom='20px'>
+            <InputLeftElement children={ <SearchIcon/> } />
+            <Input value={searchInput} onChange={(e)=>setSearchInput(e.target.value)} placeholder='search' />
+          </InputGroup>
+          
+          <HStack>
+            <Button colorScheme='blue' onClick={()=>openModal('filter')  }>
+              <TuneOutlinedIcon/>
+              Filter
+            </Button>
+            <Button colorScheme='blue' onClick={()=>openModal('urutan')  } >
+              <FilterAltOutlinedIcon />
+              Urutkan
+            </Button>
+          </HStack>
+        </>
+        :null
+      }
+      
 
       <div style={{ display:'flex',justifyContent:'space-between',flexWrap:'wrap',width:'100%',paddingBottom:'70px',marginTop:'20px' }}>
         {dataMenu.map((product)=>
-          product.name.toLowerCase().includes(searchInput.toLocaleLowerCase()) && product.type.toLowerCase().includes(filterDataMenu.toLocaleLowerCase())  ?
-          <div onClick={()=>openModal(product)} style={{ marginBottom:'20px',cursor:'pointer' }}>
-            <div src='' style={{ width:'161px',height:'171px',backgroundImage:`url(${product.imgUrl})`,backgroundSize:'cover',backgroundPosition:'center',borderRadius:'20px' }} />    
+          product.name_product.toLowerCase().includes(searchInput.toLocaleLowerCase()) ?
+          <div key={product.id_product} onClick={()=>openModal(product)} style={{ marginBottom:'20px',cursor:'pointer' }}>
+            <div src='' style={{ width:'161px',height:'171px',backgroundImage:`url('${getStaticImg('AyamGoreng')}')`,backgroundSize:'cover',backgroundPosition:'center',borderRadius:'20px' }} />    
             <Stack maxWidth='161px'>
-              <Text as='b'>{product.name}</Text>
+              <Text as='b'>{product.name_product}</Text>
               <HStack>
-                <Text>Rp.{product.discountPrice}</Text>
-                <Text color='#7C7979' as='del'>{product.normalPrice}</Text>
+                <Text>Rp.{product.price_product}</Text>
+                <Text color='#7C7979' as='del'>discount</Text>
               </HStack>
               
             </Stack>
@@ -228,8 +188,8 @@ const OutletMenu = ()=>{
             <ModalCloseButton />
             <ModalBody>
               {
-                typeMenu.map((type)=>
-                  <Button colorScheme='blue' variant='ghost' marginBottom='20px' onClick={()=>{setFilterDataMenu(type);onClose()}}>
+                typeMenu.map((type,index)=>
+                  <Button key={index} colorScheme='blue' variant='ghost' marginBottom='20px' onClick={()=>{setFilterDataMenu(type);onClose()}}>
                     {type}
                   </Button>
                 )
@@ -246,19 +206,19 @@ const OutletMenu = ()=>{
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent width='414px'>
-            <ModalHeader>{modal.name}</ModalHeader>
+            <ModalHeader>{modal.name_product}</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <img style={{ width:'100%',height:'259px',objectFit:'cover',borderRadius:'10px' }} src={modal.imgUrl} alt="" />
-              <Text fontSize='14px' color='#707070'>{modal.description}</Text>
+              <img style={{ width:'100%',height:'259px',objectFit:'cover',borderRadius:'10px' }} src={getStaticImg('AyamGoreng')} alt="" />
+              <Text fontSize='14px' color='#707070'>{modal.description_product}</Text>
 
               <HStack>
-                <Text as='b'>Rp.{modal.discountPrice}</Text>
-                <Text color='#7C7979' as='del'>{modal.normalPrice}</Text>
+                <Text as='b'>Rp.{modal.price_product}</Text>
+                <Text color='#7C7979' as='del'>discount</Text>
               </HStack>
               
             </ModalBody>
-            <ModalFooter width='100%'>
+            <ModalFooter width='100%' marginBottom='20px'>
               <Center>
                 <Button onClick={ ()=>
                   {
@@ -268,19 +228,53 @@ const OutletMenu = ()=>{
                   }
                 } colorScheme='blue'>Tambah</Button>
               </Center>
-              
             </ModalFooter>
           </ModalContent>
         </Modal>
-      }
-      
-
-
-      
-      
-      
+      }    
 
     </div>
   )
 }
 export default OutletMenu
+
+// var a = {
+//   "meta": {
+//       "status": "success",
+//       "message": "Successfully fetch data"
+//   },
+//   "data": {
+//     dataProducts : [
+//         {
+//             "price_product": 40000,
+//             "image_product": "http://localhost/storage/uploads/product/",
+//             "name_product": "nabati",
+//             "description_product": "enak tau",
+//             "id_outlet": 2,
+//             "id_product": 1,
+//             id_category : 1,
+//             name_category : "daging"
+//         },
+//         {
+//             "price_product": 20000,
+//             "image_product": "http://localhost/storage/uploads/product/",
+//             "name_product": "momogi",
+//             "description_product": "enak tau",
+//             "id_outlet": 2,
+//             "id_product": 2,
+//             id_category : 2,
+//             name_category : "Sayur"
+//         }
+//     ],
+//     listCategory:[
+//       {
+//         id_category : 1,
+//         name_category : "daging"  
+//       },
+//       {
+//         id_category : 2,
+//         name_category : "Sayur"
+//       }
+//     ]
+//   }
+// }

@@ -1,14 +1,21 @@
 const loginSessionAuth = (url,loginSession)=>{
-  if(url === 'Login'){
-    if(  (loginSession.email !== undefined && loginSession.password !== undefined) && (loginSession.email !== '' && loginSession.password !== '') ){
+  try {
+    loginSession = JSON.parse(loginSession)
+  } catch (error) {
+    return false
+  }
+  
+  if(url === 'Login' || url === 'SignUp'){
+    if(  (loginSession.hasOwnProperty('token')) ){
       return true
     }
     else{
       return false
     }
+    
   }
   else{
-    if(  (loginSession.email !== undefined && loginSession.password !== undefined) && (loginSession.email !== '' && loginSession.password !== '') ){
+    if(  (loginSession.hasOwnProperty('token')) ){
       return true
     }
     else{

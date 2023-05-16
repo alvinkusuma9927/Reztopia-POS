@@ -1,7 +1,6 @@
-import "../../assets/MainMenu.css"
+import "../../../public/assets/MainMenu.css"
 import { HStack, IconButton, Input, InputGroup, InputLeftElement, Stack, Text,Modal,ModalOverlay,ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton, Box, Select,Center } from '@chakra-ui/react';
 import {AddIcon, MinusIcon, SearchIcon} from '@chakra-ui/icons';
-import ProductImg from '../../assets/product.png'
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import ContentPasteOutlinedIcon from '@mui/icons-material/ContentPasteOutlined';
 import RestaurantOutlinedIcon from '@mui/icons-material/RestaurantOutlined';
@@ -18,16 +17,6 @@ import { actions } from '../../store';
 import {Step,StepDescription,StepIcon,StepIndicator,StepNumber,StepSeparator,StepStatus,StepTitle,Stepper,useSteps,
 } from '@chakra-ui/react'
 
-// gambar
-import BaksoMercon from "../../assets/OutletMenu/BaksoMercon.png"
-import Capcay from "../../assets/OutletMenu/Capcay.png"
-import Churos from "../../assets/OutletMenu/Churos.png"
-import MieGoreng from "../../assets/OutletMenu/MieGoreng.png"
-import AyamGoreng from "../../assets/OutletMenu/AyamGoreng.png"
-import BaksoKomplit from "../../assets/OutletMenu/BaksoKomplit.png"
-import EmptyCart from "../../assets/EmptyCart.png"
-import UcapanTerimakasih from "../../assets/UcapanTerimakasih.png"
-import Carousel1 from "../../assets/Carousel1.png"
 
 
 
@@ -47,42 +36,11 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Pagination } from "swiper";
-
+import getStaticImg from "../../Function/getStaticImg";
 
 
 const MainMenu = ()=>{
-  const [products,setProducts] = useState(
-    [
-      {
-        name:'kantin Gubeng',
-        imgUrl: ''
-      },
-      {
-        name:'kantin Tunjungan',
-        imgUrl: ''
-      },
-      {
-        name:'kantin Jemursari',
-        imgUrl: ''
-      },
-      {
-        name:'kantin Prapen',
-        imgUrl: ''
-      },
-      {
-        name:'kantin Panjang Jiwo',
-        imgUrl: ''
-      },
-      {
-        name:'kantin Keputih',
-        imgUrl: ''
-      },
-      {
-        name:'kantin Tambaksari',
-        imgUrl: ''
-      },
-    ]
-  )
+  const [products,setProducts] = useState( [] )
   const url = useParams()
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -92,7 +50,7 @@ const MainMenu = ()=>{
   const getTotalPayment = ()=>{
     let totalPrice = 0
     for (let item of cart) {
-      totalPrice += (item.discountPrice * item.count)
+      totalPrice += (item.price_product * item.count)
     }
     return totalPrice
   }
@@ -115,18 +73,30 @@ const MainMenu = ()=>{
     serviceRate : 2,
     modalPenilaianContent:'rate'
   })
-  console.log(modalPenilaian.modalPenilaianContent === 'rate')
   const  starIconSelected = [1,2,3,4,5]
-
-
-  // Check sessionLogin
   const loginSession = useSelector((state)=>state.loginSession)
   useEffect(() => {
+    // Check sessionLogin
     if(!loginSessionAuth(window.location.href.split('/')[3],loginSession)){
       navigate('/Login')
     }
+    else{
+      
+      fetch("http://127.0.0.1:8000/api/tenant/index",{
+        method:'GET',
+        headers:{
+          Authorization: `${JSON.parse(loginSession).token.token_type} ${JSON.parse(loginSession).token.access_token}`
+        }
+      })
+        .then( response=> response.json() ,err=>console.log('error'))
+          .then(response=> setProducts(response.data.tenant) ,err=>console.log('error'))
+    }
+    
+    
   }, [loginSession]);
-  // }
+
+
+  
   return(
     <>
       
@@ -142,20 +112,20 @@ const MainMenu = ()=>{
             </InputGroup>
 
             <Swiper spaceBetween={30} loop={true} pagination={{clickable: true}}  modules={[Pagination]} className="mySwiper" >
-              <SwiperSlide><img src={Carousel1} alt="" srcset="" /></SwiperSlide>
-              <SwiperSlide><img src={BaksoKomplit} alt="" srcset="" /></SwiperSlide>
-              <SwiperSlide><img src={MieGoreng} alt="" srcset="" /></SwiperSlide>
+              <SwiperSlide><img src={getStaticImg('Carousel1')} alt=""  /></SwiperSlide>
+              <SwiperSlide><img src={getStaticImg('BaksoKomplit')} alt=""  /></SwiperSlide>
+              <SwiperSlide><img src={getStaticImg('MieGoreng')} alt=""  /></SwiperSlide>
             </Swiper>
 
 
             <Text color='blue.500' as='b' marginTop='20px'>Tenant</Text>
-            <div style={{ display:'flex',justifyContent:'space-between',flexWrap:'wrap',width:'100%',paddingBottom:'70px',marginTop:'10px' }}>
+            <div style={{ display:'flex',justifyContent:'space-around',flexWrap:'wrap',width:'100%',paddingBottom:'70px',marginTop:'10px' }}>
               {products.map((product)=>
                 product.name.toLowerCase().includes(searchInput.toLocaleLowerCase())?
-                <Link to={`/MainMenu/OutletMenu/${product.name}`} style={{ marginBottom:'20px' }}>
-                  <div src='' style={{ width:'105.28px',height:'171px',backgroundImage:`url(${ProductImg})`,backgroundSize:'cover',backgroundPosition:'center',borderRadius:'20px' }} />    
-                  <Stack maxWidth='105.28px'><Text as='b'>{product.name}</Text></Stack>
-                </Link>
+                  <Link to={`/MainMenu/OutletMenu/${product.id}`} style={{ marginBottom:'20px' }} key={product.id}>
+                    <div src='' style={{ width:'105.28px',height:'171px',backgroundImage:`url(${getStaticImg('BaksoMercon')})`,backgroundSize:'cover',backgroundPosition:'center',borderRadius:'20px' }} />    
+                    <Stack maxWidth='105.28px'><Text as='b'>{product.name}</Text></Stack>
+                  </Link>
                 :null
               )}
             </div>    
@@ -169,41 +139,40 @@ const MainMenu = ()=>{
             
 
             {/* cart Items */}
-
             {cart.map(
               (item)=>
-                <div style={{ display:'flex',backgroundColor:'white',padding:'10px',borderRadius:'20px',marginBottom:'20px',boxShadow:'0px 0px 25px rgba(192, 192, 192, 0.2)' }}>
+                <div key={item.id_product} style={{ display:'flex',backgroundColor:'white',padding:'10px',borderRadius:'20px',marginBottom:'20px',boxShadow:'0px 0px 25px rgba(192, 192, 192, 0.2)' }}>
                   <Image
                     height='154px'
                     aspectRatio='1/1'
                     objectFit='cover'
                     maxW={{ base: '100%', sm: '200px' }}
-                    src={item.imgUrl}
-                    alt='Caffe Latte'
+                    src={getStaticImg('AyamGoreng')}
+                    alt=''
                     borderRadius='20px'
                     alignItems='flex-start'
                     marginRight='20px'
                   />
     
                   <div style={{ display:'flex',flexDirection:'column',justifyContent:'space-between' }}>
-                      <Text fontSize='16px' as='b' >{item.name}</Text>
+                      <Text fontSize='16px' as='b' >{item.name_product}</Text>
     
-                      <Text fontSize='14px'>Rp.{item.discountPrice * item.count}</Text>
+                      <Text fontSize='14px'>Rp. {item.price_product*item.count}</Text>
                       <InputGroup backgroundColor='white' marginBottom='10px'>
                         <InputLeftElement children={ <CreateIcon sx={{ width:'14px',color:'gray' }}/> } />
                         <Input onChange={
-                          (e)=> dispatch(actions.writeNote({ id:item.id,note:e.target.value }))
+                          (e)=> dispatch(actions.writeNote({ id_product:item.id_product,id_outlet:item.id_outlet,note:e.target.value }))
                           } 
                           variant='flushed' fontSize='14px' value={item.note}  placeholder='search' />
                       </InputGroup>
     
                       <HStack justifyContent='space-between'>
                         <HStack>
-                          <IconButton onClick={()=>dispatch(actions.editCount({id:item.id,count:item.count - 1}))} size='xs' colorScheme='blue' variant='outline' borderRadius='50%' icon={<MinusIcon />} />
+                          <IconButton onClick={()=>dispatch(actions.editCount({id_product:item.id_product,id_outlet:item.id_outlet,count:item.count - 1}))} size='xs' colorScheme='blue' variant='outline' borderRadius='50%' icon={<MinusIcon />} />
                           <Text>{item.count}</Text>
-                          <IconButton onClick={()=>dispatch(actions.editCount({id:item.id,count:item.count+1}))} size='xs' colorScheme='blue' variant='solid' borderRadius='50%' icon={<AddIcon/>} />
+                          <IconButton onClick={()=>dispatch(actions.editCount({id_product:item.id_product,id_outlet:item.id_outlet,count:item.count+1}))} size='xs' colorScheme='blue' variant='solid' borderRadius='50%' icon={<AddIcon/>} />
                         </HStack>
-                        <IconButton onClick={()=>dispatch(actions.removeCart({id:item.id}))} colorScheme='red' variant='ghost'icon={<DeleteIcon/>} />
+                        <IconButton onClick={()=>dispatch(actions.removeCart({id_product:item.id_product,id_outlet:item.id_outlet}))} colorScheme='red' variant='ghost'icon={<DeleteIcon/>} />
                       </HStack>
     
                     
@@ -221,28 +190,20 @@ const MainMenu = ()=>{
                   <Table variant='simple' width='100%'>
                     <Tr>
                       <Td>Nama Pemesan</Td>
-                      <Td isNumeric><Input  variant='flushed' textAlign='center' defaultValue='Ara' /></Td>
+                      <Td isNumeric>{JSON.parse(loginSession).name}</Td>
                     </Tr>
                     <Tr>
-                      <Tr>
-                        
-                        <Td isNumeric>
-                          <Select size='sm' width='200%'>
-                            <option value='dineIn' selected>Dine In</option>
-                            <option value='takeAway'>Take Away</option>
-                          </Select>
-                        </Td>
-                      </Tr>
+                      <Td></Td>
+                      <Td isNumeric>
+                        <Select size='sm'>
+                          <option value='dineIn' selected>Dine In</option>
+                          <option value='takeAway'>Take Away</option>
+                        </Select>
+                      </Td>
                     </Tr>
                     <Tr>
                       <Td>Nomor Meja</Td>
-                      <Td isNumeric>
-                        <InputGroup>
-                          <InputLeftElement children={ <CreateIcon sx={{ color:'lightblue' }}/> } />
-                          <Input type='number' variant='flushed' textAlign='center' defaultValue='26' />
-                        </InputGroup>
-                        
-                      </Td>
+                      <Td isNumeric>26</Td>
                     </Tr>
                     <Tr>
                       <Td>Kantin</Td>
@@ -277,7 +238,7 @@ const MainMenu = ()=>{
 
               :
               <div style={{ height:'calc(100vh - 100px)',display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center' }}>
-                <img src={EmptyCart} style={{ width:'186px',objectFit:'contain' }}/>
+                <img src={getStaticImg('EmptyCart')} style={{ width:'186px',objectFit:'contain' }}/>
                 <Text textAlign='center'  fontSize='24px' as='b' marginTop='20px' marginBottom='20px'>Ups Kamu belum menambah menu</Text>
                 <Text textAlign='center' marginBottom='20px'>Tambah makanan dulu dong</Text>
               </div>
@@ -341,14 +302,14 @@ const MainMenu = ()=>{
                         <HStack>
                           {starIconSelected.map(index=>
                             index <= modalPenilaian.foodRate ?
-                            <StarIcon onClick={()=>
+                            <StarIcon key={index} onClick={()=>
                               setModalPenilaian((modalPenilaian) => ({
                                   ...modalPenilaian,
                                   foodRate:index
                                 }))
                             } sx={{ color:'#FFD201',fontSize:'40px',cursor:'pointer' }} />
                             :
-                            <StarBorderIcon onClick={()=>
+                            <StarBorderIcon key={index} onClick={()=>
                               setModalPenilaian((modalPenilaian) => ({
                                 ...modalPenilaian,
                                 foodRate:index
@@ -363,14 +324,14 @@ const MainMenu = ()=>{
                         <HStack>
                           {starIconSelected.map(index=>
                             index <= modalPenilaian.serviceRate ?
-                            <StarIcon onClick={()=>
+                            <StarIcon key={index} onClick={()=>
                               setModalPenilaian((modalPenilaian) => ({
                                 ...modalPenilaian,
                                 serviceRate:index
                               }))
                             } sx={{ color:'#FFD201',fontSize:'40px',cursor:'pointer' }} />
                             :
-                            <StarBorderIcon onClick={()=>
+                            <StarBorderIcon key={index} onClick={()=>
                               setModalPenilaian((modalPenilaian) => ({
                                 ...modalPenilaian,
                                 serviceRate:index
@@ -396,7 +357,7 @@ const MainMenu = ()=>{
                     <ModalContent width='414px' height='300px'>
                       <ModalCloseButton />
                       <ModalBody display='flex' flexDirection='column' justifyContent='center' alignItems='center' height='100%'>
-                        <img src={UcapanTerimakasih} alt="" style={{ width:'100px',objectFit:'contain' }} />
+                        <img src={getStaticImg('UcapanTerimakasih')} alt="" style={{ width:'100px',objectFit:'contain' }} />
                         <Text fontSize='22px' as='b'>Terimakasih</Text>
                         <Text>sudah memberikan penilaian</Text>
                       </ModalBody>
@@ -424,8 +385,8 @@ const MainMenu = ()=>{
             </HStack>
             
             {products.map(
-              (item)=>
-              <div style={{ backgroundColor:'white',padding:'10px',borderRadius:'20px',marginBottom:'20px',boxShadow:'0px 0px 25px rgba(192, 192, 192, 0.2)' }}>
+              (item,index)=>
+              <div key={index} style={{ backgroundColor:'white',padding:'10px',borderRadius:'20px',marginBottom:'20px',boxShadow:'0px 0px 25px rgba(192, 192, 192, 0.2)' }}>
 
                 <div style={{ display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'20px' }}>
                   <HStack>
@@ -442,7 +403,7 @@ const MainMenu = ()=>{
                     aspectRatio='1/1'
                     objectFit='cover'
                     maxW={{ base: '100%', sm: '200px' }}
-                    src={MieGoreng}
+                    src={getStaticImg('MieGoreng')}
                     alt='Caffe Latte'
                     borderRadius='20px'
                     alignItems='flex-start'
