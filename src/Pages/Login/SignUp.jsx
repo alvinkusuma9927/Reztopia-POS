@@ -116,7 +116,6 @@ const SignUp = ()=>{
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Sign Up Success</ModalHeader>
-          <ModalCloseButton />
           <ModalBody>
             {/* <Lorem count={2} /> */}
           </ModalBody>

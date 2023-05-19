@@ -439,19 +439,26 @@ const MainMenu = ()=>{
 
 
       <div className='bottom-navigation-bar'>
-        <Link to='/MainMenu/dashboard' className='link'>
-          <HomeOutlinedIcon sx={{ color: (url.section === 'dashboard' || url.section === undefined)?'#6898C0':'#B7B7B7' }} />
+        <Link to='/MainMenu/dashboard'>
+          <div className="link">
+            <HomeOutlinedIcon sx={{ color: (url.section === 'dashboard' || url.section === undefined)?'#6898C0':'#B7B7B7'   }} />
+          </div>
         </Link>
-        <Link to='/MainMenu/order' className='link'>
-          <ContentPasteOutlinedIcon sx={{ color:(url.section === 'order')?'#6898C0':'#B7B7B7' }} />
+        <Link to='/MainMenu/order'>
+          <div className="link">
+            <ContentPasteOutlinedIcon sx={{ color:(url.section === 'order')?'#6898C0':'#B7B7B7' }} />
+          </div>
         </Link>
-        <Link to='/MainMenu/status-pesanan' className='link'>
-          <RestaurantOutlinedIcon  sx={{ color:(url.section === 'status-pesanan')?'#6898C0':'#B7B7B7' }} />
+        <Link to='/MainMenu/status-pesanan'>
+          <div className="link">
+            <RestaurantOutlinedIcon  sx={{ color:(url.section === 'status-pesanan')?'#6898C0':'#B7B7B7' }} />
+          </div>
         </Link>
-        <Link to='/MainMenu/riwayat' className='link'>
-          <HistoryOutlinedIcon  sx={{ color:(url.section === 'riwayat')?'#6898C0':'#B7B7B7' }} />
+        <Link to='/MainMenu/riwayat'>
+          <div className="link">
+            <HistoryOutlinedIcon  sx={{ color:(url.section === 'riwayat')?'#6898C0':'#B7B7B7' }} />
+          </div>
         </Link>
-        
       </div>
     </>
     
