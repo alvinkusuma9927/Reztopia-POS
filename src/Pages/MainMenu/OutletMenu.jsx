@@ -76,7 +76,7 @@ const OutletMenu = ()=>{
   const sortingDataMenuTerendah = (arr)=>{
     for (var i = 0; i < arr.length; i++) {
       for (var j = 0; j < (arr.length - i - 1); j++) {
-          if (arr[j].price_product > arr[j + 1].price_product) {
+          if (arr[j].price_after_discount > arr[j + 1].price_after_discount) {
               var temp = arr[j]
               arr[j] = arr[j + 1]
               arr[j + 1] = temp
@@ -88,7 +88,7 @@ const OutletMenu = ()=>{
   const sortingDataMenuTertinggi = (arr)=>{
     for (var i = 0; i < arr.length; i++) {
       for (var j = 0; j < (arr.length - i - 1); j++) {
-          if (arr[j].price_product < arr[j + 1].price_product) {
+          if (arr[j].price_after_discount < arr[j + 1].price_after_discount) {
               var temp = arr[j]
               arr[j] = arr[j + 1]
               arr[j + 1] = temp
@@ -107,6 +107,9 @@ const OutletMenu = ()=>{
     }
     onClose()
   }, [urutanData]);
+  useEffect(()=>{
+    console.log(dataMenu)
+  },[])
 
 
   return(
@@ -148,8 +151,8 @@ const OutletMenu = ()=>{
             <Stack maxWidth='161px'>
               <Text as='b'>{product.name_product}</Text>
               <HStack>
-                <Text>Rp.{product.price_product}</Text>
-                <Text color='#7C7979' as='del'>discount</Text>
+                <Text>Rp.{product.price_after_discount}</Text>
+                <Text color='#7C7979' as='del'>{product.original_price}</Text>
               </HStack>
               
             </Stack>
@@ -213,8 +216,8 @@ const OutletMenu = ()=>{
               <Text fontSize='14px' color='#707070'>{modal.description_product}</Text>
 
               <HStack>
-                <Text as='b'>Rp.{modal.price_product}</Text>
-                <Text color='#7C7979' as='del'>discount</Text>
+                <Text as='b'>Rp.{modal.price_after_discount}</Text>
+                <Text color='#7C7979' as='del'>{modal.original_price}</Text>
               </HStack>
               
             </ModalBody>
@@ -246,7 +249,7 @@ export default OutletMenu
 //   "data": {
 //     dataProducts : [
 //         {
-//             "price_product": 40000,
+//             "price_after_discount": 40000,
 //             "image_product": "http://localhost/storage/uploads/product/",
 //             "name_product": "nabati",
 //             "description_product": "enak tau",
@@ -256,7 +259,7 @@ export default OutletMenu
 //             name_category : "daging"
 //         },
 //         {
-//             "price_product": 20000,
+//             "price_after_discount": 20000,
 //             "image_product": "http://localhost/storage/uploads/product/",
 //             "name_product": "momogi",
 //             "description_product": "enak tau",

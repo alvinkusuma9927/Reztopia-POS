@@ -19,6 +19,7 @@ const states = createSlice({
     },
     insertCart: (state,action)=>{
       let indexCart = state.cart.findIndex((item)=> (item.id_product === action.payload.id_product && item.id_outlet === action.payload.id_outlet ) )
+      console.log(action.payload)
       if(indexCart === -1){
         const cartInsertData = action.payload;
         cartInsertData.count = 1;

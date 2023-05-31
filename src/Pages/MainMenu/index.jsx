@@ -50,9 +50,16 @@ const MainMenu = ()=>{
   const getTotalPayment = ()=>{
     let totalPrice = 0
     for (let item of cart) {
-      totalPrice += (item.price_product * item.count)
+      totalPrice += (item.price_after_discount * item.count)
     }
     return totalPrice
+  }
+  const getOutletName = ()=> {
+    let outletsName = []
+    for(let item of cart){
+      outletsName.push(item.id_outlet)
+    }
+    return JSON.stringify(outletsName)
   }
 
   const steps = [
@@ -208,7 +215,7 @@ const MainMenu = ()=>{
                     <Tr>
                       <Td>Kantin</Td>
                       <Td isNumeric>
-                        <Input  variant='flushed' textAlign='center' defaultValue='Kedai 35' />
+                        {getOutletName()}
                       </Td>
                     </Tr>
                   </Table>
@@ -449,11 +456,7 @@ const MainMenu = ()=>{
             <ContentPasteOutlinedIcon sx={{ color:(url.section === 'order')?'#6898C0':'#B7B7B7' }} />
           </div>
         </Link>
-        <Link to='/MainMenu/status-pesanan'>
-          <div className="link">
-            <RestaurantOutlinedIcon  sx={{ color:(url.section === 'status-pesanan')?'#6898C0':'#B7B7B7' }} />
-          </div>
-        </Link>
+        
         <Link to='/MainMenu/riwayat'>
           <div className="link">
             <HistoryOutlinedIcon  sx={{ color:(url.section === 'riwayat')?'#6898C0':'#B7B7B7' }} />
