@@ -1,31 +1,30 @@
-import "../../../public/assets/MainMenu.css"
-import { HStack, IconButton, Input, InputGroup, InputLeftElement, Stack, Text,Modal,ModalOverlay,ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton, Box, Select,Center } from '@chakra-ui/react';
+"use client"
+import "/public/assets/MainMenu.css"
+import { HStack, IconButton, Input, InputGroup, InputLeftElement, Stack, Text,Modal,ModalOverlay,ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton, Box, Select,Center, useToast } from '@chakra-ui/react';
 import {AddIcon, MinusIcon, SearchIcon} from '@chakra-ui/icons';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import ContentPasteOutlinedIcon from '@mui/icons-material/ContentPasteOutlined';
 import RestaurantOutlinedIcon from '@mui/icons-material/RestaurantOutlined';
 import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
-import { Image,Button} from '@chakra-ui/react'
+import { Button} from '@chakra-ui/react'
 import CreateIcon from '@mui/icons-material/Create';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
 import {Table,  Thead,  Tbody,  Tfoot,  Tr,  Th,  Td,  TableCaption,  TableContainer,useDisclosure} from '@chakra-ui/react'
-import { actions } from '../../store';
+import { actions } from "../../store"; 
+import LogoutIcon from '@mui/icons-material/Logout';
 
 import {Step,StepDescription,StepIcon,StepIndicator,StepNumber,StepSeparator,StepStatus,StepTitle,Stepper,useSteps,
 } from '@chakra-ui/react'
 
 
 
-
-
 // sessionLogin
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import loginSessionAuth from '../../Auth/LoginSession';
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import loginSessionAuth from "../../Auth/LoginSession";
 
 // carousel
 import React, { useRef } from "react";
@@ -36,24 +35,27 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Pagination } from "swiper";
-import getStaticImg from "../../Function/getStaticImg";
+import LoadingScreen from "../../Components/LoadingScreen";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 
 const MainMenu = ()=>{
+  const [isLoading,setIsLoading] = useState(true)
   const [products,setProducts] = useState( [] )
   const url = useParams()
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const cart = useSelector((state)=>state.cart)
-  const [searchInput,setSearchInput] = useState('')
+  const [searchInput,setSearchInput] =  useState('')
+  const [nomorMeja,setNomorMeja] = useState('')
   
-  const getTotalPayment = ()=>{
-    let totalPrice = 0
-    for (let item of cart) {
-      totalPrice += (item.price_after_discount * item.count)
-    }
-    return totalPrice
-  }
+  // const getTotalPayment = ()=>{
+  //   let totalPrice = 0
+  //   for (let item of cart) {
+  //     totalPrice += (item.price_after_discount * item.count)
+  //   }
+  //   return totalPrice
+  // }
   const getOutletName = ()=> {
     let outletsName = []
     for(let item of cart){
@@ -82,21 +84,50 @@ const MainMenu = ()=>{
   })
   const  starIconSelected = [1,2,3,4,5]
   const loginSession = useSelector((state)=>state.loginSession)
+  const toast = useToast(
+    {
+      containerStyle: {
+        width: '380px',
+      },
+    }
+  )
   useEffect(() => {
     // Check sessionLogin
     if(!loginSessionAuth(window.location.href.split('/')[3],loginSession)){
       navigate('/Login')
     }
     else{
-      
-      fetch("http://127.0.0.1:8000/api/tenant/index",{
+
+      // fetch data menu
+      const resDataMenu = fetch("http://127.0.0.1:8000/api/tenant/index",{
         method:'GET',
         headers:{
           Authorization: `${JSON.parse(loginSession).token.token_type} ${JSON.parse(loginSession).token.access_token}`
         }
       })
         .then( response=> response.json() ,err=>console.log('error'))
-          .then(response=> setProducts(response.data.tenant) ,err=>console.log('error'))
+          .then(response=> setProducts(response.data.tenant) ,err=>console.log('error')).then(()=>setIsLoading(false))
+
+      // fetch cart
+      const resCart = fetch('http://127.0.0.1:8000/api/cart/index',{
+        method:'GET',
+        headers:{
+          Authorization: `${JSON.parse(loginSession).token.token_type} ${JSON.parse(loginSession).token.access_token}`
+        }
+      })
+      .then(
+        response => {
+          if(response.status === 200){
+            response.json() ,err=>console.log('error')
+              .then(response => dispatch(actions.setCartValue({newDataCart:response.data})))
+          }
+          else{
+            console.log(response.status)
+            dispatch(actions.setCartValue({newDataCart:[]}))
+          }
+        }
+      )
+      
     }
     
     
@@ -106,11 +137,18 @@ const MainMenu = ()=>{
   
   return(
     <>
+      {
+        isLoading ? <LoadingScreen/> : null
+      }
       
       {
         (url.section === 'dashboard' || url.section === undefined) ?
           <div className="main-menu">
-            <Text as='b' fontSize='22px'>Selamat Datang di</Text>
+            <HStack justifyContent='space-between' alignItems='center'>
+              <Text as='b' fontSize='22px'>Selamat Datang di</Text>
+                <LogoutIcon onClick={()=>{setIsLoading(true);dispatch(actions.logout())}} sx={{ cursor:'pointer',fontWeight:'bold',color:'rgb(201, 68, 86)' }}/>
+            </HStack>
+            
             <Text as='b' fontSize='22px' color='blue.500' marginBottom='20px'>Kedai Tangsi !</Text>
 
             <InputGroup backgroundColor='white' marginBottom='20px'>
@@ -119,9 +157,9 @@ const MainMenu = ()=>{
             </InputGroup>
 
             <Swiper spaceBetween={30} loop={true} pagination={{clickable: true}}  modules={[Pagination]} className="mySwiper" >
-              <SwiperSlide><img src={getStaticImg('Carousel1')} alt=""  /></SwiperSlide>
-              <SwiperSlide><img src={getStaticImg('BaksoKomplit')} alt=""  /></SwiperSlide>
-              <SwiperSlide><img src={getStaticImg('MieGoreng')} alt=""  /></SwiperSlide>
+              <SwiperSlide><img style={{ height:'168px',width:'100%',display:'block',objectFit:'cover',borderRadius:'10px' }} src='/public/assets/Carousel1.png' alt=""  /></SwiperSlide>
+              <SwiperSlide><img style={{ height:'168px',width:'100%',display:'block',objectFit:'cover',borderRadius:'10px' }} src='/public/assets/BaksoKomplit.png' alt=""  /></SwiperSlide>
+              <SwiperSlide><img style={{ height:'168px',width:'100%',display:'block',objectFit:'cover',borderRadius:'10px' }} src='/public/assets/MieGoreng.png' alt=""  /></SwiperSlide>
             </Swiper>
 
 
@@ -130,7 +168,7 @@ const MainMenu = ()=>{
               {products.map((product)=>
                 product.name.toLowerCase().includes(searchInput.toLocaleLowerCase())?
                   <Link to={`/MainMenu/OutletMenu/${product.id}`} style={{ marginBottom:'20px' }} key={product.id}>
-                    <div src='' style={{ width:'105.28px',height:'171px',backgroundImage:`url(${getStaticImg('BaksoMercon')})`,backgroundSize:'cover',backgroundPosition:'center',borderRadius:'20px' }} />    
+                    <img src="/public/assets/BaksoMercon.png" alt="" style={{ width:'105.28px',height:'171px',objectFit:'cover',borderRadius:'20px' }} />
                     <Stack maxWidth='105.28px'><Text as='b'>{product.name}</Text></Stack>
                   </Link>
                 :null
@@ -147,39 +185,50 @@ const MainMenu = ()=>{
 
             {/* cart Items */}
             {cart.map(
-              (item)=>
+              (item,index)=>
                 <div key={item.id_product} style={{ display:'flex',backgroundColor:'white',padding:'10px',borderRadius:'20px',marginBottom:'20px',boxShadow:'0px 0px 25px rgba(192, 192, 192, 0.2)' }}>
-                  <Image
-                    height='154px'
-                    aspectRatio='1/1'
-                    objectFit='cover'
-                    maxW={{ base: '100%', sm: '200px' }}
-                    src={getStaticImg('AyamGoreng')}
+                  <img
+                    src='/public/assets/AyamGoreng.png'
                     alt=''
-                    borderRadius='20px'
-                    alignItems='flex-start'
-                    marginRight='20px'
+                    style={{ 
+                      width:'154px',
+                      height:'154px',
+                      aspectRatio:'1/1',
+                      objectFit:'cover',
+                      borderRadius:'20px',
+                      alignItems:'flex-start',
+                      marginRight:'20px'
+                     }}
+                    
                   />
     
                   <div style={{ display:'flex',flexDirection:'column',justifyContent:'space-between' }}>
-                      <Text fontSize='16px' as='b' >{item.name_product}</Text>
+                      <Text fontSize='16px' as='b' >{item.name}</Text>
     
-                      <Text fontSize='14px'>Rp. {item.price_product*item.count}</Text>
+                      <Text fontSize='14px'>Rp. {item.total}</Text>
                       <InputGroup backgroundColor='white' marginBottom='10px'>
                         <InputLeftElement children={ <CreateIcon sx={{ width:'14px',color:'gray' }}/> } />
-                        <Input onChange={
-                          (e)=> dispatch(actions.writeNote({ id_product:item.id_product,id_outlet:item.id_outlet,note:e.target.value }))
-                          } 
+                        <Input 
+                          // onChange={
+                          //   (e)=> dispatch(actions.writeNote({ id_product:item.id_product,id_outlet:item.id_outlet,note:e.target.value }))
+                          // } 
                           variant='flushed' fontSize='14px' value={item.note}  placeholder='search' />
                       </InputGroup>
     
                       <HStack justifyContent='space-between'>
                         <HStack>
-                          <IconButton onClick={()=>dispatch(actions.editCount({id_product:item.id_product,id_outlet:item.id_outlet,count:item.count - 1}))} size='xs' colorScheme='blue' variant='outline' borderRadius='50%' icon={<MinusIcon />} />
-                          <Text>{item.count}</Text>
-                          <IconButton onClick={()=>dispatch(actions.editCount({id_product:item.id_product,id_outlet:item.id_outlet,count:item.count+1}))} size='xs' colorScheme='blue' variant='solid' borderRadius='50%' icon={<AddIcon/>} />
+                          <IconButton size='xs' colorScheme='blue' variant='outline' borderRadius='50%' icon={<MinusIcon />} aria-label={""}
+                            // onClick={() => { dispatch(actions.editCount({ id_product: item.id_product, id_outlet: item.id_outlet, count: item.count - 1 })); } } 
+                          />
+                          {/* <Text>{item.count}</Text> */}
+                          <Text>1</Text>
+                          <IconButton size='xs' colorScheme='blue' variant='solid' borderRadius='50%' icon={<AddIcon/>}  aria-label={""}
+                            // onClick={() => {dispatch(actions.editCount({id_product:item.id_product,id_outlet:item.id_outlet,count:item.count+1}))}} 
+                          />
                         </HStack>
-                        <IconButton onClick={()=>dispatch(actions.removeCart({id_product:item.id_product,id_outlet:item.id_outlet}))} colorScheme='red' variant='ghost'icon={<DeleteIcon/>} />
+                        <IconButton colorScheme='red' variant='ghost'icon={<DeleteIcon/>}  aria-label={""}
+                          onClick={() => {dispatch(actions.removeCart({id_product:item.id_product,id_outlet:item.id_outlet}))}}
+                        />
                       </HStack>
     
                     
@@ -210,7 +259,7 @@ const MainMenu = ()=>{
                     </Tr>
                     <Tr>
                       <Td>Nomor Meja</Td>
-                      <Td isNumeric>26</Td>
+                      <Td isNumeric><Input value={nomorMeja} onChange={(e)=>setNomorMeja(e.target.value)} placeholder="Nomor Meja"/></Td>
                     </Tr>
                     <Tr>
                       <Td>Kantin</Td>
@@ -235,17 +284,30 @@ const MainMenu = ()=>{
                     </Tr>
                     <Tr>
                       <Td>Total Pembayaran</Td>
-                      <Td isNumeric>Rp.{getTotalPayment()}</Td>
+                      {/* <Td isNumeric>Rp.{getTotalPayment()}</Td> */}
+                      <Td isNumeric>total payment</Td>
                     </Tr>
                     
                   </Table>
                 </div>
-                <Button colorScheme='blue' marginBottom='80px'>Pesan</Button>
+                <Button onClick={()=>{
+                  if(nomorMeja === ''){
+                    toast({
+                      title: 'Error',
+                      description: "Harap mengisi nomor meja~",
+                      status: 'error',
+                      duration: 2500,
+                      isClosable: true,
+                      variant:'subtle',
+                      position: 'top',
+                    })
+                  }
+                }} colorScheme='blue' marginBottom='80px'>Pesan</Button>
                 </>
 
               :
               <div style={{ height:'calc(100vh - 100px)',display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center' }}>
-                <img src={getStaticImg('EmptyCart')} style={{ width:'186px',objectFit:'contain' }}/>
+                <img src='/public/assets/EmptyCart.png' alt="EmptyCart" style={{ width:'186px',height:'100px',objectFit:'contain' }} />
                 <Text textAlign='center'  fontSize='24px' as='b' marginTop='20px' marginBottom='20px'>Ups Kamu belum menambah menu</Text>
                 <Text textAlign='center' marginBottom='20px'>Tambah makanan dulu dong</Text>
               </div>
@@ -266,7 +328,7 @@ const MainMenu = ()=>{
             </Stack>
             <Stepper index={activeStep} orientation='vertical' gap='0' marginTop='20px' marginBottom='40px'  width='100%' minHeight='400px'>
               {steps.map((step, index) => (
-                <Step key={index} width='100%'>
+                <Step key={index}>
                   <StepIndicator>
                     <StepStatus
                       complete={<StepIcon />}
@@ -364,7 +426,7 @@ const MainMenu = ()=>{
                     <ModalContent width='414px' height='300px'>
                       <ModalCloseButton />
                       <ModalBody display='flex' flexDirection='column' justifyContent='center' alignItems='center' height='100%'>
-                        <img src={getStaticImg('UcapanTerimakasih')} alt="" style={{ width:'100px',objectFit:'contain' }} />
+                        <img src='/public/assets/UcapanTerimakasih'  alt="" style={{ width:'100px',height:'100px',objectFit:'contain' }} />
                         <Text fontSize='22px' as='b'>Terimakasih</Text>
                         <Text>sudah memberikan penilaian</Text>
                       </ModalBody>
@@ -405,16 +467,20 @@ const MainMenu = ()=>{
                 </div>
 
                 <div style={{ display:'flex',marginBottom:'20px' }}>
-                  <Image
-                    height='71px'
-                    aspectRatio='1/1'
-                    objectFit='cover'
-                    maxW={{ base: '100%', sm: '200px' }}
-                    src={getStaticImg('MieGoreng')}
+                  <img
+                    src='/public/assets/MieGoreng.png'
                     alt='Caffe Latte'
-                    borderRadius='20px'
-                    alignItems='flex-start'
-                    marginRight='20px'
+
+                    style={{ 
+                      width:'71px',
+                      height:'71px',
+                      aspectRatio:'1/1',
+                      objectFit:'cover',
+                      borderRadius:'20px',
+                      alignItems:'flex-start',
+                      marginRight:'20px'
+                     }}
+                    
                   />
                   <div >
                       <Text fontSize='16px' as='b'>Kantin 35</Text>
@@ -429,7 +495,7 @@ const MainMenu = ()=>{
                     <Text as='b'>Rp.100000</Text>
                   </div>
 
-                  <Link to='/MainMenu/DetailOrder/idOrder'>
+                  <Link to='/DetailOrder' onClick={()=>setIsLoading(true)}>
                     <Button   colorScheme='blue' variant='outline'>Detail</Button>
                   </Link>
                   
@@ -446,22 +512,16 @@ const MainMenu = ()=>{
 
 
       <div className='bottom-navigation-bar'>
-        <Link to='/MainMenu/dashboard'>
-          <div className="link">
+          <Link to='/MainMenu/dashboard' className="link" >
             <HomeOutlinedIcon sx={{ color: (url.section === 'dashboard' || url.section === undefined)?'#6898C0':'#B7B7B7'   }} />
-          </div>
-        </Link>
-        <Link to='/MainMenu/order'>
-          <div className="link">
+          </Link>
+          <Link to='/MainMenu/order' className="link" >
             <ContentPasteOutlinedIcon sx={{ color:(url.section === 'order')?'#6898C0':'#B7B7B7' }} />
-          </div>
-        </Link>
+          </Link>
         
-        <Link to='/MainMenu/riwayat'>
-          <div className="link">
+          <Link to='/MainMenu/riwayat' className="link" >
             <HistoryOutlinedIcon  sx={{ color:(url.section === 'riwayat')?'#6898C0':'#B7B7B7' }} />
-          </div>
-        </Link>
+          </Link>
       </div>
     </>
     

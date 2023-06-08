@@ -21,9 +21,13 @@ import { Link, useNavigate } from 'react-router-dom'
 
 import { actions } from '../../store';
 import getStaticImg from "../../Function/getStaticImg";
+import LoadingScreen from '../../Components/LoadingScreen';
+
+
 
 
 const OutletMenu = ()=>{
+  const [isLoading,setIsLoading] = useState(true)
   const outletName = useParams()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [dataMenu,setDataMenu] = useState([])
@@ -47,7 +51,7 @@ const OutletMenu = ()=>{
   useEffect(() => {
     // Check sessionLogin
     if(!loginSessionAuth(window.location.href.split('/')[3],loginSession)){
-      navigate('/Login')
+      navigate('/Auth/Login')
     }
     else{
       fetch(`http://127.0.0.1:8000/api/menu/${outletName.idOutlet}`,{
@@ -62,17 +66,22 @@ const OutletMenu = ()=>{
                 setDataMenu(response.data);
               }
             }
-          )
-      
-      
+          ).then(()=>setIsLoading(false))
     }
   }, [loginSession]);
 
   const openModal = (modalParam)=>{
-    setModal(modalParam)
+    if(modalParam === 'filter' || modalParam === 'urutan'){
+      let new_value = modal;
+      new_value.modal_type = modalParam
+      setModal(new_value)
+    }else{
+      modalParam.modal_type = 'modal product'
+      setModal(modalParam)
+    }
+    
     onOpen();
   }
-  
   const sortingDataMenuTerendah = (arr)=>{
     for (var i = 0; i < arr.length; i++) {
       for (var j = 0; j < (arr.length - i - 1); j++) {
@@ -107,136 +116,172 @@ const OutletMenu = ()=>{
     }
     onClose()
   }, [urutanData]);
-  useEffect(()=>{
-    console.log(dataMenu)
-  },[])
+  // useEffect(()=>{
+  //   console.log(dataMenu)
+  // },[])
 
 
   return(
-    <div className="main-menu">
-      <HStack width='100%' justifyContent='space-between' alignItems='center' marginBottom='20px'>
-        <ArrowBackIosOutlinedIcon  onClick={()=>navigate(-1)} cursor='pointer' />
-        <Text fontSize='22px' as='b'>Menu</Text>
-        <LocalGroceryStoreOutlinedIcon sx={{ color:'#6697BF' }}/>
-      </HStack>
-      
+    <>
       {
-        dataMenu.length > 0 ?
-        <>
-          <InputGroup backgroundColor='white' marginBottom='20px'>
-            <InputLeftElement children={ <SearchIcon/> } />
-            <Input value={searchInput} onChange={(e)=>setSearchInput(e.target.value)} placeholder='search' />
-          </InputGroup>
-          
-          <HStack>
-            <Button colorScheme='blue' onClick={()=>openModal('filter')  }>
-              <TuneOutlinedIcon/>
-              Filter
-            </Button>
-            <Button colorScheme='blue' onClick={()=>openModal('urutan')  } >
-              <FilterAltOutlinedIcon />
-              Urutkan
-            </Button>
-          </HStack>
-        </>
-        :null
+        isLoading ? <LoadingScreen/> : null
       }
-      
-
-      <div style={{ display:'flex',justifyContent:'space-between',flexWrap:'wrap',width:'100%',paddingBottom:'70px',marginTop:'20px' }}>
-        {dataMenu.map((product)=>
-          product.name_product.toLowerCase().includes(searchInput.toLocaleLowerCase()) ?
-          <div key={product.id_product} onClick={()=>openModal(product)} style={{ marginBottom:'20px',cursor:'pointer' }}>
-            <div src='' style={{ width:'161px',height:'171px',backgroundImage:`url('${getStaticImg('AyamGoreng')}')`,backgroundSize:'cover',backgroundPosition:'center',borderRadius:'20px' }} />    
-            <Stack maxWidth='161px'>
-              <Text as='b'>{product.name_product}</Text>
-              <HStack>
-                <Text>Rp.{product.price_after_discount}</Text>
-                <Text color='#7C7979' as='del'>{product.original_price}</Text>
-              </HStack>
-              
-            </Stack>
-          </div>
+      <div className="main-menu">
+        <HStack width='100%' justifyContent='space-between' alignItems='center' marginBottom='20px'>
+          <ArrowBackIosOutlinedIcon  onClick={()=>{setIsLoading(true);navigate('/MainMenu')}} cursor='pointer' />
+          <Text fontSize='22px' as='b'>Menu {modal.modal_type}</Text>
+          {/* <LocalGroceryStoreOutlinedIcon sx={{ color:'#6697BF' }}/> */}
+          <LocalGroceryStoreOutlinedIcon sx={{ color:'rgba(0,0,0,0)' }}/>
+        </HStack>
+        
+        {
+          dataMenu.length > 0 ?
+          <>
+            <InputGroup backgroundColor='white' marginBottom='20px'>
+              <InputLeftElement children={ <SearchIcon/> } />
+              <Input value={searchInput} onChange={(e)=>setSearchInput(e.target.value)} placeholder='search' />
+            </InputGroup>
+            
+            <HStack>
+              <Button colorScheme='blue' onClick={()=>openModal('filter')  }>
+                <TuneOutlinedIcon/>
+                Filter
+              </Button>
+              <Button colorScheme='blue' onClick={()=>openModal('urutan')  } >
+                <FilterAltOutlinedIcon />
+                Urutkan
+              </Button>
+            </HStack>
+          </>
           :null
-        )}
-      </div> 
+        }
+        
+
+        <div style={{ display:'flex',justifyContent:'space-between',flexWrap:'wrap',width:'100%',paddingBottom:'70px',marginTop:'20px' }}>
+          {dataMenu.map((product)=>
+            product.name_product.toLowerCase().includes(searchInput.toLocaleLowerCase()) ?
+            <div key={product.id_product} onClick={()=>openModal(product)} style={{ marginBottom:'20px',cursor:'pointer' }}>
+              <div style={{ width:'161px',height:'171px',backgroundImage:`url(/assets/AyamGoreng.png)`,backgroundSize:'cover',backgroundPosition:'center',borderRadius:'20px' }} />    
+              <Stack maxWidth='161px'>
+                <Text as='b'>{product.name_product}</Text>
+                <HStack>
+                  <Text>Rp.{product.price_after_discount}</Text>
+                  <Text color='#7C7979' as='del'>{product.original_price}</Text>
+                </HStack>
+                
+              </Stack>
+            </div>
+            :null
+          )}
+        </div> 
 
 
-      {
-        modal ==='urutan' ?
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent width='414px'>
-            <ModalHeader>Urutkan Menu</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <Button colorScheme='blue' variant='ghost' marginBottom='20px' onClick={()=>{setUrutanData('terendah')}}>
-                Berdasarkan Harga Terendah
-              </Button>
-              <Button colorScheme='blue' variant='ghost' marginBottom='20px' onClick={()=>{setUrutanData('tertinggi')}}>
-                Berdasarkan Harga Tertinggi
-              </Button>
-            </ModalBody>
-          </ModalContent>
-        </Modal>:
+        {
+          modal.modal_type ==='urutan' ?
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent width='414px'>
+              <ModalHeader>Urutkan Menu</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <Button colorScheme='blue' variant='ghost' marginBottom='20px' onClick={()=>{setUrutanData('terendah')}}>
+                  Berdasarkan Harga Terendah
+                </Button>
+                <Button colorScheme='blue' variant='ghost' marginBottom='20px' onClick={()=>{setUrutanData('tertinggi')}}>
+                  Berdasarkan Harga Tertinggi
+                </Button>
+              </ModalBody>
+            </ModalContent>
+          </Modal>:
 
-        modal === 'filter' ? 
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent width='414px'>
-            <ModalHeader>
-              Filter
-              
-            </ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              {
-                typeMenu.map((type,index)=>
-                  <Button key={index} colorScheme='blue' variant='ghost' marginBottom='20px' onClick={()=>{setFilterDataMenu(type);onClose()}}>
-                    {type}
-                  </Button>
-                )
-              }
-              <Center>
-                <Button onClick={()=>{setFilterDataMenu('');onClose()}} colorScheme='blue' variant='outline' >Hapus Filter</Button>
-              </Center>
-              
-            </ModalBody>
-          </ModalContent>
-        </Modal>
+          modal.modal_type === 'filter' ? 
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent width='414px'>
+              <ModalHeader>
+                Filter
+                
+              </ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                {
+                  typeMenu.map((type,index)=>
+                    <Button key={index} colorScheme='blue' variant='ghost' marginBottom='20px' onClick={()=>{setFilterDataMenu(type);onClose()}}>
+                      {type}
+                    </Button>
+                  )
+                }
+                <Center>
+                  <Button onClick={()=>{setFilterDataMenu('');onClose()}} colorScheme='blue' variant='outline' >Hapus Filter</Button>
+                </Center>
+                
+              </ModalBody>
+            </ModalContent>
+          </Modal>
 
-        :
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent width='414px'>
-            <ModalHeader>{modal.name_product}</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <img style={{ width:'100%',height:'259px',objectFit:'cover',borderRadius:'10px' }} src={getStaticImg('AyamGoreng')} alt="" />
-              <Text fontSize='14px' color='#707070'>{modal.description_product}</Text>
+          :
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent width='414px'>
+              <ModalHeader>{modal.name_product}</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <img style={{ width:'100%',height:'259px',objectFit:'cover',borderRadius:'10px' }} src='/assets/AyamGoreng.png' alt="" />
+                <Text fontSize='14px' color='#707070'>{modal.description_product}</Text>
 
-              <HStack>
-                <Text as='b'>Rp.{modal.price_after_discount}</Text>
-                <Text color='#7C7979' as='del'>{modal.original_price}</Text>
-              </HStack>
-              
-            </ModalBody>
-            <ModalFooter width='100%' marginBottom='20px'>
-              <Center>
-                <Button onClick={ ()=>
-                  {
-                    dispatch(actions.insertCart(modal));
-                    onClose()
-                    toast({title: `Item sudah ditambahkan ke keranjang`,status: 'success',isClosable: true,duration:1500})
-                  }
-                } colorScheme='blue'>Tambah</Button>
-              </Center>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-      }    
+                <HStack>
+                  <Text as='b'>Rp.{modal.price_after_discount}</Text>
+                  <Text color='#7C7979' as='del'>{modal.original_price}</Text>
+                </HStack>
+                
+              </ModalBody>
+              <ModalFooter width='100%' marginBottom='20px'>
+                <Center>
+                  <Button onClick={ ()=>
+                    {
+                      let bodyRequest = {
+                        id_outlet : modal.id_outlet,
+                        id_user : JSON.parse(localStorage.loginSession).id,
+                        id_product : modal.id_product,
+                        quantity : 1,
+                        order_type:'take_away',
+                        note: ''
+                      }
+                      // console.log(bodyRequest)
+                      // dispatch(actions.insertCart(modal));
+                      fetch('http://127.0.0.1:8000/api/cart/add-cart',{
+                        method: 'POST',
+                        headers: { 
+                          'Content-Type': 'application/json',
+                          'Authorization' : `Bearer ${JSON.parse(localStorage.loginSession).token.access_token}`
+                        },
+                        body: JSON.stringify(bodyRequest)
+                      }).then(
+                        res=> {
+                          if(res.status === 200){
+                            res.json().then(  
+                              res=>{
+                                toast({title: JSON.stringify(res.meta.message),status: 'success',isClosable: true,duration:1500})
+                              }
+                            )
+                          }
+                          else{
+                            console.log('error')
+                          }
+                        }
+                      )
+                      onClose()
+                      
+                    }
+                  } colorScheme='blue'>Tambah</Button>
+                </Center>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+        }    
 
-    </div>
+      </div>
+    </>
   )
 }
 export default OutletMenu

@@ -1,5 +1,4 @@
 import { createSlice, configureStore } from '@reduxjs/toolkit';
-import { useState } from 'react';
 const states = createSlice({
   name: 'states',
   initialState: {

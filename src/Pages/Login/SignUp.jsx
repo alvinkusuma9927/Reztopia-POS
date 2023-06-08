@@ -1,5 +1,5 @@
 import { Button, Center, HStack, Input, InputGroup, InputRightElement, Text, useDisclosure, useToast } from '@chakra-ui/react'
-import '../../../public/assets/Login.css'
+import '/public/assets/Login.css'
 import { ViewIcon } from '@chakra-ui/icons'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
@@ -16,8 +16,10 @@ import {
   ModalBody,
   ModalCloseButton,
 } from '@chakra-ui/react'
+import LoadingScreen from '../../Components/LoadingScreen'
 
 const SignUp = ()=>{
+  const [isLoading,setIsLoading] = useState(true)
   const navigate = useNavigate()
   const [namaLengkapInput,setNamaLengkapInput] = useState('')
   const [emailInput,setEmailInput] = useState('')
@@ -29,10 +31,11 @@ const SignUp = ()=>{
       if(loginSessionAuth(window.location.href.split('/')[3],loginSession)){
         navigate('/MainMenu')
       }
+      setIsLoading(false)
     }, [loginSession]);
     // }
 
-  const submitSignUp = async ()=> {
+  const submitSignUp = async (event)=> {
     event.preventDefault()
     const requestBody = {
       method: 'POST',
@@ -82,7 +85,10 @@ const SignUp = ()=>{
 
   return(
     <>
-      <form action='' className="main-login" onSubmit={submitSignUp}>
+      {
+        isLoading ? <LoadingScreen/> : null
+      }
+      <form action='' className="main-login" onSubmit={(e)=>submitSignUp(e)}>
         <Center>
           <img src={getStaticImg('Logo')} className='logo-img' alt="" />
         </Center>
@@ -106,7 +112,7 @@ const SignUp = ()=>{
 
         <Button onClick={submitSignUp} type='submit' width='100%' height='64px' colorScheme='blue' marginBottom='20px'>Create Account</Button>
 
-        <Center onClick={()=>{navigate('/Login')}} cursor='pointer' marginBottom='20px'>
+        <Center onClick={()=>{etIsLoading(true);navigate('/Login')}} cursor='pointer' marginBottom='20px'>
           <Text marginRight='5px'>Exiting Member?</Text>
           <Text  as='b' color='#6597BF'>Sign In</Text>
         </Center>
@@ -120,7 +126,7 @@ const SignUp = ()=>{
             {/* <Lorem count={2} /> */}
           </ModalBody>
           <ModalFooter>
-            <Button onClick={()=>navigate('/Login')}>Close</Button>
+            <Button onClick={()=>{setIsLoading(true);navigate('/Login')}}>Close</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
