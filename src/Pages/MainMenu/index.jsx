@@ -48,6 +48,7 @@ const MainMenu = ()=>{
   const cart = useSelector((state)=>state.cart)
   const [searchInput,setSearchInput] =  useState('')
   const [nomorMeja,setNomorMeja] = useState('')
+  const [histories,setHistories] = useState([]) 
   
   // const getTotalPayment = ()=>{
   //   let totalPrice = 0
@@ -98,38 +99,69 @@ const MainMenu = ()=>{
     }
     else{
 
-      // fetch data menu
-      const resDataMenu = fetch("http://127.0.0.1:8000/api/tenant/index",{
-        method:'GET',
-        headers:{
-          Authorization: `${JSON.parse(loginSession).token.token_type} ${JSON.parse(loginSession).token.access_token}`
-        }
-      })
-        .then( response=> response.json() ,err=>console.log('error'))
-          .then(response=> setProducts(response.data.tenant) ,err=>console.log('error')).then(()=>setIsLoading(false))
+      if(url.section === 'dashboard' || url.section === undefined){
+        // fetch data menu
+        const resDataMenu = fetch("http://127.0.0.1:8000/api/tenant/index",{
+          method:'GET',
+          headers:{
+            Authorization: `${JSON.parse(loginSession).token.token_type} ${JSON.parse(loginSession).token.access_token}`
+          }
+        })
+          .then( response=> response.json() ,err=>console.log('error'))
+            .then(response=> setProducts(response.data.tenant) ,err=>console.log('error'))
 
-      // fetch cart
-      const resCart = fetch('http://127.0.0.1:8000/api/cart/index',{
-        method:'GET',
-        headers:{
-          Authorization: `${JSON.parse(loginSession).token.token_type} ${JSON.parse(loginSession).token.access_token}`
-        }
-      })
-      .then(
-        response => {
-          if(response.status === 200){
-            response.json() ,err=>console.log('error')
-              .then(response => dispatch(actions.setCartValue({newDataCart:response.data})))
+      }
+      else if (url.section === 'order'){
+        // fetch cart
+        const resCart = fetch('http://127.0.0.1:8000/api/cart/index',{
+          method:'GET',
+          headers:{
+            Authorization: `${JSON.parse(loginSession).token.token_type} ${JSON.parse(loginSession).token.access_token}`
           }
-          else{
-            console.log(response.status)
-            dispatch(actions.setCartValue({newDataCart:[]}))
+        })
+          .then(
+            response => {
+              if(response.status === 200){
+                response.json() ,err=>console.log('error')
+                  .then(response => dispatch(actions.setCartValue({newDataCart:response.data})))
+              }
+              else{
+                console.log(response.status)
+                dispatch(actions.setCartValue({newDataCart:[]}))
+              }
+            }
+          )
+
+      }
+      else if (url.section === 'riwayat'){
+        const history = ()=> fetch('http://127.0.0.1:8000/api/history/index',{
+          method:'GET',
+          headers:{
+            Authorization: `${JSON.parse(loginSession).token.token_type} ${JSON.parse(loginSession).token.access_token}`
           }
-        }
-      )
+        })
+          .then(
+            response => {
+              if(response.status === 200){
+                response.json() ,err=>console.log('error')
+                  .then(response => setHistories(response.data))
+              }
+              else{
+                setHistories([])
+              }
+            }
+          )
+      }
+      else{
+        url.section = 'dashboard'
+        navigate('/MainMenu/')
+        
+      }
+      setIsLoading(false)
+      
+      
       
     }
-    
     
   }, [loginSession]);
 
@@ -157,17 +189,17 @@ const MainMenu = ()=>{
             </InputGroup>
 
             <Swiper spaceBetween={30} loop={true} pagination={{clickable: true}}  modules={[Pagination]} className="mySwiper" >
-              <SwiperSlide><img style={{ height:'168px',width:'100%',display:'block',objectFit:'cover',borderRadius:'10px' }} src='/public/assets/Carousel1.png' alt=""  /></SwiperSlide>
-              <SwiperSlide><img style={{ height:'168px',width:'100%',display:'block',objectFit:'cover',borderRadius:'10px' }} src='/public/assets/BaksoKomplit.png' alt=""  /></SwiperSlide>
-              <SwiperSlide><img style={{ height:'168px',width:'100%',display:'block',objectFit:'cover',borderRadius:'10px' }} src='/public/assets/MieGoreng.png' alt=""  /></SwiperSlide>
+              <SwiperSlide><img style={{ display:'block',objectFit:'cover',borderRadius:'10px' }} src='/public/assets/Carousel1.png' alt=""  /></SwiperSlide>
+              <SwiperSlide><img style={{ display:'block',objectFit:'cover',borderRadius:'10px' }} src='/public/assets/BaksoKomplit.png' alt=""  /></SwiperSlide>
+              <SwiperSlide><img style={{ display:'block',objectFit:'cover',borderRadius:'10px' }} src='/public/assets/MieGoreng.png' alt=""  /></SwiperSlide>
             </Swiper>
 
 
             <Text color='blue.500' as='b' marginTop='20px'>Tenant</Text>
-            <div style={{ display:'flex',justifyContent:'space-around',flexWrap:'wrap',width:'100%',paddingBottom:'70px',marginTop:'10px' }}>
+            <div style={{ display:'flex',flexWrap:'wrap',width:'100%',paddingBottom:'70px',marginTop:'10px' }}>
               {products.map((product)=>
                 product.name.toLowerCase().includes(searchInput.toLocaleLowerCase())?
-                  <Link to={`/MainMenu/OutletMenu/${product.id}`} style={{ marginBottom:'20px' }} key={product.id}>
+                  <Link to={`/MainMenu/OutletMenu/${product.id}`} style={{ marginBottom:'20px',marginRight:'20px' }} key={product.id}>
                     <img src="/public/assets/BaksoMercon.png" alt="" style={{ width:'105.28px',height:'171px',objectFit:'cover',borderRadius:'20px' }} />
                     <Stack maxWidth='105.28px'><Text as='b'>{product.name}</Text></Stack>
                   </Link>
@@ -453,7 +485,7 @@ const MainMenu = ()=>{
               <Text fontSize='22px' as='b'>Riwayat</Text>   
             </HStack>
             
-            {products.map(
+            {histories.map(
               (item,index)=>
               <div key={index} style={{ backgroundColor:'white',padding:'10px',borderRadius:'20px',marginBottom:'20px',boxShadow:'0px 0px 25px rgba(192, 192, 192, 0.2)' }}>
 

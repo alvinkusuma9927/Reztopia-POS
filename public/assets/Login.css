@@ -1,6 +1,8 @@
 .main-login{
   background-color: #F6FBFD;
-  width: 414px;
+  /* width: 414px; */
+  width: 100%;
+  max-width: 1000px;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -19,4 +21,10 @@
 .main-login .welcome-img{
   width: 335.61;
   object-fit: contain;
+}
+
+@media only screen and (min-width: 414px) {
+  .main-login{
+    align-items: center;
+  }
 }

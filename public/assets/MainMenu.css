@@ -1,7 +1,9 @@
 
 .main-menu{
   background-color: #F6FBFD;
-  width: 414px;
+  /* width: 414px; */
+  width: 100%;
+  max-width: 1000px;
   display: flex;
   flex-direction: column;
   /* justify-content: center; */
@@ -64,4 +66,16 @@
   height: 168px;
   object-fit: cover;
   border-radius: 10px;
+}
+
+@media only screen and (min-width: 415px) {
+  .main-login{
+    align-items: center;
+  }
+  .swiper {
+    height: 40vh;
+  }
+  .swiper-slide img {
+    height: 300px;
+  }
 }

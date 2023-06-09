@@ -1,4 +1,4 @@
-import { Button, Center, HStack, Input, InputGroup, InputRightElement, Text, useDisclosure, useToast } from '@chakra-ui/react'
+import { Button, Center, HStack, Input, InputGroup, InputRightElement, Stack, Text, useDisclosure, useToast } from '@chakra-ui/react'
 import '/public/assets/Login.css'
 import { ViewIcon } from '@chakra-ui/icons'
 import { useNavigate } from 'react-router-dom'
@@ -93,13 +93,13 @@ const SignUp = ()=>{
           <img src={getStaticImg('Logo')} className='logo-img' alt="" />
         </Center>
 
-        <Text  as='b' alignSelf='flex-start' color='#6597BF' marginTop='40px'>Full Name</Text>
+        <Stack width='335.61px' alignSelf='center'><Text  as='b' alignSelf='flex-start' color='#6597BF' marginTop='40px'>Full Name</Text></Stack>
         <Input name='namaLengkapInput' marginBottom='20px' value={namaLengkapInput} onChange={(e)=>{setNamaLengkapInput(e.target.value)}} required/>
 
-        <Text  as='b' alignSelf='flex-start' color='#6597BF'>Email</Text>
+        <Stack width='335.61px' alignSelf='center'><Text  as='b' alignSelf='flex-start' color='#6597BF'>Email</Text></Stack>
         <Input name='emailInput' type='email' marginBottom='20px' value={emailInput} onChange={(e)=>{setEmailInput(e.target.value)}} required/>
 
-        <Text  as='b' alignSelf='flex-start' color='#6597BF' >Password</Text>
+        <Stack width='335.61px' alignSelf='center'><Text  as='b' alignSelf='flex-start' color='#6597BF' >Password</Text></Stack>
         <InputGroup alignItems='center' marginBottom='20px'>
           <Input  name='passwordInput' type={isVisiblePassword ? 'text' : 'password'} value={passwordInput} onChange={(e)=>{setPasswordInput(e.target.value)}}   required/>
           <InputRightElement cursor='pointer' onClick={()=>{setIsVisiblePassword(!isVisiblePassword)}} children={ <ViewIcon /> } />
@@ -112,7 +112,7 @@ const SignUp = ()=>{
 
         <Button onClick={submitSignUp} type='submit' width='100%' height='64px' colorScheme='blue' marginBottom='20px'>Create Account</Button>
 
-        <Center onClick={()=>{etIsLoading(true);navigate('/Login')}} cursor='pointer' marginBottom='20px'>
+        <Center onClick={()=>{setIsLoading(true);navigate('/Login')}} cursor='pointer' marginBottom='20px'>
           <Text marginRight='5px'>Exiting Member?</Text>
           <Text  as='b' color='#6597BF'>Sign In</Text>
         </Center>

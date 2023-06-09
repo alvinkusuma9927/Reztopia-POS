@@ -157,10 +157,10 @@ const OutletMenu = ()=>{
         }
         
 
-        <div style={{ display:'flex',justifyContent:'space-between',flexWrap:'wrap',width:'100%',paddingBottom:'70px',marginTop:'20px' }}>
+        <div style={{ display:'flex',flexWrap:'wrap',width:'100%',paddingBottom:'70px',marginTop:'20px' }}>
           {dataMenu.map((product)=>
             product.name_product.toLowerCase().includes(searchInput.toLocaleLowerCase()) ?
-            <div key={product.id_product} onClick={()=>openModal(product)} style={{ marginBottom:'20px',cursor:'pointer' }}>
+            <div key={product.id_product} onClick={()=>openModal(product)} style={{ marginBottom:'20px',marginRight:'20px',cursor:'pointer' }}>
               <div style={{ width:'161px',height:'171px',backgroundImage:`url(/assets/AyamGoreng.png)`,backgroundSize:'cover',backgroundPosition:'center',borderRadius:'20px' }} />    
               <Stack maxWidth='161px'>
                 <Text as='b'>{product.name_product}</Text>

@@ -1,4 +1,4 @@
-import { Button, Center,Input, Text } from '@chakra-ui/react'
+import { Button, Center,Input, Stack, Text } from '@chakra-ui/react'
 import '/public/assets/Login.css'
 
 import { useNavigate } from 'react-router-dom'
@@ -86,21 +86,23 @@ const Login = ()=>{
         <img src={getStaticImg('Welcome')} className='welcome-img' marginBottom='40px' alt="" />
         
         
-        <Text as='b' alignSelf='flex-start' color='#6597BF'>Email</Text>
-        <Input name='emailInput' type='email'  marginBottom='20px' value={emailInput} onChange={(e)=>{setEmailInput(e.target.value)}} required/>
+          <Stack width='335.61px' alignSelf='center'><Text as='b' color='#6597BF'>Email</Text></Stack>
+          <Input name='emailInput' type='email'  marginBottom='20px' value={emailInput} onChange={(e)=>{setEmailInput(e.target.value)}} required/>
 
-        <Text as='b' alignSelf='flex-start' color='#6597BF'>Password</Text>
-        <Input  name='passwordInput' type='password'  marginBottom='20px' value={passwordInput} onChange={(e)=>{setPasswordInput(e.target.value)}}   required/>
+          <Stack width='335.61px' alignSelf='center'><Text as='b' color='#6597BF'>Password</Text></Stack>
+          <Input  name='passwordInput' type='password'  marginBottom='20px' value={passwordInput} onChange={(e)=>{setPasswordInput(e.target.value)}}   required/>
 
 
-        <Text  alignSelf='flex-end' cursor='pointer' color='blue.500' marginBottom='20px'>Forgot Password?</Text>
-        <Button type='submit' width='100%' height='64px' colorScheme='blue' marginBottom='20px'>Login</Button>
-        <Button width='100%' height='64px' variant='outline' marginBottom='20px'>Login with SSO</Button>
+          <Stack><Text  alignSelf='flex-end' cursor='pointer' color='blue.500' marginBottom='20px'>Forgot Password?</Text></Stack>
+          <Button type='submit' width='100%' height='64px' colorScheme='blue' marginBottom='20px'>Login</Button>
+          <Button width='100%' height='64px' variant='outline' marginBottom='20px'>Login with SSO</Button>
 
-        <div onClick={()=>{navigate('/SignUp')}} style={{ cursor:'pointer',display:'flex',justifyContent:'center' }}>
-          <Text marginRight='5px'>New To Brand?</Text>
-          <Text as='b' color='blue.500'>Sign Up</Text>
-        </div>
+          <div onClick={()=>{navigate('/SignUp')}} style={{ cursor:'pointer',display:'flex',justifyContent:'center' }}>
+            <Text marginRight='5px'>New To Brand?</Text>
+            <Text as='b' color='blue.500'>Sign Up</Text>
+          </div>
+        
+        
         
       </form>
     </>
