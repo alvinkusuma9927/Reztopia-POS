@@ -70,7 +70,7 @@ const Order = () => {
                     // onChange={
                     //   (e)=> dispatch(actions.writeNote({ id_product:item.id_product,id_outlet:item.id_outlet,note:e.target.value }))
                     // } 
-                    variant='flushed' fontSize='14px' value={item.note}  placeholder='search' />
+                    variant='flushed' fontSize='14px' value={item.note}  placeholder='note' />
                 </InputGroup>
 
                 <HStack justifyContent='space-between'>
