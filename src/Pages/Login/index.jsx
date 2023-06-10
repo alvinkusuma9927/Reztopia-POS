@@ -13,9 +13,10 @@ import getStaticImg from "/src/Function/getStaticImg";
 import LoadingScreen from '/src/Components/LoadingScreen'
 
 const Login = ()=>{
-  
+  const apiUrl = useSelector((state)=>state.apiUrl)
   const navigate = useNavigate()
-  const [isLoading,setIsLoading] = useState(false)
+  const isLoading = useSelector((state)=>state.isLoadingPage)
+  
   
 
   // Check sessionLogin {
@@ -24,7 +25,7 @@ const Login = ()=>{
     if(loginSessionAuth(window.location.href.split('/')[3],loginSession)){
       navigate('/MainMenu')
     }
-    setIsLoading(false)
+    dispatch(actions.setIsloading({value:false}))
   }, [loginSession]);
   // }
 
@@ -34,7 +35,8 @@ const Login = ()=>{
   
 
   const submitLogin = async(event)=>{
-    setIsLoading(true)
+    
+    dispatch(actions.setIsloading({value:true}))
     event.preventDefault()
     const requestLoginBody = {
       method: 'POST',
@@ -42,7 +44,7 @@ const Login = ()=>{
       body: JSON.stringify({ email: emailInput,password:passwordInput })
     };
 
-    const res = await fetch("http://127.0.0.1:8000/api/login",requestLoginBody)
+    const res = await fetch(`http://${apiUrl}/api/login`,requestLoginBody)
     // return
     if(res.status === 200){
       res.json().
@@ -56,7 +58,7 @@ const Login = ()=>{
         )
     }
     else{
-      setIsLoading(false)
+      dispatch(actions.setIsloading({value:false}))
       toast({
         title: 'Wrong email/password ! .',
         description: "Try again input",
@@ -83,7 +85,7 @@ const Login = ()=>{
         <Center>
           <img src={getStaticImg('Logo')} className='logo-img' alt="" />
         </Center>
-        <img src={getStaticImg('Welcome')} className='welcome-img' marginBottom='40px' alt="" />
+        <img src={getStaticImg('Welcome')} className='welcome-img' alt="" />
         
         
           <Stack width='335.61px' alignSelf='center'><Text as='b' color='#6597BF'>Email</Text></Stack>

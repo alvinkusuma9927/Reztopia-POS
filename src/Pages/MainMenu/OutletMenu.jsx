@@ -48,6 +48,7 @@ const OutletMenu = ()=>{
   )
 
   const loginSession = useSelector((state)=>state.loginSession)
+  const port = useSelector((state)=>state.port)
   useEffect(() => {
     // Check sessionLogin
     if(!loginSessionAuth(window.location.href.split('/')[3],loginSession)){
@@ -161,12 +162,13 @@ const OutletMenu = ()=>{
           {dataMenu.map((product)=>
             product.name_product.toLowerCase().includes(searchInput.toLocaleLowerCase()) ?
             <div key={product.id_product} onClick={()=>openModal(product)} style={{ marginBottom:'20px',marginRight:'20px',cursor:'pointer' }}>
-              <div style={{ width:'161px',height:'171px',backgroundImage:`url(/assets/AyamGoreng.png)`,backgroundSize:'cover',backgroundPosition:'center',borderRadius:'20px' }} />    
+              <img src={product.image_product.replace('localhost',port)} style={{ width:'161px',height:'171px',objectFit:'cover',borderRadius:'20px' }} />    
               <Stack maxWidth='161px'>
                 <Text as='b'>{product.name_product}</Text>
                 <HStack>
                   <Text>Rp.{product.price_after_discount}</Text>
                   <Text color='#7C7979' as='del'>{product.original_price}</Text>
+                  {/* <Text>{product.image_product.replace('localhost',port)}</Text> */}
                 </HStack>
                 
               </Stack>

@@ -3,7 +3,7 @@ import '/public/assets/Login.css'
 import { ViewIcon } from '@chakra-ui/icons'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import loginSessionAuth from '../../Auth/LoginSession'
 import getStaticImg from "../../Function/getStaticImg";
@@ -19,19 +19,21 @@ import {
 import LoadingScreen from '../../Components/LoadingScreen'
 
 const SignUp = ()=>{
+  const apiUrl = useSelector((state)=>apiUrl)
   const [isLoading,setIsLoading] = useState(true)
   const navigate = useNavigate()
   const [namaLengkapInput,setNamaLengkapInput] = useState('')
   const [emailInput,setEmailInput] = useState('')
   const [passwordInput,setPasswordInput] = useState('')
   const [isVisiblePassword,setIsVisiblePassword] = useState(false)
+  const dispatch = useDispatch()
   // Check sessionLogin {
     const loginSession = useSelector((state)=>state.loginSession)
     useEffect(() => {
       if(loginSessionAuth(window.location.href.split('/')[3],loginSession)){
         navigate('/MainMenu')
       }
-      setIsLoading(false)
+      dispatch(actions.setIsLoading({value:false}))
     }, [loginSession]);
     // }
 
@@ -50,7 +52,7 @@ const SignUp = ()=>{
       
     }
     await fetch(
-      'http://127.0.0.1:8000/api/register',
+      `http://${apiUrl}/api/register`,
       requestBody
     ).then(
       response=>response.json()
@@ -112,7 +114,7 @@ const SignUp = ()=>{
 
         <Button onClick={submitSignUp} type='submit' width='100%' height='64px' colorScheme='blue' marginBottom='20px'>Create Account</Button>
 
-        <Center onClick={()=>{setIsLoading(true);navigate('/Login')}} cursor='pointer' marginBottom='20px'>
+        <Center onClick={()=>{dispatch(actions.setIsLoading({value:true}));navigate('/Login')}} cursor='pointer' marginBottom='20px'>
           <Text marginRight='5px'>Exiting Member?</Text>
           <Text  as='b' color='#6597BF'>Sign In</Text>
         </Center>
@@ -126,7 +128,7 @@ const SignUp = ()=>{
             {/* <Lorem count={2} /> */}
           </ModalBody>
           <ModalFooter>
-            <Button onClick={()=>{setIsLoading(true);navigate('/Login')}}>Close</Button>
+            <Button onClick={()=>{dispatch(actions.setIsLoading({value:true}));navigate('/Login')}}>Close</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

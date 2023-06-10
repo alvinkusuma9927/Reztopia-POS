@@ -2,12 +2,20 @@ import { createSlice, configureStore } from '@reduxjs/toolkit';
 const states = createSlice({
   name: 'states',
   initialState: {
+    
+    apiUrl:'127.0.0.1:8000',
     loginSession:localStorage.loginSession,
     cart:[
 
-    ]
+    ],
+    bottomNavbarSelected:'dashboard',
+    isLoadingPage : true
   },
   reducers: {
+    setIsloading:(state,action)=>{
+      state.isLoadingPage = action.value
+      // alert(typeof action.value)
+    },
     login:(state,action)=>{
       state.loginSession = JSON.stringify(action.payload.dataLogin)
       localStorage.loginSession = JSON.stringify(action.payload.dataLogin)
@@ -15,6 +23,10 @@ const states = createSlice({
     logout:(state)=>{
       state.loginSession = ""
       localStorage.loginSession = ""
+    },
+
+    setBottomNavbar:(state,action) => {
+      state.bottomNavbarSelected = action.payload.value
     },
     insertCart: (state,action)=>{
       let indexCart = state.cart.findIndex((item)=> (item.id_product === action.payload.id_product && item.id_outlet === action.payload.id_outlet ) )
@@ -58,3 +70,4 @@ const store = configureStore({
 })
 
 export default store;
+

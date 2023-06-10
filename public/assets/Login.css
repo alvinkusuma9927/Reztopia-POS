@@ -21,6 +21,7 @@
 .main-login .welcome-img{
   width: 335.61;
   object-fit: contain;
+  margin-bottom: 40px;
 }
 
 @media only screen and (min-width: 414px) {

@@ -1,20 +1,17 @@
 "use client"
 import "/public/assets/MainMenu.css"
-import { HStack, IconButton, Input, InputGroup, InputLeftElement, Stack, Text,Modal,ModalOverlay,ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton, Box, Select,Center, useToast } from '@chakra-ui/react';
-import {AddIcon, MinusIcon, SearchIcon} from '@chakra-ui/icons';
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import ContentPasteOutlinedIcon from '@mui/icons-material/ContentPasteOutlined';
-import RestaurantOutlinedIcon from '@mui/icons-material/RestaurantOutlined';
-import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
+import { HStack, IconButton, Input, InputGroup, InputLeftElement, Stack, Text,Modal,ModalOverlay,ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton, Box, Select,Center, useToast,useDisclosure } from '@chakra-ui/react';
+
+
+
 import { Button} from '@chakra-ui/react'
-import CreateIcon from '@mui/icons-material/Create';
-import DeleteIcon from '@mui/icons-material/Delete';
+
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
-import {Table,  Thead,  Tbody,  Tfoot,  Tr,  Th,  Td,  TableCaption,  TableContainer,useDisclosure} from '@chakra-ui/react'
+
 import { actions } from "../../store"; 
-import LogoutIcon from '@mui/icons-material/Logout';
+
 
 import {Step,StepDescription,StepIcon,StepIndicator,StepNumber,StepSeparator,StepStatus,StepTitle,Stepper,useSteps,
 } from '@chakra-ui/react'
@@ -26,45 +23,30 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import loginSessionAuth from "../../Auth/LoginSession";
 
-// carousel
-import React, { useRef } from "react";
-// Import Swiper React components
-import { Swiper, SwiperSlide } from "swiper/react";
 
-// Import Swiper styles
-import "swiper/css";
-import "swiper/css/pagination";
-import { Pagination } from "swiper";
 import LoadingScreen from "../../Components/LoadingScreen";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import BottomNavbar from "./Components/BottomNavbar";
+import Akun from "./Akun";
+import Dashboard from "./Components/dashboard";
+import Order from "./Components/order";
 
 
 const MainMenu = ()=>{
-  const [isLoading,setIsLoading] = useState(true)
-  const [products,setProducts] = useState( [] )
+  const apiUrl = useSelector((state)=>state.apiUrl)
+  const isLoadingPage = useSelector((state)=>state.isLoadingPage)
   const url = useParams()
+  const bottomNavbarSelected = useSelector((state)=>state.bottomNavbarSelected)
   const dispatch = useDispatch()
+  dispatch(actions.setBottomNavbar({value:url.section}))
+  
+  
   const navigate = useNavigate()
-  const cart = useSelector((state)=>state.cart)
-  const [searchInput,setSearchInput] =  useState('')
-  const [nomorMeja,setNomorMeja] = useState('')
+  
+  
   const [histories,setHistories] = useState([]) 
   
-  // const getTotalPayment = ()=>{
-  //   let totalPrice = 0
-  //   for (let item of cart) {
-  //     totalPrice += (item.price_after_discount * item.count)
-  //   }
-  //   return totalPrice
-  // }
-  const getOutletName = ()=> {
-    let outletsName = []
-    for(let item of cart){
-      outletsName.push(item.id_outlet)
-    }
-    return JSON.stringify(outletsName)
-  }
-
+  
   const steps = [
     { title: 'Pesanan sedang Diantar', description: 'Atas : nama Ara - Meja no 26', time:'11.05' },
     { title: 'Pesanan sedang Dimasak', description: 'Atas : nama Ara - Meja no 26', time:'10.05' },
@@ -85,35 +67,16 @@ const MainMenu = ()=>{
   })
   const  starIconSelected = [1,2,3,4,5]
   const loginSession = useSelector((state)=>state.loginSession)
-  const toast = useToast(
-    {
-      containerStyle: {
-        width: '380px',
-      },
-    }
-  )
+  
   useEffect(() => {
     // Check sessionLogin
     if(!loginSessionAuth(window.location.href.split('/')[3],loginSession)){
       navigate('/Login')
     }
     else{
-
-      if(url.section === 'dashboard' || url.section === undefined){
-        // fetch data menu
-        const resDataMenu = fetch("http://127.0.0.1:8000/api/tenant/index",{
-          method:'GET',
-          headers:{
-            Authorization: `${JSON.parse(loginSession).token.token_type} ${JSON.parse(loginSession).token.access_token}`
-          }
-        })
-          .then( response=> response.json() ,err=>console.log('error'))
-            .then(response=> setProducts(response.data.tenant) ,err=>console.log('error'))
-
-      }
-      else if (url.section === 'order'){
+      if (bottomNavbarSelected === 'order'){
         // fetch cart
-        const resCart = fetch('http://127.0.0.1:8000/api/cart/index',{
+        fetch(`http://${apiUrl}/api/cart/index`,{
           method:'GET',
           headers:{
             Authorization: `${JSON.parse(loginSession).token.token_type} ${JSON.parse(loginSession).token.access_token}`
@@ -122,8 +85,11 @@ const MainMenu = ()=>{
           .then(
             response => {
               if(response.status === 200){
-                response.json() ,err=>console.log('error')
-                  .then(response => dispatch(actions.setCartValue({newDataCart:response.data})))
+                response.json()
+                  .then(response => {
+                    dispatch(actions.setCartValue({newDataCart:response.data}))
+                    console.log('succes fetch cart');
+                  })
               }
               else{
                 console.log(response.status)
@@ -131,224 +97,66 @@ const MainMenu = ()=>{
               }
             }
           )
+        dispatch(actions.setBottomNavbar({value : 'order'}))
 
       }
-      else if (url.section === 'riwayat'){
-        const history = ()=> fetch('http://127.0.0.1:8000/api/history/index',{
-          method:'GET',
-          headers:{
-            Authorization: `${JSON.parse(loginSession).token.token_type} ${JSON.parse(loginSession).token.access_token}`
-          }
-        })
+      else if (bottomNavbarSelected === 'riwayat'){
+        
+          fetch(`http://${apiUrl}/api/history/index`,{
+            method:'GET',
+            headers:{
+              Authorization: `${JSON.parse(loginSession).token.token_type} ${JSON.parse(loginSession).token.access_token}`
+            }
+          })
           .then(
             response => {
               if(response.status === 200){
-                response.json() ,err=>console.log('error')
-                  .then(response => setHistories(response.data))
+                response.json() 
+                  .then(response => {
+                    setHistories(response.data);
+                    console.log('succes fetch history');
+                  })
               }
               else{
+                console.log('unsucces fetch history');
                 setHistories([])
               }
             }
           )
+          dispatch(actions.setBottomNavbar({value : 'riwayat'}))
+      }
+      else if(bottomNavbarSelected === 'akun'){
+        
+        dispatch(actions.setBottomNavbar({value : 'akun'}))
       }
       else{
-        url.section = 'dashboard'
+        dispatch(actions.setBottomNavbar({value : 'dashboard'}))
         navigate('/MainMenu/')
-        
-      }
-      setIsLoading(false)
-      
-      
-      
+      }  
+      dispatch(actions.setIsloading({value:false}))
     }
     
-  }, [loginSession]);
+  }, [bottomNavbarSelected]);
+
+  
 
 
   
   return(
     <>
       {
-        isLoading ? <LoadingScreen/> : null
+        isLoadingPage ? <LoadingScreen/> : null
       }
-      
       {
-        (url.section === 'dashboard' || url.section === undefined) ?
-          <div className="main-menu">
-            <HStack justifyContent='space-between' alignItems='center'>
-              <Text as='b' fontSize='22px'>Selamat Datang di</Text>
-                <LogoutIcon onClick={()=>{setIsLoading(true);dispatch(actions.logout())}} sx={{ cursor:'pointer',fontWeight:'bold',color:'rgb(201, 68, 86)' }}/>
-            </HStack>
-            
-            <Text as='b' fontSize='22px' color='blue.500' marginBottom='20px'>Kedai Tangsi !</Text>
+        (bottomNavbarSelected === 'dashboard' || bottomNavbarSelected === undefined) ?
+          <Dashboard/>
+        : (bottomNavbarSelected === 'order') ?
 
-            <InputGroup backgroundColor='white' marginBottom='20px'>
-              <InputLeftElement children={ <SearchIcon/> } />
-              <Input value={searchInput} onChange={(e)=>setSearchInput(e.target.value)} placeholder='search' />
-            </InputGroup>
-
-            <Swiper spaceBetween={30} loop={true} pagination={{clickable: true}}  modules={[Pagination]} className="mySwiper" >
-              <SwiperSlide><img style={{ display:'block',objectFit:'cover',borderRadius:'10px' }} src='/public/assets/Carousel1.png' alt=""  /></SwiperSlide>
-              <SwiperSlide><img style={{ display:'block',objectFit:'cover',borderRadius:'10px' }} src='/public/assets/BaksoKomplit.png' alt=""  /></SwiperSlide>
-              <SwiperSlide><img style={{ display:'block',objectFit:'cover',borderRadius:'10px' }} src='/public/assets/MieGoreng.png' alt=""  /></SwiperSlide>
-            </Swiper>
-
-
-            <Text color='blue.500' as='b' marginTop='20px'>Tenant</Text>
-            <div style={{ display:'flex',flexWrap:'wrap',width:'100%',paddingBottom:'70px',marginTop:'10px' }}>
-              {products.map((product)=>
-                product.name.toLowerCase().includes(searchInput.toLocaleLowerCase())?
-                  <Link to={`/MainMenu/OutletMenu/${product.id}`} style={{ marginBottom:'20px',marginRight:'20px' }} key={product.id}>
-                    <img src="/public/assets/BaksoMercon.png" alt="" style={{ width:'105.28px',height:'171px',objectFit:'cover',borderRadius:'20px' }} />
-                    <Stack maxWidth='105.28px'><Text as='b'>{product.name}</Text></Stack>
-                  </Link>
-                :null
-              )}
-            </div>    
-          </div>
-        : (url.section === 'order') ?
-
-          <div className="main-menu">
-            <HStack width='100%' justifyContent='center' alignItems='center' marginBottom='20px'>  
-              <Text fontSize='22px' as='b'>Keranjang Order</Text>   
-            </HStack>
-            
-
-            {/* cart Items */}
-            {cart.map(
-              (item,index)=>
-                <div key={item.id_product} style={{ display:'flex',backgroundColor:'white',padding:'10px',borderRadius:'20px',marginBottom:'20px',boxShadow:'0px 0px 25px rgba(192, 192, 192, 0.2)' }}>
-                  <img
-                    src='/public/assets/AyamGoreng.png'
-                    alt=''
-                    style={{ 
-                      width:'154px',
-                      height:'154px',
-                      aspectRatio:'1/1',
-                      objectFit:'cover',
-                      borderRadius:'20px',
-                      alignItems:'flex-start',
-                      marginRight:'20px'
-                     }}
-                    
-                  />
-    
-                  <div style={{ display:'flex',flexDirection:'column',justifyContent:'space-between' }}>
-                      <Text fontSize='16px' as='b' >{item.name}</Text>
-    
-                      <Text fontSize='14px'>Rp. {item.total}</Text>
-                      <InputGroup backgroundColor='white' marginBottom='10px'>
-                        <InputLeftElement children={ <CreateIcon sx={{ width:'14px',color:'gray' }}/> } />
-                        <Input 
-                          // onChange={
-                          //   (e)=> dispatch(actions.writeNote({ id_product:item.id_product,id_outlet:item.id_outlet,note:e.target.value }))
-                          // } 
-                          variant='flushed' fontSize='14px' value={item.note}  placeholder='search' />
-                      </InputGroup>
-    
-                      <HStack justifyContent='space-between'>
-                        <HStack>
-                          <IconButton size='xs' colorScheme='blue' variant='outline' borderRadius='50%' icon={<MinusIcon />} aria-label={""}
-                            // onClick={() => { dispatch(actions.editCount({ id_product: item.id_product, id_outlet: item.id_outlet, count: item.count - 1 })); } } 
-                          />
-                          {/* <Text>{item.count}</Text> */}
-                          <Text>1</Text>
-                          <IconButton size='xs' colorScheme='blue' variant='solid' borderRadius='50%' icon={<AddIcon/>}  aria-label={""}
-                            // onClick={() => {dispatch(actions.editCount({id_product:item.id_product,id_outlet:item.id_outlet,count:item.count+1}))}} 
-                          />
-                        </HStack>
-                        <IconButton colorScheme='red' variant='ghost'icon={<DeleteIcon/>}  aria-label={""}
-                          onClick={() => {dispatch(actions.removeCart({id_product:item.id_product,id_outlet:item.id_outlet}))}}
-                        />
-                      </HStack>
-    
-                    
-                  </div>
-                </div>
-                
-            )}
-            
-            {
-              (cart.length >0)?
-            
-              <>
-                <div style={{ borderRadius:'20px',backgroundColor:'rgba(159, 188, 213, 0.19)',width:'100%',padding:'16px',marginBottom:'20px' }}>
-                  
-                  <Table variant='simple' width='100%'>
-                    <Tr>
-                      <Td>Nama Pemesan</Td>
-                      <Td isNumeric>{JSON.parse(loginSession).name}</Td>
-                    </Tr>
-                    <Tr>
-                      <Td></Td>
-                      <Td isNumeric>
-                        <Select size='sm'>
-                          <option value='dineIn' selected>Dine In</option>
-                          <option value='takeAway'>Take Away</option>
-                        </Select>
-                      </Td>
-                    </Tr>
-                    <Tr>
-                      <Td>Nomor Meja</Td>
-                      <Td isNumeric><Input value={nomorMeja} onChange={(e)=>setNomorMeja(e.target.value)} placeholder="Nomor Meja"/></Td>
-                    </Tr>
-                    <Tr>
-                      <Td>Kantin</Td>
-                      <Td isNumeric>
-                        {getOutletName()}
-                      </Td>
-                    </Tr>
-                  </Table>
-                </div>
-
-                <div style={{ borderRadius:'20px',backgroundColor:'rgba(159, 188, 213, 0.19)',width:'100%',padding:'16px',marginBottom:'20px' }}>
-                  <Table variant='simple'>
-                    <Tr>
-                      <Td>Total Makanan</Td>
-                      <Td isNumeric><Text>{cart.length}</Text></Td>
-                    </Tr>
-                    <Tr>
-                      <Td>Metode Pembayaran</Td>
-                      <Td isNumeric>
-                        <Button colorScheme='red' variant='outline'>Link Aja</Button>
-                      </Td>
-                    </Tr>
-                    <Tr>
-                      <Td>Total Pembayaran</Td>
-                      {/* <Td isNumeric>Rp.{getTotalPayment()}</Td> */}
-                      <Td isNumeric>total payment</Td>
-                    </Tr>
-                    
-                  </Table>
-                </div>
-                <Button onClick={()=>{
-                  if(nomorMeja === ''){
-                    toast({
-                      title: 'Error',
-                      description: "Harap mengisi nomor meja~",
-                      status: 'error',
-                      duration: 2500,
-                      isClosable: true,
-                      variant:'subtle',
-                      position: 'top',
-                    })
-                  }
-                }} colorScheme='blue' marginBottom='80px'>Pesan</Button>
-                </>
-
-              :
-              <div style={{ height:'calc(100vh - 100px)',display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center' }}>
-                <img src='/public/assets/EmptyCart.png' alt="EmptyCart" style={{ width:'186px',height:'100px',objectFit:'contain' }} />
-                <Text textAlign='center'  fontSize='24px' as='b' marginTop='20px' marginBottom='20px'>Ups Kamu belum menambah menu</Text>
-                <Text textAlign='center' marginBottom='20px'>Tambah makanan dulu dong</Text>
-              </div>
-            }
-          </div>
+          <Order/>
 
 
         // Status Pesanan
-        : (url.section === 'status-pesanan')?
+        : (bottomNavbarSelected === 'status-pesanan')?
         
           <div className="main-menu">
             <HStack width='100%' justifyContent='center' alignItems='center' marginBottom='20px'>  
@@ -478,7 +286,7 @@ const MainMenu = ()=>{
 
 
         // Riwayat
-        : (url.section === 'riwayat') ?
+        : (bottomNavbarSelected === 'riwayat') ?
 
           <div className="main-menu" style={{ paddingBottom:'70px' }}>
             <HStack width='100%' justifyContent='center' alignItems='center' marginBottom='20px'>  
@@ -527,7 +335,7 @@ const MainMenu = ()=>{
                     <Text as='b'>Rp.100000</Text>
                   </div>
 
-                  <Link to='/DetailOrder' onClick={()=>setIsLoading(true)}>
+                  <Link to='/DetailOrder' >
                     <Button   colorScheme='blue' variant='outline'>Detail</Button>
                   </Link>
                   
@@ -536,6 +344,13 @@ const MainMenu = ()=>{
             )}
 
           </div>
+        
+
+
+        : (bottomNavbarSelected === 'akun') ?
+        
+            <Akun/>
+
         :null
         
       }
@@ -543,18 +358,7 @@ const MainMenu = ()=>{
       
 
 
-      <div className='bottom-navigation-bar'>
-          <Link to='/MainMenu/dashboard' className="link" >
-            <HomeOutlinedIcon sx={{ color: (url.section === 'dashboard' || url.section === undefined)?'#6898C0':'#B7B7B7'   }} />
-          </Link>
-          <Link to='/MainMenu/order' className="link" >
-            <ContentPasteOutlinedIcon sx={{ color:(url.section === 'order')?'#6898C0':'#B7B7B7' }} />
-          </Link>
-        
-          <Link to='/MainMenu/riwayat' className="link" >
-            <HistoryOutlinedIcon  sx={{ color:(url.section === 'riwayat')?'#6898C0':'#B7B7B7' }} />
-          </Link>
-      </div>
+      <BottomNavbar params={url.section} />
     </>
     
   )
