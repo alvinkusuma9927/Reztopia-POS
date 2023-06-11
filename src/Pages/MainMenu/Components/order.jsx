@@ -21,7 +21,6 @@ const Order = () => {
   ])
   const dispatch = useDispatch()
 
-  const [totalPayment,setTotalPayment] = useState(0)
   
 
   const getCart = ()=>{
@@ -38,6 +37,7 @@ const Order = () => {
               .then(response => {
                 dispatch(actions.setCartValue({newDataCart:response.data}))
                 console.log('succes fetch cart');
+                console.log(cart)
               })
           }
           else{
@@ -57,7 +57,6 @@ const Order = () => {
     for (let item of cart) {
       count += item.total;
     }
-    setTotalPayment(count)
   },[cart])
 
   const toast = useToast(
@@ -94,9 +93,9 @@ const Order = () => {
             />
 
             <div style={{ display:'flex',flexDirection:'column',justifyContent:'space-between' }}>
-                <Text fontSize='16px' as='b' >{item.name}</Text>
+                <Text fontSize='16px' as='b' >{item.product_name}</Text>
 
-                <Text fontSize='14px'>Rp. {item.total}</Text>
+                <Text fontSize='14px'>Rp. {item.price_final * item.quantity}</Text>
                 <InputGroup backgroundColor='white' marginBottom='10px'>
                   <InputLeftElement children={ <CreateIcon sx={{ width:'14px',color:'gray' }}/> } />
                   <Input 
@@ -161,7 +160,25 @@ const Order = () => {
                     />
                   </HStack>
                   <IconButton colorScheme='red' variant='ghost'icon={<DeleteIcon/>}  aria-label={""}
-                    onClick={() => {dispatch(actions.removeCart({id_product:item.id_product,id_outlet:item.id_outlet}))}}
+                    onClick={async() => {
+                        await axios.post(`http://${apiUrl}/api/cart/delete`,{
+                          id_order_detail : item.id
+                        },
+                        {
+                          headers:{
+                            Authorization: `${JSON.parse(loginSession).token.token_type} ${JSON.parse(loginSession).token.access_token}`
+                          }
+                        }
+                      ).then(response => {
+                        if(response.status === 200){
+                          // response=> console.log(response)
+                          getCart()
+                        }
+                        else{
+                          
+                        }
+                      })
+                    }}
                   />
                 </HStack>
 
@@ -219,11 +236,11 @@ const Order = () => {
                 <Td>Metode Pembayaran</Td>
                 <Td isNumeric>
                   <Button colorScheme='teal' variant='solid'
-                    onClick={()=>{
-                      if(nomorMeja === '' && document.getElementById('order_type').value === ''){
+                    onClick={ async()=>{
+                      if(nomorMeja === '' || document.getElementById('order_type').value === ''){
                         toast({
                           title: 'Error',
-                          description: "Harap mengisi nomor meja~",
+                          description: `Harap mengisi nomor meja dan tipe order!`,
                           status: 'error',
                           duration: 2500,
                           isClosable: true,
@@ -237,6 +254,27 @@ const Order = () => {
                           table_number : nomorMeja,
                           order_type : document.getElementById('order_type').value,
                         })
+                        // await axios.post(`http://${apiUrl}/api/cart/checkout`, 
+                        //   {
+                        //     id_order : cart[0].id_order,
+                        //     table_number : nomorMeja,
+                        //     order_type : document.getElementById('order_type').value,
+                        //   }, 
+                        //   {
+                        //     headers: {
+                        //       Authorization: `${JSON.parse(loginSession).token.token_type} ${JSON.parse(loginSession).token.access_token}`
+                        //     }
+                        //   }
+                        // ).then(response=>{
+                        //   if(response.status === 200){
+                        //     // response=> console.log(response)
+                        //     getCart()
+                        //   }
+                        //   else{
+                            
+                        //   }
+                        // })
+                        
                       }
                       
                     }}
@@ -245,16 +283,16 @@ const Order = () => {
               </Tr>
               <Tr>
                 <Td>Total Pembayaran</Td>
-                <Td isNumeric>Rp. {totalPayment}</Td>
+                <Td isNumeric>Rp. {cart[0].total}</Td>
               </Tr>
               
             </Table>
           </div>
           <Button onClick={()=>{
-            if(nomorMeja === '' && document.getElementById('order_type').value === ''){
+            if(nomorMeja === '' || document.getElementById('order_type').value === ''){
               toast({
                 title: 'Error',
-                description: "Harap mengisi nomor meja~",
+                description: `Harap mengisi nomor meja dan tipe order!`,
                 status: 'error',
                 duration: 2500,
                 isClosable: true,
