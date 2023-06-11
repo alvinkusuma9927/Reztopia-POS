@@ -33,8 +33,7 @@ const Dashboard = () => {
           .then( response=> response.json() ,err=>console.log('error'))
             .then(response=> {setProducts(response.data.tenant);console.log('succes fetch data');} ,err=>console.log('error'));
         
-    dispatch(actions.setBottomNavbar({value : 'dashboard'}))
-    dispatch(actions.setIsloading({value:false}))
+    
   },[])
   return (
     
@@ -43,7 +42,7 @@ const Dashboard = () => {
         <Text as='b' fontSize='22px'>Selamat Datang di {isLoadingPage}</Text>
           <LogoutIcon sx={{ cursor:'pointer',fontWeight:'bold',color:'rgb(201, 68, 86)' }}
           onClick={()=>{
-            dispatch(actions.logout());navigate('/Login')
+            dispatch(actions.logout());navigate(0)
           }} />
       </HStack>
       

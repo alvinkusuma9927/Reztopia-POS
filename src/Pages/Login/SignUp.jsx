@@ -17,23 +17,25 @@ import {
   ModalCloseButton,
 } from '@chakra-ui/react'
 import LoadingScreen from '../../Components/LoadingScreen'
+import { actions } from '../../store'
 
 const SignUp = ()=>{
-  const apiUrl = useSelector((state)=>apiUrl)
-  const [isLoading,setIsLoading] = useState(true)
+  const apiUrl = useSelector((state)=>state.apiUrl)
+  const isLoading = useSelector((state)=>state.isLoadingPage)
   const navigate = useNavigate()
   const [namaLengkapInput,setNamaLengkapInput] = useState('')
   const [emailInput,setEmailInput] = useState('')
   const [passwordInput,setPasswordInput] = useState('')
+  const loginSession = useSelector((state)=>state.loginSession)
   const [isVisiblePassword,setIsVisiblePassword] = useState(false)
   const dispatch = useDispatch()
   // Check sessionLogin {
-    const loginSession = useSelector((state)=>state.loginSession)
+    
     useEffect(() => {
       if(loginSessionAuth(window.location.href.split('/')[3],loginSession)){
         navigate('/MainMenu')
       }
-      dispatch(actions.setIsLoading({value:false}))
+      dispatch(actions.setIsloading({value:false}))
     }, [loginSession]);
     // }
 
@@ -114,7 +116,7 @@ const SignUp = ()=>{
 
         <Button onClick={submitSignUp} type='submit' width='100%' height='64px' colorScheme='blue' marginBottom='20px'>Create Account</Button>
 
-        <Center onClick={()=>{dispatch(actions.setIsLoading({value:true}));navigate('/Login')}} cursor='pointer' marginBottom='20px'>
+        <Center onClick={()=>{dispatch(actions.setIsloading({value:true}));navigate('/Login')}} cursor='pointer' marginBottom='20px'>
           <Text marginRight='5px'>Exiting Member?</Text>
           <Text  as='b' color='#6597BF'>Sign In</Text>
         </Center>
@@ -128,7 +130,7 @@ const SignUp = ()=>{
             {/* <Lorem count={2} /> */}
           </ModalBody>
           <ModalFooter>
-            <Button onClick={()=>{dispatch(actions.setIsLoading({value:true}));navigate('/Login')}}>Close</Button>
+            <Button onClick={()=>{dispatch(actions.setIsloading({value:true}));navigate('/Login')}}>Close</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

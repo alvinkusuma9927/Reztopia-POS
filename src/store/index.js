@@ -9,7 +9,10 @@ const states = createSlice({
 
     ],
     bottomNavbarSelected:'dashboard',
-    isLoadingPage : true
+    isLoadingPage : true,
+    histories : [
+
+    ]
   },
   reducers: {
     setIsloading:(state,action)=>{
@@ -21,12 +24,15 @@ const states = createSlice({
       localStorage.loginSession = JSON.stringify(action.payload.dataLogin)
     },
     logout:(state)=>{
-      state.loginSession = ""
-      localStorage.loginSession = ""
+      state.loginSession = "{}"
+      localStorage.loginSession = "{}"
     },
 
     setBottomNavbar:(state,action) => {
       state.bottomNavbarSelected = action.payload.value
+    },
+    setHistories: (state,action) => {
+      state.histories = action.payload.value
     },
     insertCart: (state,action)=>{
       let indexCart = state.cart.findIndex((item)=> (item.id_product === action.payload.id_product && item.id_outlet === action.payload.id_outlet ) )

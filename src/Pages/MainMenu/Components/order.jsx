@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import CreateIcon from '@mui/icons-material/Create';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { actions } from "../../../store";
+import axios from 'axios';
 const Order = () => {
   const apiUrl = useSelector((state)=>state.apiUrl)
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -12,18 +14,49 @@ const Order = () => {
   const cart = useSelector((state)=>state.cart)
   const [nomorMeja,setNomorMeja] = useState('')
   const loginSession = useSelector((state)=>state.loginSession)
-
+  const order_type_option = useState([
+    {value:'',title:'Choose One'},
+    {value:'dine_in',title:'Dine In'},
+    {value:'take_away',title:'Take Away'}
+  ])
   const dispatch = useDispatch()
 
   const [totalPayment,setTotalPayment] = useState(0)
-
   
+
+  const getCart = ()=>{
+    fetch(`http://${apiUrl}/api/cart/index`,{
+      method:'GET',
+      headers:{
+        Authorization: `${JSON.parse(loginSession).token.token_type} ${JSON.parse(loginSession).token.access_token}`
+      }
+    })
+      .then(
+        response => {
+          if(response.status === 200){
+            response.json()
+              .then(response => {
+                dispatch(actions.setCartValue({newDataCart:response.data}))
+                console.log('succes fetch cart');
+              })
+          }
+          else{
+            // console.log(response.status)
+            dispatch(actions.setCartValue({newDataCart:[]}))
+          }
+        }
+      )
+  }
+  
+
+  useEffect(()=>{
+    getCart()
+  },[])
   useEffect(()=>{
     let count = 0
     for (let item of cart) {
       count += item.total;
     }
-    console.log(cart)
     setTotalPayment(count)
   },[cart])
 
@@ -77,53 +110,54 @@ const Order = () => {
                   <HStack>
                     <IconButton size='xs' colorScheme='blue' variant='outline' borderRadius='50%' icon={<MinusIcon />} aria-label={""}
                       onClick={async() => {
-                        await fetch(`http://${apiUrl}/api/cart/quantity`,
+                        
+                        await axios.post(`http://${apiUrl}/api/cart/quantity`, 
+                          { 
+                            id_product:item.id_product,
+                            min:1
+                          }, 
                           {
-                            method:'POST',
-                            headers:{
+                            headers: {
                               Authorization: `${JSON.parse(loginSession).token.token_type} ${JSON.parse(loginSession).token.access_token}`
-                            },
-                            body: JSON.stringify(
-                              { 
-                                id_product:item.id_product,
-                                min:1
-                              }
-                            )
+                            }
                           }
                         ).then(response=>{
                           if(response.status === 200){
-                            response.json().then(
-                              response=> console.log(response)
-                            )
+                            // response=> console.log(response)
+                            getCart()
+                          }
+                          else{
+                            
                           }
                         })
+                        
                       }} 
                     />
-                    {/* <Text>{item.count}</Text> */}
                     <Text>{item.quantity}</Text>
                     <IconButton size='xs' colorScheme='blue' variant='solid' borderRadius='50%' icon={<AddIcon/>}  aria-label={""}
                       onClick={async() => {
-                        await fetch(`http://${apiUrl}/api/cart/quantity`,
+                        
+                        await axios.post(`http://${apiUrl}/api/cart/quantity`, 
+                          { 
+                            id_product:item.id_product,
+                            plus:1
+                          }, 
                           {
-                            method:'POST',
-                            headers:{
+                            headers: {
                               Authorization: `${JSON.parse(loginSession).token.token_type} ${JSON.parse(loginSession).token.access_token}`
-                            },
-                            body: JSON.stringify(
-                              { 
-                                id_product:item.id_product,
-                                plus:1
-                              }
-                            )
+                            }
                           }
                         ).then(response=>{
                           if(response.status === 200){
-                            response.json().then(
-                              response=> console.log(response)
-                            )
+                            // response=> console.log(response)
+                            getCart()
+                          }
+                          else{
+                            
                           }
                         })
-                      }} 
+                        
+                      }}
                     />
                   </HStack>
                   <IconButton colorScheme='red' variant='ghost'icon={<DeleteIcon/>}  aria-label={""}
@@ -149,11 +183,16 @@ const Order = () => {
                 <Td isNumeric>{JSON.parse(loginSession).name}</Td>
               </Tr>
               <Tr>
-                <Td></Td>
+                <Td>Order Type</Td>
                 <Td isNumeric>
-                  <Select size='sm' defaultValue='dine_in'>
-                    <option value='dineIn' selected>Dine In</option>
-                    <option value='takeAway'>Take Away</option>
+                  <Select size='sm' id='order_type'>
+                    {
+                      order_type_option[0].map(
+                        (type,index) => 
+                          <option value={type.value} >{type.title}</option>
+                      )
+                    }
+                    
                   </Select>
                 </Td>
               </Tr>
@@ -179,7 +218,29 @@ const Order = () => {
               <Tr>
                 <Td>Metode Pembayaran</Td>
                 <Td isNumeric>
-                  <Button colorScheme='red' variant='outline'>Link Aja</Button>
+                  <Button colorScheme='teal' variant='solid'
+                    onClick={()=>{
+                      if(nomorMeja === '' && document.getElementById('order_type').value === ''){
+                        toast({
+                          title: 'Error',
+                          description: "Harap mengisi nomor meja~",
+                          status: 'error',
+                          duration: 2500,
+                          isClosable: true,
+                          variant:'subtle',
+                          position: 'top',
+                        })
+                      }
+                      else{
+                        console.log({
+                          id_order : cart[0].id_order,
+                          table_number : nomorMeja,
+                          order_type : document.getElementById('order_type').value,
+                        })
+                      }
+                      
+                    }}
+                  >Bayar</Button>
                 </Td>
               </Tr>
               <Tr>
@@ -190,7 +251,7 @@ const Order = () => {
             </Table>
           </div>
           <Button onClick={()=>{
-            if(nomorMeja === ''){
+            if(nomorMeja === '' && document.getElementById('order_type').value === ''){
               toast({
                 title: 'Error',
                 description: "Harap mengisi nomor meja~",
