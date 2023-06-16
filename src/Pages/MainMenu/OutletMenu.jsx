@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import "../../../public/assets/MainMenu.css"
 import { Button, Center, HStack, Input, InputGroup, InputLeftElement, Stack, Text, useDisclosure,  Modal,ModalOverlay,ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton, useToast, } from '@chakra-ui/react';
 import {SearchIcon} from '@chakra-ui/icons';
+import CreateIcon from '@mui/icons-material/Create';
 
 import LocalGroceryStoreOutlinedIcon from '@mui/icons-material/LocalGroceryStoreOutlined';
 import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
@@ -28,12 +29,19 @@ import LoadingScreen from '../../Components/LoadingScreen';
 
 const OutletMenu = ()=>{
   const [isLoading,setIsLoading] = useState(true)
+  const apiUrl = useSelector((state)=>state.apiUrl)
   const outletName = useParams()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [dataMenu,setDataMenu] = useState([])
   const navigate = useNavigate()
   const [searchInput,setSearchInput] = useState('')
-  const typeMenu = ['Daging','Sayuran','Snack','Mie'];
+  const [typeMenu,setTypeMenu] = useState([
+    {id:1 ,name:'Daging'},
+    {id:1 ,name:'Sayuran'},
+    {id:1 ,name:'Snack'},
+    {id:1 ,name:'Mie'}
+  ]);
+  const [note,setNote] = useState('')
 
   
   const [modal,setModal] = useState('')
@@ -55,7 +63,7 @@ const OutletMenu = ()=>{
       navigate('/Auth/Login')
     }
     else{
-      fetch(`http://127.0.0.1:8000/api/menu/${outletName.idOutlet}`,{
+      fetch(`${apiUrl}/api/menu/${outletName.idOutlet}`,{
         method:'GET',
         headers:{
           Authorization: `${JSON.parse(loginSession).token.token_type} ${JSON.parse(loginSession).token.access_token}`
@@ -65,6 +73,16 @@ const OutletMenu = ()=>{
           .then(response=> {
               if(response.data !== undefined){
                 setDataMenu(response.data);
+                let newTypeMenu = []
+                for (let item of response.data) {
+                  newTypeMenu.push(
+                    {
+                      id: item.id_category,
+                      name: item.name_category
+                    }
+                  )
+                }
+                setTypeMenu(newTypeMenu)
               }
             }
           ).then(()=>setIsLoading(false))
@@ -72,11 +90,13 @@ const OutletMenu = ()=>{
   }, [loginSession]);
 
   const openModal = (modalParam)=>{
+    console.log(modalParam)
     if(modalParam === 'filter' || modalParam === 'urutan'){
       let new_value = modal;
       new_value.modal_type = modalParam
       setModal(new_value)
-    }else{
+    }
+    else{
       modalParam.modal_type = 'modal product'
       setModal(modalParam)
     }
@@ -208,8 +228,8 @@ const OutletMenu = ()=>{
               <ModalBody>
                 {
                   typeMenu.map((type,index)=>
-                    <Button key={index} colorScheme='blue' variant='ghost' marginBottom='20px' onClick={()=>{setFilterDataMenu(type);onClose()}}>
-                      {type}
+                    <Button key={index} colorScheme='blue' variant='ghost' marginBottom='20px' onClick={()=>{setFilterDataMenu(type.id);onClose()}}>
+                      {type.name}
                     </Button>
                   )
                 }
@@ -226,15 +246,20 @@ const OutletMenu = ()=>{
             <ModalOverlay />
             <ModalContent width='414px'>
               <ModalHeader>{modal.name_product}</ModalHeader>
-              <ModalCloseButton />
+              <ModalCloseButton onClick={()=>{setNote('');setModal('')}} />
               <ModalBody>
-                <img style={{ width:'100%',height:'259px',objectFit:'cover',borderRadius:'10px' }} src='/assets/AyamGoreng.png' alt="" />
+                <img style={{ width:'100%',height:'259px',objectFit:'cover',borderRadius:'10px',marginBottom:'20px' }} src='/assets/AyamGoreng.png' alt="" />
                 <Text fontSize='14px' color='#707070'>{modal.description_product}</Text>
 
-                <HStack>
+                <HStack marginBottom='20px'>
                   <Text as='b'>Rp.{modal.price_after_discount}</Text>
                   <Text color='#7C7979' as='del'>{modal.original_price}</Text>
                 </HStack>
+                <InputGroup backgroundColor='white' marginBottom='10px'>
+                  <InputLeftElement children={ <CreateIcon sx={{ width:'14px',color:'gray' }}/> } />
+                  <Input placeholder='catatan' value={note} onChange={(e)=>setNote(e.target.value)} />
+                </InputGroup>
+                
                 
               </ModalBody>
               <ModalFooter width='100%' marginBottom='20px'>
@@ -247,11 +272,9 @@ const OutletMenu = ()=>{
                         id_product : modal.id_product,
                         quantity : 1,
                         order_type:'take_away',
-                        note: ''
+                        note: note
                       }
-                      // console.log(bodyRequest)
-                      // dispatch(actions.insertCart(modal));
-                      fetch('http://127.0.0.1:8000/api/cart/add-cart',{
+                      fetch(`${apiUrl}/api/cart/add-cart`,{
                         method: 'POST',
                         headers: { 
                           'Content-Type': 'application/json',
@@ -272,6 +295,7 @@ const OutletMenu = ()=>{
                           }
                         }
                       )
+                      setNote('')
                       onClose()
                       
                     }
@@ -287,44 +311,3 @@ const OutletMenu = ()=>{
   )
 }
 export default OutletMenu
-
-// var a = {
-//   "meta": {
-//       "status": "success",
-//       "message": "Successfully fetch data"
-//   },
-//   "data": {
-//     dataProducts : [
-//         {
-//             "price_after_discount": 40000,
-//             "image_product": "http://localhost/storage/uploads/product/",
-//             "name_product": "nabati",
-//             "description_product": "enak tau",
-//             "id_outlet": 2,
-//             "id_product": 1,
-//             id_category : 1,
-//             name_category : "daging"
-//         },
-//         {
-//             "price_after_discount": 20000,
-//             "image_product": "http://localhost/storage/uploads/product/",
-//             "name_product": "momogi",
-//             "description_product": "enak tau",
-//             "id_outlet": 2,
-//             "id_product": 2,
-//             id_category : 2,
-//             name_category : "Sayur"
-//         }
-//     ],
-//     listCategory:[
-//       {
-//         id_category : 1,
-//         name_category : "daging"  
-//       },
-//       {
-//         id_category : 2,
-//         name_category : "Sayur"
-//       }
-//     ]
-//   }
-// }

@@ -24,7 +24,7 @@ const Order = () => {
   
 
   const getCart = ()=>{
-    fetch(`http://${apiUrl}/api/cart/index`,{
+    fetch(`${apiUrl}/api/cart/index`,{
       method:'GET',
       headers:{
         Authorization: `${JSON.parse(loginSession).token.token_type} ${JSON.parse(loginSession).token.access_token}`
@@ -99,10 +99,7 @@ const Order = () => {
                 <InputGroup backgroundColor='white' marginBottom='10px'>
                   <InputLeftElement children={ <CreateIcon sx={{ width:'14px',color:'gray' }}/> } />
                   <Input 
-                    // onChange={
-                    //   (e)=> dispatch(actions.writeNote({ id_product:item.id_product,id_outlet:item.id_outlet,note:e.target.value }))
-                    // } 
-                    variant='flushed' fontSize='14px' value={item.note}  placeholder='note' />
+                    variant='flushed' fontSize='14px' defaultValue={item.note}  placeholder='note' />
                 </InputGroup>
 
                 <HStack justifyContent='space-between'>
@@ -206,7 +203,7 @@ const Order = () => {
                     {
                       order_type_option[0].map(
                         (type,index) => 
-                          <option value={type.value} >{type.title}</option>
+                          <option key={index} value={type.value} >{type.title}</option>
                       )
                     }
                     

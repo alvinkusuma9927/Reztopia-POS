@@ -15,7 +15,6 @@ import { useNavigate } from "react-router-dom"
 
 const Akun = (props) => {
   const loginSession = JSON.parse(props.loginSession)
-  console.log(loginSession)
   const dispatch = useDispatch()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const navigate = useNavigate()
@@ -52,7 +51,7 @@ const Akun = (props) => {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Modal Title</ModalHeader>
-          <ModalCloseButton />
+          {/* <ModalCloseButton /> */}
           <ModalBody>
             <Text>Apakah anda yakin akan logout ? </Text>
           </ModalBody>

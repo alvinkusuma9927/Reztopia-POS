@@ -10,7 +10,7 @@ const Riwayat = () => {
   const loginSession = useSelector((state)=>state.loginSession)
   const histories = useSelector((state)=>state.histories)
   useEffect(()=>{
-    fetch(`http://${apiUrl}/api/history/index`,{
+    fetch(`${apiUrl}/api/history/index`,{
         method:'GET',
         headers:{
           Authorization: `${JSON.parse(loginSession).token.token_type} ${JSON.parse(loginSession).token.access_token}`
