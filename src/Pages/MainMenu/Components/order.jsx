@@ -107,7 +107,7 @@ const Order = () => {
                     <IconButton size='xs' colorScheme='blue' variant='outline' borderRadius='50%' icon={<MinusIcon />} aria-label={""}
                       onClick={async() => {
                         
-                        await axios.post(`http://${apiUrl}/api/cart/quantity`, 
+                        await axios.post(`${apiUrl}/api/cart/quantity`, 
                           { 
                             id_product:item.id_product,
                             min:1
@@ -133,7 +133,7 @@ const Order = () => {
                     <IconButton size='xs' colorScheme='blue' variant='solid' borderRadius='50%' icon={<AddIcon/>}  aria-label={""}
                       onClick={async() => {
                         
-                        await axios.post(`http://${apiUrl}/api/cart/quantity`, 
+                        await axios.post(`${apiUrl}/api/cart/quantity`, 
                           { 
                             id_product:item.id_product,
                             plus:1
@@ -158,7 +158,7 @@ const Order = () => {
                   </HStack>
                   <IconButton colorScheme='red' variant='ghost'icon={<DeleteIcon/>}  aria-label={""}
                     onClick={async() => {
-                        await axios.post(`http://${apiUrl}/api/cart/delete`,{
+                        await axios.post(`${apiUrl}/api/cart/delete`,{
                           id_order_detail : item.id
                         },
                         {
@@ -251,7 +251,7 @@ const Order = () => {
                           table_number : nomorMeja,
                           order_type : document.getElementById('order_type').value,
                         })
-                        // await axios.post(`http://${apiUrl}/api/cart/checkout`, 
+                        // await axios.post(`${apiUrl}/api/cart/checkout`, 
                         //   {
                         //     id_order : cart[0].id_order,
                         //     table_number : nomorMeja,

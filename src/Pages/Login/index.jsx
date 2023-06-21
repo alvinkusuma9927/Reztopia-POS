@@ -36,16 +36,24 @@ const Login = () => {
     event.preventDefault();
     const requestLoginBody = {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST,GET",
+      },
       body: JSON.stringify({ email: emailInput, password: passwordInput }),
+      // credentials : "include"
     };
 
     const res = await fetch(`${apiUrl}/api/login`, requestLoginBody);
-    // return
+    console.log("status");
+    console.log(res.status);
     if (res.status === 200) {
       res.json().then((res) => {
         let dataLogin = res.data;
         dataLogin.token = res.meta;
+        console.log(dataLogin);
         dispatch(actions.login({ dataLogin: dataLogin }));
       });
     } else {

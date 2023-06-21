@@ -49,7 +49,12 @@ const Dashboard = () => {
         Authorization: `${JSON.parse(loginSession).token.token_type} ${
           JSON.parse(loginSession).token.access_token
         }`,
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        // "Access-Control-Allow-Methods": "POST,GET",
       },
+      credentials: "include",
     })
       .then(
         (response) => response.json(),
