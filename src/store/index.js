@@ -2,8 +2,8 @@ import { createSlice, configureStore } from "@reduxjs/toolkit";
 const states = createSlice({
   name: "states",
   initialState: {
-    apiUrl: "https://443b-114-79-21-57.ngrok-free.app",
-    // apiUrl:'http://127.0.0.1:8000',
+    apiUrl: "http://reztopia.my.id:8000",
+    // apiUrl: "http://127.0.0.1:8000",
     // apiUrl: "https://reztopia.000webhostapp.com",
     loginSession: localStorage.loginSession,
     cart: [],

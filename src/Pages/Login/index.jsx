@@ -75,7 +75,6 @@ const Login = () => {
   });
   return (
     <>
-      {isLoading ? <LoadingScreen /> : null}
       <form action="" className="main-login" onSubmit={(e) => submitLogin(e)}>
         <Center>
           <img src={getStaticImg("Logo")} className="logo-img" alt="" />
