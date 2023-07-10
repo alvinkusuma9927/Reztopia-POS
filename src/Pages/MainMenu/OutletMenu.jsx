@@ -53,7 +53,7 @@ const OutletMenu = () => {
   ]);
   const [note, setNote] = useState("");
 
-  const [modal, setModal] = useState("");
+  const [modal, setModal] = useState({ image_product: "" });
   const [filterDataMenu, setFilterDataMenu] = useState("");
   const dispatch = useDispatch();
   const toast = useToast({
@@ -317,7 +317,7 @@ const OutletMenu = () => {
               <ModalCloseButton
                 onClick={() => {
                   setNote("");
-                  setModal("");
+                  setModal({ image_product: "" });
                 }}
               />
               <ModalBody>
@@ -329,7 +329,7 @@ const OutletMenu = () => {
                     borderRadius: "10px",
                     marginBottom: "20px",
                   }}
-                  src="/assets/AyamGoreng.png"
+                  src={modal.image_product.replace("localhost", port)}
                   alt=""
                 />
                 <Text fontSize="14px" color="#707070">
@@ -383,6 +383,8 @@ const OutletMenu = () => {
                             toast({
                               title: JSON.stringify(res.meta.message),
                               status: "success",
+                              variant: "subtle",
+                              position: "top",
                               isClosable: true,
                               duration: 1500,
                             });

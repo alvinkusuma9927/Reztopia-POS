@@ -42,6 +42,7 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const port = useSelector((state) => state.port);
   useEffect(() => {
     fetch(`${apiUrl}/api/tenant/index`, {
       method: "GET",
@@ -161,7 +162,7 @@ const Dashboard = () => {
               key={product.id}
             >
               <img
-                src="/public/assets/BaksoMercon.png"
+                src={product.image.replace("localhost", port)}
                 alt=""
                 style={{
                   width: "105.28px",

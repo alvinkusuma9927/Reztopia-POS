@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import "/public/assets/MainMenu.css";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import { MdWallet } from "react-icons/md";
 import ContentPasteOutlinedIcon from "@mui/icons-material/ContentPasteOutlined";
 import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
 import { HStack, Text } from "@chakra-ui/react";
@@ -38,6 +39,17 @@ const BottomNavbar = (props) => {
           sx={{ color: props.params === "order" ? "#6898C0" : "#B7B7B7" }}
         />
       </Link>
+      {/* <Link
+        to="/MainMenu/transaksi"
+        onClick={() => {
+          dispatch(actions.setBottomNavbar({ value: "transaksi" }));
+        }}
+        className="link"
+      >
+        <MdWallet
+          sx={{ color: props.params === "transaksi" ? "#6898C0" : "#B7B7B7" }}
+        />
+      </Link> */}
 
       <Link
         to="/MainMenu/riwayat"

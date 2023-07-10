@@ -15,6 +15,7 @@ import Dashboard from "./Components/dashboard";
 import Order from "./Components/order";
 import Riwayat from "./Components/riwayat";
 import Akun from "./Components/akun";
+import Transaksi from "./Components/transaksi";
 
 const MainMenu = () => {
   const apiUrl = useSelector((state) => state.apiUrl);
@@ -39,6 +40,8 @@ const MainMenu = () => {
         dispatch(actions.setBottomNavbar({ value: "dashboard" }));
       } else if (bottomNavbarSelected === "order") {
         dispatch(actions.setBottomNavbar({ value: "order" }));
+      } else if (bottomNavbarSelected === "transaksi") {
+        dispatch(actions.setBottomNavbar({ value: "transaksi" }));
       } else if (bottomNavbarSelected === "riwayat") {
         dispatch(actions.setBottomNavbar({ value: "riwayat" }));
       } else if (bottomNavbarSelected === "akun") {
@@ -60,8 +63,8 @@ const MainMenu = () => {
       ) : bottomNavbarSelected === "order" ? (
         <Order />
       ) : // Status Pesanan
-      bottomNavbarSelected === "status-pesanan" ? (
-        <></>
+      bottomNavbarSelected === "transaksi" ? (
+        <Transaksi />
       ) : // Riwayat
       bottomNavbarSelected === "riwayat" ? (
         <Riwayat />

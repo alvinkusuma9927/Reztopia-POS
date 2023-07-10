@@ -113,7 +113,7 @@ const Order = () => {
             }}
           >
             <img
-              src="/public/assets/AyamGoreng.png"
+              src={`${apiUrl}/storage/uploads/outlet/${item.image}`}
               alt=""
               style={{
                 width: "154px",
@@ -315,66 +315,7 @@ const Order = () => {
                     <Text>{cart.length}</Text>
                   </Td>
                 </Tr>
-                <Tr>
-                  <Td>Metode Pembayaran</Td>
-                  <Td isNumeric>
-                    <Button
-                      colorScheme="teal"
-                      variant="solid"
-                      onClick={async () => {
-                        if (
-                          nomorMeja === "" ||
-                          document.getElementById("order_type").value === ""
-                        ) {
-                          toast({
-                            title: "Error",
-                            description: `Harap mengisi nomor meja dan tipe order!`,
-                            status: "error",
-                            duration: 2500,
-                            isClosable: true,
-                            variant: "subtle",
-                            position: "top",
-                          });
-                        } else {
-                          console.log({
-                            id_order: cart[0].id_order,
-                            table_number: nomorMeja,
-                            order_type:
-                              document.getElementById("order_type").value,
-                          });
-                          await axios
-                            .post(
-                              `${apiUrl}/api/cart/checkout`,
-                              {
-                                id_order: cart[0].id_order,
-                                table_number: nomorMeja,
-                                order_type:
-                                  document.getElementById("order_type").value,
-                              },
-                              {
-                                headers: {
-                                  Authorization: `${
-                                    JSON.parse(loginSession).token.token_type
-                                  } ${
-                                    JSON.parse(loginSession).token.access_token
-                                  }`,
-                                },
-                              }
-                            )
-                            .then((response) => {
-                              if (response.status === 200) {
-                                // response=> console.log(response)
-                                getCart();
-                              } else {
-                              }
-                            });
-                        }
-                      }}
-                    >
-                      Bayar
-                    </Button>
-                  </Td>
-                </Tr>
+
                 <Tr>
                   <Td>Total Pembayaran</Td>
                   <Td isNumeric>Rp. {cart[0].total}</Td>
@@ -382,7 +323,7 @@ const Order = () => {
               </Table>
             </div>
             <Button
-              onClick={() => {
+              onClick={async () => {
                 if (
                   nomorMeja === "" ||
                   document.getElementById("order_type").value === ""
@@ -396,6 +337,35 @@ const Order = () => {
                     variant: "subtle",
                     position: "top",
                   });
+                } else {
+                  console.log({
+                    id_order: cart[0].id_order,
+                    table_number: nomorMeja,
+                    order_type: document.getElementById("order_type").value,
+                  });
+                  await axios
+                    .post(
+                      `${apiUrl}/api/cart/checkout`,
+                      {
+                        id_order: cart[0].id_order,
+                        table_number: nomorMeja,
+                        order_type: document.getElementById("order_type").value,
+                      },
+                      {
+                        headers: {
+                          Authorization: `${
+                            JSON.parse(loginSession).token.token_type
+                          } ${JSON.parse(loginSession).token.access_token}`,
+                        },
+                      }
+                    )
+                    .then((response) => {
+                      if (response.status === 200) {
+                        // response=> console.log(response)
+                        getCart();
+                      } else {
+                      }
+                    });
                 }
               }}
               colorScheme="blue"

@@ -65,6 +65,7 @@ const Login = () => {
         duration: 1500,
         isClosable: true,
         variant: "subtle",
+        position: "top",
       });
     }
   };

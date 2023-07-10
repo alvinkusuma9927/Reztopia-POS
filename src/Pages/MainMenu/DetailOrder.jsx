@@ -36,21 +36,41 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { actions } from "../../store";
 import getStaticImg from "../../Function/getStaticImg";
+import axios from "axios";
 
 const DetailOrder = () => {
+  const params = useParams();
+  const apiUrl = useSelector((state) => state.apiUrl);
+  const port = useSelector((state) => state.port);
   const navigate = useNavigate();
+  const [detailOrder, setDetailOrder] = useState("");
   // Check sessionLogin
   const loginSession = useSelector((state) => state.loginSession);
   useEffect(() => {
     if (!loginSessionAuth(window.location.href.split("/")[3], loginSession)) {
       navigate("/Login");
+    } else {
+      getDetailOrder();
     }
     console.log(
       loginSessionAuth(window.location.href.split("/")[3], loginSession)
     );
   }, [loginSession]);
   // }
-  return (
+
+  const getDetailOrder = async () => {
+    await axios
+      .get(`${apiUrl}/api/history/history-detail/${params.idOrder}`, {
+        headers: {
+          Authorization: `${JSON.parse(loginSession).token.token_type} ${
+            JSON.parse(loginSession).token.access_token
+          }`,
+        },
+      })
+      .then((res) => setDetailOrder(res.data.data));
+  };
+
+  return detailOrder ? (
     <div className="main-menu">
       <HStack
         width="100%"
@@ -67,11 +87,16 @@ const DetailOrder = () => {
         </Text>
         <LocalGroceryStoreOutlinedIcon sx={{ color: "#6697BF" }} />
       </HStack>
+      {/* <Text>{JSON.stringify(detailOrder)}</Text> */}
 
-      <Text color="blue.600">Sudah Dibayar</Text>
+      <Text color="blue.600">
+        {detailOrder.history[0].status_order.toUpperCase()}
+      </Text>
       <Text>Kode Pembayaran</Text>
       <Text fontSize="24px" as="b">
-        XYZKA10P
+        {JSON.stringify(
+          detailOrder.history[0].payment_code_order
+        ).toUpperCase()}
       </Text>
 
       <HStack
@@ -82,7 +107,8 @@ const DetailOrder = () => {
         <Text fontSize="12px" color="#7C7979">
           Tanggal Pembelian
         </Text>
-        <Text fontSize="12px">01 November 2022, 18:15 WIB</Text>
+        {/* <Text fontSize="12px">01 November 2022, 18:15 WIB</Text> */}
+        <Text fontSize="12px">{detailOrder.history[0].date_order}</Text>
       </HStack>
 
       <Text marginBottom="10px" as="b">
@@ -96,68 +122,37 @@ const DetailOrder = () => {
         padding="25px"
         boxShadow="0px 0px 25px rgba(192, 192, 192, 0.2)"
       >
-        <div style={{ display: "flex", marginBottom: "20px" }}>
-          <Image
-            height="71px"
-            aspectRatio="1/1"
-            objectFit="cover"
-            maxW={{ base: "100%", sm: "200px" }}
-            src={getStaticImg("MieGoreng")}
-            alt="Caffe Latte"
-            borderRadius="20px"
-            alignItems="flex-start"
-            marginRight="20px"
-          />
-          <div>
-            <Text fontSize="16px" as="b">
-              Kantin 35
-            </Text>
-            <Text>1 x Rp.15000</Text>
+        {/* <Text>{JSON.stringify(detailOrder.product)}</Text> */}
+
+        {detailOrder.product.map((item, index) => (
+          <div key={index} style={{ display: "flex", marginBottom: "20px" }}>
+            <Image
+              height="71px"
+              aspectRatio="1/1"
+              objectFit="cover"
+              maxW={{ base: "100%", sm: "200px" }}
+              src={item.image_product.replace("localhost", port)}
+              borderRadius="20px"
+              alignItems="flex-start"
+              marginRight="20px"
+            />
+            <div>
+              <Text fontSize="16px" as="b">
+                {item.product_name}
+              </Text>
+              <Text>
+                {item.quantity_order} x Rp.{item.price_product}
+              </Text>
+            </div>
           </div>
-        </div>
-        <div style={{ display: "flex", marginBottom: "20px" }}>
-          <Image
-            height="71px"
-            aspectRatio="1/1"
-            objectFit="cover"
-            maxW={{ base: "100%", sm: "200px" }}
-            src={getStaticImg("MieGoreng")}
-            alt="Caffe Latte"
-            borderRadius="20px"
-            alignItems="flex-start"
-            marginRight="20px"
-          />
-          <div>
-            <Text fontSize="16px" as="b">
-              Kantin 35
-            </Text>
-            <Text>1 x Rp.15000</Text>
-          </div>
-        </div>
-        <div style={{ display: "flex", marginBottom: "20px" }}>
-          <Image
-            height="71px"
-            aspectRatio="1/1"
-            objectFit="cover"
-            maxW={{ base: "100%", sm: "200px" }}
-            src={getStaticImg("MieGoreng")}
-            alt="Caffe Latte"
-            borderRadius="20px"
-            alignItems="flex-start"
-            marginRight="20px"
-          />
-          <div>
-            <Text fontSize="16px" as="b">
-              Kantin 35
-            </Text>
-            <Text>1 x Rp.15000</Text>
-          </div>
-        </div>
+        ))}
 
         <hr />
         <HStack justifyContent="space-between" marginTop="10px">
           <Text color="blue.600">Total</Text>
-          <Text color="blue.600">100.000</Text>
+          <Text color="blue.600">
+            Rp.{JSON.stringify(detailOrder.history[0].total_order)}
+          </Text>
         </HStack>
       </Box>
 
@@ -173,19 +168,21 @@ const DetailOrder = () => {
           <Text fontSize="12px" color="#7C7979">
             Nama Pemesan
           </Text>
-          <Text fontSize="12px">Ara</Text>
+          <Text fontSize="12px">{detailOrder.history[0].name_user_order}</Text>
         </HStack>
         <HStack justifyContent="space-between">
           <Text fontSize="12px" color="#7C7979">
             Nomor Meja
           </Text>
-          <Text fontSize="12px">26</Text>
+          <Text fontSize="12px">
+            {detailOrder.history[0].table_number_order}
+          </Text>
         </HStack>
         <HStack justifyContent="space-between">
           <Text fontSize="12px" color="#7C7979">
             Keterangan
           </Text>
-          <Text fontSize="12px">Dine In</Text>
+          <Text fontSize="12px">{detailOrder.history[0].type_order}</Text>
         </HStack>
         <HStack justifyContent="space-between">
           <Text fontSize="12px" color="#7C7979">
@@ -198,28 +195,29 @@ const DetailOrder = () => {
           <Text fontSize="12px" color="#7C7979">
             Metode Pembayaran
           </Text>
-          <Text fontSize="12px">Cash</Text>
+          <Text fontSize="12px">
+            {detailOrder.history[0].payment_method_order}
+          </Text>
         </HStack>
         <hr style={{ marginTop: "20px", marginBottom: "20px" }} />
         <HStack justifyContent="space-between">
           <Text fontSize="12px" color="#7C7979">
             Total Harga
           </Text>
-          <Text fontSize="12px">Rp.100000</Text>
-        </HStack>
-        <HStack justifyContent="space-between">
-          <Text fontSize="12px" color="#7C7979">
-            Diskon Kode Promo
+          <Text fontSize="12px">
+            Rp.{JSON.stringify(detailOrder.history[0].total_order)}
           </Text>
-          <Text fontSize="12px">-0</Text>
         </HStack>
+
         <hr style={{ marginTop: "20px", marginBottom: "20px" }} />
         <HStack justifyContent="space-between">
           <Text as="b">Total Belanja</Text>
-          <Text as="b">Rp. 1000000</Text>
+          <Text as="b">
+            Rp.{JSON.stringify(detailOrder.history[0].total_order)}
+          </Text>
         </HStack>
       </Box>
     </div>
-  );
+  ) : null;
 };
 export default DetailOrder;
