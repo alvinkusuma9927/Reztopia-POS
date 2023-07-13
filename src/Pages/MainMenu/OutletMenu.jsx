@@ -161,7 +161,6 @@ const OutletMenu = () => {
         >
           <ArrowBackIosOutlinedIcon
             onClick={() => {
-              setIsLoading(true);
               navigate("/MainMenu");
             }}
             cursor="pointer"
@@ -359,6 +358,7 @@ const OutletMenu = () => {
                 <Center>
                   <Button
                     onClick={() => {
+                      setIsLoading(true);
                       let bodyRequest = {
                         id_outlet: modal.id_outlet,
                         id_user: JSON.parse(localStorage.loginSession).id,
@@ -367,34 +367,50 @@ const OutletMenu = () => {
                         order_type: "take_away",
                         note: note,
                       };
-                      fetch(`${apiUrl}/api/cart/add-cart`, {
-                        method: "POST",
-                        headers: {
-                          "Content-Type": "application/json",
-                          Authorization: `Bearer ${
-                            JSON.parse(localStorage.loginSession).token
-                              .access_token
-                          }`,
-                        },
-                        body: JSON.stringify(bodyRequest),
-                      }).then((res) => {
-                        if (res.status === 200) {
-                          res.json().then((res) => {
-                            toast({
-                              title: JSON.stringify(res.meta.message),
-                              status: "success",
-                              variant: "subtle",
-                              position: "top",
-                              isClosable: true,
-                              duration: 1500,
+                      try {
+                        fetch(`${apiUrl}/api/cart/add-cart`, {
+                          method: "POST",
+                          headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${
+                              JSON.parse(localStorage.loginSession).token
+                                .access_token
+                            }`,
+                          },
+                          body: JSON.stringify(bodyRequest),
+                        }).then((res) => {
+                          if (res.status === 200) {
+                            res.json().then((res) => {
+                              toast({
+                                title: "Sukses",
+                                status:
+                                  "Berhasil menambahkan barang ke keranjang",
+                                variant: "subtle",
+                                position: "top",
+                                isClosable: true,
+                                duration: 9500,
+                              });
+                              setIsLoading(false);
                             });
-                          });
-                        } else {
-                          console.log("error");
-                        }
-                      });
-                      setNote("");
-                      onClose();
+                          } else {
+                            console.log("error");
+                            setIsLoading(false);
+                          }
+                        });
+                        setNote("");
+                        onClose();
+                      } catch (error) {
+                        toast({
+                          title: "Gagal menambahkan barang ke keranjang",
+                          status: "error",
+                          variant: "subtle",
+                          position: "top",
+                          isClosable: true,
+                          duration: 9500,
+                        });
+                        setIsLoading(false);
+                        onClose();
+                      }
                     }}
                     colorScheme="blue"
                   >

@@ -1,8 +1,15 @@
 import {
   Button,
+  FocusLock,
   HStack,
+  IconButton,
   Image,
   Input,
+  Popover,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverTrigger,
   Stack,
   Table,
   Td,
@@ -20,18 +27,22 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
+import React from "react";
 import { actions } from "../../../store";
 import { useNavigate } from "react-router-dom";
+import { AiFillSetting } from "react-icons/ai";
 
 const Akun = (props) => {
   const loginSession = JSON.parse(props.loginSession);
   const dispatch = useDispatch();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
+  const firstFieldRef = React.useRef(null);
   return (
     <div className="main-menu" style={{ paddingBottom: "70px" }}>
       <Stack minHeight="100vh">
         <HStack
+          position="relative"
           width="100%"
           justifyContent="center"
           alignItems="center"
@@ -40,6 +51,12 @@ const Akun = (props) => {
           <Text fontSize="22px" as="b">
             Profil
           </Text>
+
+          <AiFillSetting
+            style={{ position: "absolute", right: "10px", cursor: "pointer" }}
+            fontSize={"22px"}
+            alignSelf="flex-end"
+          />
         </HStack>
 
         <Image

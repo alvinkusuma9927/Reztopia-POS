@@ -39,9 +39,9 @@ const Order = () => {
   ]);
   const dispatch = useDispatch();
 
-  const getCart = () => {
+  const getCart = async () => {
     setIsLoading(true);
-    fetch(`${apiUrl}/api/cart/index`, {
+    await fetch(`${apiUrl}/api/cart/index`, {
       method: "GET",
       headers: {
         Authorization: `${JSON.parse(loginSession).token.token_type} ${
@@ -70,7 +70,6 @@ const Order = () => {
 
   useEffect(() => {
     getCart();
-    setIsLoading(false);
   }, []);
   useEffect(() => {
     let count = 0;
@@ -113,7 +112,7 @@ const Order = () => {
             }}
           >
             <img
-              src={`${apiUrl}/storage/uploads/outlet/${item.image}`}
+              src={`${apiUrl}/storage/uploads/products/${item.image}`}
               alt=""
               style={{
                 width: "154px",
@@ -343,29 +342,37 @@ const Order = () => {
                     table_number: nomorMeja,
                     order_type: document.getElementById("order_type").value,
                   });
-                  await axios
-                    .post(
-                      `${apiUrl}/api/cart/checkout`,
-                      {
-                        id_order: cart[0].id_order,
-                        table_number: nomorMeja,
-                        order_type: document.getElementById("order_type").value,
-                      },
-                      {
-                        headers: {
-                          Authorization: `${
-                            JSON.parse(loginSession).token.token_type
-                          } ${JSON.parse(loginSession).token.access_token}`,
+                  setIsLoading(true);
+                  try {
+                    await axios
+                      .post(
+                        `${apiUrl}/api/cart/checkout`,
+                        {
+                          id_order: cart[0].id_order,
+                          table_number: nomorMeja,
+                          order_type:
+                            document.getElementById("order_type").value,
                         },
-                      }
-                    )
-                    .then((response) => {
-                      if (response.status === 200) {
-                        // response=> console.log(response)
-                        getCart();
-                      } else {
-                      }
-                    });
+                        {
+                          headers: {
+                            Authorization: `${
+                              JSON.parse(loginSession).token.token_type
+                            } ${JSON.parse(loginSession).token.access_token}`,
+                          },
+                        }
+                      )
+                      .then((response) => {
+                        if (response.status === 200) {
+                          // response=> console.log(response)
+                          getCart();
+                          setIsLoading(false);
+                        } else {
+                          setIsLoading(false);
+                        }
+                      });
+                  } catch (error) {
+                    setIsLoading(false);
+                  }
                 }
               }}
               colorScheme="blue"

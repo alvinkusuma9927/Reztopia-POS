@@ -35,7 +35,7 @@ import { actions } from "../../../store";
 import { Link, useNavigate } from "react-router-dom";
 const Dashboard = () => {
   const apiUrl = useSelector((state) => state.apiUrl);
-  const isLoadingPage = useSelector((state) => state.isLoadingPage);
+  const [isLoadingPage, setLoading] = useState(true);
   const [searchInput, setSearchInput] = useState("");
   const [products, setProducts] = useState([]);
   const loginSession = useSelector((state) => state.loginSession);
@@ -43,8 +43,8 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const port = useSelector((state) => state.port);
-  useEffect(() => {
-    fetch(`${apiUrl}/api/tenant/index`, {
+  const getData = async () => {
+    await fetch(`${apiUrl}/api/tenant/index`, {
       method: "GET",
       headers: {
         Authorization: `${JSON.parse(loginSession).token.token_type} ${
@@ -59,152 +59,165 @@ const Dashboard = () => {
     })
       .then(
         (response) => response.json(),
-        (err) => console.log("error")
+        (err) => {
+          console.log("error");
+          setLoading(false);
+        }
       )
       .then(
         (response) => {
           setProducts(response.data.tenant);
           console.log("succes fetch data");
+          setLoading(false);
         },
-        (err) => console.log("error")
+        (err) => {
+          console.log("error");
+          setLoading(false);
+        }
       );
+  };
+  useEffect(() => {
+    getData();
   }, []);
   return (
-    <div className="main-menu">
-      <HStack justifyContent="space-between" alignItems="center">
-        <Text as="b" fontSize="22px">
-          Selamat Datang di {isLoadingPage}
+    <>
+      {isLoadingPage ? <LoadingScreen /> : null}
+      <div className="main-menu">
+        <HStack justifyContent="space-between" alignItems="center">
+          <Text as="b" fontSize="22px">
+            Selamat Datang di {isLoadingPage}
+          </Text>
+          <LogoutIcon
+            sx={{
+              cursor: "pointer",
+              fontWeight: "bold",
+              color: "rgb(201, 68, 86)",
+            }}
+            onClick={onOpen}
+          />
+        </HStack>
+
+        <Text as="b" fontSize="22px" color="blue.500" marginBottom="20px">
+          Kedai Reztopia POS
         </Text>
-        <LogoutIcon
-          sx={{
-            cursor: "pointer",
-            fontWeight: "bold",
-            color: "rgb(201, 68, 86)",
-          }}
-          onClick={onOpen}
-        />
-      </HStack>
 
-      <Text as="b" fontSize="22px" color="blue.500" marginBottom="20px">
-        Kedai Tangsi !
-      </Text>
-
-      <InputGroup backgroundColor="white" marginBottom="20px">
-        <InputLeftElement children={<SearchIcon />} />
-        <Input
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          placeholder="search"
-        />
-      </InputGroup>
-
-      <Swiper
-        spaceBetween={30}
-        loop={true}
-        pagination={{ clickable: true }}
-        modules={[Pagination]}
-        className="mySwiper"
-      >
-        <SwiperSlide>
-          <img
-            style={{
-              display: "block",
-              objectFit: "cover",
-              borderRadius: "10px",
-            }}
-            src="/public/assets/Carousel1.png"
-            alt=""
+        <InputGroup backgroundColor="white" marginBottom="20px">
+          <InputLeftElement children={<SearchIcon />} />
+          <Input
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="search"
           />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img
-            style={{
-              display: "block",
-              objectFit: "cover",
-              borderRadius: "10px",
-            }}
-            src="/public/assets/BaksoKomplit.png"
-            alt=""
-          />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img
-            style={{
-              display: "block",
-              objectFit: "cover",
-              borderRadius: "10px",
-            }}
-            src="/public/assets/MieGoreng.png"
-            alt=""
-          />
-        </SwiperSlide>
-      </Swiper>
+        </InputGroup>
 
-      <Text color="blue.500" as="b" marginTop="20px">
-        Tenant
-      </Text>
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          width: "100%",
-          paddingBottom: "70px",
-          marginTop: "10px",
-        }}
-      >
-        {products.map((product) =>
-          product.name
-            .toLowerCase()
-            .includes(searchInput.toLocaleLowerCase()) ? (
-            <Link
-              to={`/MainMenu/OutletMenu/${product.id}`}
-              style={{ marginBottom: "20px", marginRight: "20px" }}
-              key={product.id}
-            >
-              <img
-                src={product.image.replace("localhost", port)}
-                alt=""
-                style={{
-                  width: "105.28px",
-                  height: "171px",
-                  objectFit: "cover",
-                  borderRadius: "20px",
-                }}
-              />
-              <Stack maxWidth="105.28px">
-                <Text as="b">{product.name}</Text>
-              </Stack>
-            </Link>
-          ) : null
-        )}
-      </div>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
-          {/* <ModalCloseButton /> */}
-          <ModalBody>
-            <Text>Apakah anda yakin akan logout ? </Text>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button
-              colorScheme="red"
-              mr={3}
-              onClick={() => {
-                dispatch(actions.logout());
-                navigate(0);
+        <Swiper
+          spaceBetween={30}
+          loop={true}
+          pagination={{ clickable: true }}
+          modules={[Pagination]}
+          className="mySwiper"
+        >
+          <SwiperSlide>
+            <img
+              style={{
+                display: "block",
+                objectFit: "cover",
+                borderRadius: "10px",
               }}
-            >
-              Logout
-            </Button>
-            <Button variant="ghost" onClick={onClose}>
-              No
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </div>
+              src="/public/assets/Carousel1.png"
+              alt=""
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              style={{
+                display: "block",
+                objectFit: "cover",
+                borderRadius: "10px",
+              }}
+              src="/public/assets/BaksoKomplit.png"
+              alt=""
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              style={{
+                display: "block",
+                objectFit: "cover",
+                borderRadius: "10px",
+              }}
+              src="/public/assets/MieGoreng.png"
+              alt=""
+            />
+          </SwiperSlide>
+        </Swiper>
+
+        <Text color="blue.500" as="b" marginTop="20px">
+          Tenant
+        </Text>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            width: "100%",
+            paddingBottom: "70px",
+            marginTop: "10px",
+          }}
+        >
+          {products.map((product) =>
+            product.name
+              .toLowerCase()
+              .includes(searchInput.toLocaleLowerCase()) ? (
+              <Link
+                to={`/MainMenu/OutletMenu/${product.id}`}
+                style={{ marginBottom: "20px", marginRight: "20px" }}
+                key={product.id}
+              >
+                <img
+                  src={product.image.replace("localhost", port)}
+                  alt=""
+                  style={{
+                    width: "105.28px",
+                    height: "171px",
+                    objectFit: "cover",
+                    borderRadius: "20px",
+                  }}
+                />
+                <Stack maxWidth="105.28px">
+                  <Text as="b">{product.name}</Text>
+                </Stack>
+              </Link>
+            ) : null
+          )}
+        </div>
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Modal Title</ModalHeader>
+            {/* <ModalCloseButton /> */}
+            <ModalBody>
+              <Text>Apakah anda yakin akan logout ? </Text>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button
+                colorScheme="red"
+                mr={3}
+                onClick={() => {
+                  dispatch(actions.logout());
+                  navigate(0);
+                }}
+              >
+                Logout
+              </Button>
+              <Button variant="ghost" onClick={onClose}>
+                No
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </div>
+    </>
   );
 };
 

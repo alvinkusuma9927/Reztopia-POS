@@ -56,7 +56,6 @@ const MainMenu = () => {
 
   return (
     <>
-      {isLoadingPage ? <LoadingScreen /> : null}
       {bottomNavbarSelected === "dashboard" ||
       bottomNavbarSelected === undefined ? (
         <Dashboard />
