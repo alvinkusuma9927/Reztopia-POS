@@ -63,39 +63,44 @@ const OutletMenu = () => {
   });
 
   const loginSession = useSelector((state) => state.loginSession);
+
+  const getData = async () => {
+    await fetch(`${apiUrl}/api/menu/${outletName.idOutlet}`, {
+      method: "GET",
+      headers: {
+        Authorization: `${JSON.parse(loginSession).token.token_type} ${
+          JSON.parse(loginSession).token.access_token
+        }`,
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Origin": "*",
+      },
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        if (response.data !== undefined) {
+          setDataMenu(response.data);
+          let newTypeMenu = [];
+          for (let item of response.data) {
+            newTypeMenu.push({
+              id: item.id_category,
+              name: item.name_category,
+            });
+          }
+          setTypeMenu(newTypeMenu);
+        }
+      })
+      .then(() => setIsLoading(false));
+  };
   const port = useSelector((state) => state.port);
   useEffect(() => {
     // Check sessionLogin
     if (!loginSessionAuth(window.location.href.split("/")[3], loginSession)) {
       navigate("/Auth/Login");
     } else {
-      fetch(`${apiUrl}/api/menu/${outletName.idOutlet}`, {
-        method: "GET",
-        headers: {
-          Authorization: `${JSON.parse(loginSession).token.token_type} ${
-            JSON.parse(loginSession).token.access_token
-          }`,
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Headers": "Content-Type",
-          "Access-Control-Allow-Origin": "*",
-        },
-        credentials: "include",
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          if (response.data !== undefined) {
-            setDataMenu(response.data);
-            let newTypeMenu = [];
-            for (let item of response.data) {
-              newTypeMenu.push({
-                id: item.id_category,
-                name: item.name_category,
-              });
-            }
-            setTypeMenu(newTypeMenu);
-          }
-        })
-        .then(() => setIsLoading(false));
+      setTimeout(getData, 4000);
+      // getData()
     }
   }, [loginSession]);
 
@@ -380,20 +385,29 @@ const OutletMenu = () => {
                           body: JSON.stringify(bodyRequest),
                         }).then((res) => {
                           if (res.status === 200) {
-                            res.json().then((res) => {
+                            res.json().then(() => {
                               toast({
-                                title: "Sukses",
-                                status:
+                                title:
                                   "Berhasil menambahkan barang ke keranjang",
+                                status: "success",
                                 variant: "subtle",
                                 position: "top",
                                 isClosable: true,
                                 duration: 9500,
                               });
+                              // console.log("success menambahkan cart");
                               setIsLoading(false);
                             });
                           } else {
                             console.log("error");
+                            toast({
+                              title: "Gagal menambahkan barang ke keranjang",
+                              status: "error",
+                              variant: "subtle",
+                              position: "top",
+                              isClosable: true,
+                              duration: 9500,
+                            });
                             setIsLoading(false);
                           }
                         });

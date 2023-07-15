@@ -1,5 +1,5 @@
-.main-login{
-  background-color: #F6FBFD;
+.main-login {
+  background-color: #f6fbfd;
   /* width: 414px; */
   width: 100%;
   max-width: 1000px;
@@ -11,21 +11,21 @@
   padding-left: 34px;
   padding-right: 34px;
 }
-.main-login *{
+.main-login * {
   max-width: 335.61px;
 }
-.main-login .logo-img{
+.main-login .logo-img {
   width: 175.45px;
   object-fit: contain;
 }
-.main-login .welcome-img{
-  width: 335.61;
+.main-login .welcome-img {
+  width: 280px;
   object-fit: contain;
-  margin-bottom: 40px;
+  margin-bottom: 10px;
 }
 
 @media only screen and (min-width: 414px) {
-  .main-login{
+  .main-login {
     align-items: center;
   }
 }

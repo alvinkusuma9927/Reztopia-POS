@@ -76,7 +76,12 @@ const Login = () => {
   });
   return (
     <>
-      <form action="" className="main-login" onSubmit={(e) => submitLogin(e)}>
+      <form
+        action=""
+        className="main-login"
+        onSubmit={(e) => submitLogin(e)}
+        style={{ paddingTop: "30px", paddingBottom: "30px" }}
+      >
         <Center>
           <img src={getStaticImg("Logo")} className="logo-img" alt="" />
         </Center>
@@ -115,14 +120,14 @@ const Login = () => {
         />
 
         <Stack>
-          <Text
+          {/* <Text
             alignSelf="flex-end"
             cursor="pointer"
             color="blue.500"
             marginBottom="20px"
           >
             Forgot Password?
-          </Text>
+          </Text> */}
         </Stack>
         <Button
           type="submit"
@@ -134,6 +139,9 @@ const Login = () => {
           Login
         </Button>
         <Button
+          onClick={() => {
+            navigate("/SignUp");
+          }}
           width="100%"
           height="64px"
           variant="outline"
@@ -141,22 +149,6 @@ const Login = () => {
         >
           Login with SSO
         </Button>
-
-        <div
-          onClick={() => {
-            navigate("/SignUp");
-          }}
-          style={{
-            cursor: "pointer",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <Text marginRight="5px">New To Brand?</Text>
-          <Text as="b" color="blue.500">
-            Sign Up
-          </Text>
-        </div>
       </form>
     </>
   );

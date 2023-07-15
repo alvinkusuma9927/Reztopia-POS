@@ -70,6 +70,7 @@ const Order = () => {
 
   useEffect(() => {
     getCart();
+    // setTimeout(getCart, 4000);
   }, []);
   useEffect(() => {
     let count = 0;

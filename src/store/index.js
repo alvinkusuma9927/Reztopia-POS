@@ -21,6 +21,7 @@ const states = createSlice({
       state.loginSession = JSON.stringify(action.payload.dataLogin);
       localStorage.loginSession = JSON.stringify(action.payload.dataLogin);
     },
+
     logout: (state) => {
       state.loginSession = "{}";
       localStorage.loginSession = "{}";

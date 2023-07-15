@@ -77,6 +77,7 @@ const Dashboard = () => {
       );
   };
   useEffect(() => {
+    // setTimeout(getData, 10000);
     getData();
   }, []);
   return (
@@ -98,7 +99,7 @@ const Dashboard = () => {
         </HStack>
 
         <Text as="b" fontSize="22px" color="blue.500" marginBottom="20px">
-          Kedai Reztopia POS
+          Reztopia POS
         </Text>
 
         <InputGroup backgroundColor="white" marginBottom="20px">
