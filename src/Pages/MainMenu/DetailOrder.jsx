@@ -79,9 +79,10 @@ const DetailOrder = () => {
       setIsLoading(false);
     }
   };
-  return detailOrder ? (
+  return detailOrder.history ? (
     <>
       {isLoading ? <LoadingScreen /> : null}
+      <Text>{JSON.stringify(detailOrder.history)}</Text>
       <div className="main-menu">
         <HStack
           width="100%"

@@ -160,28 +160,34 @@ const Order = () => {
                     icon={<MinusIcon />}
                     aria-label={""}
                     onClick={async () => {
-                      await axios
-                        .post(
-                          `${apiUrl}/api/cart/quantity`,
-                          {
-                            id_product: item.id_product,
-                            min: 1,
-                          },
-                          {
-                            headers: {
-                              Authorization: `${
-                                JSON.parse(loginSession).token.token_type
-                              } ${JSON.parse(loginSession).token.access_token}`,
+                      setIsLoading(true);
+                      try {
+                        await axios
+                          .post(
+                            `${apiUrl}/api/cart/quantity`,
+                            {
+                              id_product: item.id_product,
+                              min: 1,
                             },
-                          }
-                        )
-                        .then((response) => {
-                          if (response.status === 200) {
-                            // response=> console.log(response)
-                            getCart();
-                          } else {
-                          }
-                        });
+                            {
+                              headers: {
+                                Authorization: `${
+                                  JSON.parse(loginSession).token.token_type
+                                } ${
+                                  JSON.parse(loginSession).token.access_token
+                                }`,
+                              },
+                            }
+                          )
+                          .then((response) => {
+                            if (response.status === 200) {
+                              setIsLoading(false);
+                              getCart();
+                            }
+                          });
+                      } catch (error) {
+                        setIsLoading(false);
+                      }
                     }}
                   />
                   <Text>{item.quantity}</Text>
@@ -193,28 +199,34 @@ const Order = () => {
                     icon={<AddIcon />}
                     aria-label={""}
                     onClick={async () => {
-                      await axios
-                        .post(
-                          `${apiUrl}/api/cart/quantity`,
-                          {
-                            id_product: item.id_product,
-                            plus: 1,
-                          },
-                          {
-                            headers: {
-                              Authorization: `${
-                                JSON.parse(loginSession).token.token_type
-                              } ${JSON.parse(loginSession).token.access_token}`,
+                      setIsLoading(true);
+                      try {
+                        await axios
+                          .post(
+                            `${apiUrl}/api/cart/quantity`,
+                            {
+                              id_product: item.id_product,
+                              plus: 1,
                             },
-                          }
-                        )
-                        .then((response) => {
-                          if (response.status === 200) {
-                            // response=> console.log(response)
-                            getCart();
-                          } else {
-                          }
-                        });
+                            {
+                              headers: {
+                                Authorization: `${
+                                  JSON.parse(loginSession).token.token_type
+                                } ${
+                                  JSON.parse(loginSession).token.access_token
+                                }`,
+                              },
+                            }
+                          )
+                          .then((response) => {
+                            if (response.status === 200) {
+                              setIsLoading(false);
+                              getCart();
+                            }
+                          });
+                      } catch (error) {
+                        setIsLoading(false);
+                      }
                     }}
                   />
                 </HStack>

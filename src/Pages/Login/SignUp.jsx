@@ -32,7 +32,7 @@ import { actions } from "../../store";
 
 const SignUp = () => {
   const apiUrl = useSelector((state) => state.apiUrl);
-  const isLoading = useSelector((state) => state.isLoadingPage);
+  const [isLoading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [namaLengkapInput, setNamaLengkapInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
@@ -46,38 +46,40 @@ const SignUp = () => {
     if (loginSessionAuth(window.location.href.split("/")[3], loginSession)) {
       navigate("/MainMenu");
     }
-    dispatch(actions.setIsloading({ value: false }));
+    setLoading(false);
   }, [loginSession]);
   // }
 
   const submitSignUp = async (event) => {
     event.preventDefault();
-    const requestBody = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: namaLengkapInput,
-        email: emailInput,
-        password: passwordInput,
-      }),
-    };
-    await fetch(`${apiUrl}/api/register`, requestBody).then((response) =>
-      response.json().then((response) => {
-        if (response.meta.status === "success") {
-          onOpen();
-        } else {
-          toast({
-            title: `${response.data[0]}`,
-            description: "Try again input",
-            status: "error",
-            duration: 1500,
-            isClosable: true,
-            variant: "subtle",
-            position: "top",
-          });
-        }
-      })
-    );
+    try {
+      const requestBody = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: namaLengkapInput,
+          email: emailInput,
+          password: passwordInput,
+        }),
+      };
+      await fetch(`${apiUrl}/api/register`, requestBody).then((response) =>
+        response.json().then((response) => {
+          if (response.meta.status === "success") {
+            onOpen();
+          }
+        })
+      );
+    } catch (error) {
+      toast({
+        title: `${response.data[0]}`,
+        description: "Try again input",
+        status: "error",
+        duration: 1500,
+        isClosable: true,
+        variant: "subtle",
+        position: "top",
+      });
+    }
   };
   const toast = useToast({
     containerStyle: {
@@ -169,7 +171,7 @@ const SignUp = () => {
 
         <Center
           onClick={() => {
-            dispatch(actions.setIsloading({ value: true }));
+            setLoading(true);
             navigate("/Login");
           }}
           cursor="pointer"
@@ -189,7 +191,7 @@ const SignUp = () => {
           <ModalFooter>
             <Button
               onClick={() => {
-                dispatch(actions.setIsloading({ value: true }));
+                setLoading(true);
                 navigate("/Login");
               }}
             >

@@ -5,7 +5,7 @@ const LoadingScreen = () => {
     <Stack
       width="100%"
       height="100vh"
-      position="absolute"
+      position="fixed"
       top="0px"
       backgroundColor="rgb(255,255,255,1)"
       align="center"

@@ -2,12 +2,13 @@ import { Button, HStack, Stack, Text } from "@chakra-ui/react";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { actions } from "../../../store";
 import axios from "axios";
 import LoadingScreen from "../../../Components/LoadingScreen";
 const Riwayat = () => {
   const apiUrl = useSelector((state) => state.apiUrl);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
   const histories = useSelector((state) => state.histories);
@@ -17,8 +18,6 @@ const Riwayat = () => {
   const port = useSelector((state) => state.port);
   const loginSession = useSelector((state) => state.loginSession);
   const getDataTagihan = async () => {
-    // setIsLoading(true);
-
     try {
       setIsLoading(true);
       console.log("try");
@@ -176,8 +175,9 @@ const Riwayat = () => {
                                       }
                                     )
                                     .then(() => {
-                                      getDataTagihan();
                                       setIsLoading(false);
+                                      getDataTagihan();
+                                      // navigate("/MainMenu/riwayat");
                                     });
                                 } catch (error) {
                                   setIsLoading(false);

@@ -15,7 +15,7 @@ import LoadingScreen from "/src/Components/LoadingScreen";
 const Login = () => {
   const apiUrl = useSelector((state) => state.apiUrl);
   const navigate = useNavigate();
-  const isLoading = useSelector((state) => state.isLoadingPage);
+  const [isLoading, setLoading] = useState(true);
 
   // Check sessionLogin {
   const loginSession = useSelector((state) => state.loginSession);
@@ -23,7 +23,7 @@ const Login = () => {
     if (loginSessionAuth(window.location.href.split("/")[3], loginSession)) {
       navigate("/MainMenu");
     }
-    dispatch(actions.setIsloading({ value: false }));
+    setLoading(false);
   }, [loginSession]);
   // }
 
@@ -32,7 +32,7 @@ const Login = () => {
   const [passwordInput, setPasswordInput] = useState("");
 
   const submitLogin = async (event) => {
-    dispatch(actions.setIsloading({ value: true }));
+    setLoading(true);
     event.preventDefault();
     const requestLoginBody = {
       method: "POST",
@@ -57,7 +57,7 @@ const Login = () => {
         dispatch(actions.login({ dataLogin: dataLogin }));
       });
     } else {
-      dispatch(actions.setIsloading({ value: false }));
+      setLoading(false);
       toast({
         title: "Wrong email/password ! .",
         description: "Try again input",
@@ -76,6 +76,7 @@ const Login = () => {
   });
   return (
     <>
+      {isLoading ? <LoadingScreen /> : null}
       <form
         action=""
         className="main-login"
@@ -147,7 +148,7 @@ const Login = () => {
           variant="outline"
           marginBottom="20px"
         >
-          Login with SSO
+          Registrasi
         </Button>
       </form>
     </>
