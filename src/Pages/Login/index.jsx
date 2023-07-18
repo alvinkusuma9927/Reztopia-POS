@@ -148,7 +148,7 @@ const Login = () => {
           variant="outline"
           marginBottom="20px"
         >
-          Registrasi
+          Register
         </Button>
       </form>
     </>

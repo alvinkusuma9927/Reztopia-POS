@@ -171,7 +171,7 @@ const OutletMenu = () => {
             cursor="pointer"
           />
           <Text fontSize="22px" as="b">
-            Menu {modal.modal_type}
+            Menu
           </Text>
           {/* <LocalGroceryStoreOutlinedIcon sx={{ color:'#6697BF' }}/> */}
           <LocalGroceryStoreOutlinedIcon sx={{ color: "rgba(0,0,0,0)" }} />
@@ -213,7 +213,41 @@ const OutletMenu = () => {
           {dataMenu.map((product) =>
             product.name_product
               .toLowerCase()
-              .includes(searchInput.toLocaleLowerCase()) ? (
+              .includes(searchInput.toLocaleLowerCase()) &&
+            filterDataMenu == "" ? (
+              <div
+                key={product.id_product}
+                onClick={() => openModal(product)}
+                style={{
+                  marginBottom: "20px",
+                  marginRight: "20px",
+                  cursor: "pointer",
+                }}
+              >
+                <img
+                  src={product.image_product.replace("localhost", port)}
+                  style={{
+                    width: "161px",
+                    height: "171px",
+                    objectFit: "cover",
+                    borderRadius: "20px",
+                  }}
+                />
+                <Stack maxWidth="161px">
+                  <Text as="b">{product.name_product}</Text>
+                  <HStack>
+                    <Text>Rp.{product.price_after_discount}</Text>
+                    <Text color="#7C7979" as="del">
+                      {product.original_price}
+                    </Text>
+                    {/* <Text>{product.image_product.replace('localhost',port)}</Text> */}
+                  </HStack>
+                </Stack>
+              </div>
+            ) : product.name_product
+                .toLowerCase()
+                .includes(searchInput.toLocaleLowerCase()) &&
+              filterDataMenu == product.id_category ? (
               <div
                 key={product.id_product}
                 onClick={() => openModal(product)}

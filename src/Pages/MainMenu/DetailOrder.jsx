@@ -82,7 +82,7 @@ const DetailOrder = () => {
   return detailOrder.history ? (
     <>
       {isLoading ? <LoadingScreen /> : null}
-      <Text>{JSON.stringify(detailOrder.history)}</Text>
+      {/* <Text>{JSON.stringify(detailOrder.history)}</Text> */}
       <div className="main-menu">
         <HStack
           width="100%"
@@ -97,25 +97,34 @@ const DetailOrder = () => {
           <Text fontSize="22px" as="b">
             Detail Order
           </Text>
-          <LocalGroceryStoreOutlinedIcon sx={{ color: "#6697BF" }} />
+          <LocalGroceryStoreOutlinedIcon sx={{ color: "#f6fbfd" }} />
         </HStack>
         {/* <Text>{JSON.stringify(detailOrder)}</Text> */}
 
         {/* <Text color="blue.600">
-          {detailOrder.history[0].status_order.toUpperCase()}
+          {detailOrder.history[0].payment_status.toUpperCase()}
         </Text> */}
         <Text>Status Pembayaran</Text>
-        <Text
-          fontSize="24px"
-          as="b"
-          color={
-            detailOrder.history[0].payment_status.toUpperCase() === "SUCCESS"
-              ? "blue.600"
-              : "#F29339"
-          }
-        >
-          {detailOrder.history[0].payment_status.toUpperCase()}
-        </Text>
+        {detailOrder.history[0].payment_status != null ? (
+          <Text
+            fontSize="24px"
+            as="b"
+            color={
+              detailOrder.history[0].payment_status.toUpperCase() === "SUCCESS"
+                ? "#6aa84f"
+                : detailOrder.history[0].payment_status.toUpperCase() ===
+                  "CANCELLED"
+                ? "#cc0000"
+                : "#f1c232"
+            }
+          >
+            {detailOrder.history[0].payment_status.toUpperCase()}
+          </Text>
+        ) : (
+          <Text fontSize="24px" as="b" color="#3d85c6">
+            Belum Memilih Metode Pembayaran
+          </Text>
+        )}
 
         <HStack
           marginBottom="20px"
@@ -202,7 +211,9 @@ const DetailOrder = () => {
             <Text fontSize="12px" color="#7C7979">
               Keterangan
             </Text>
-            <Text fontSize="12px">{detailOrder.history[0].type_order}</Text>
+            <Text fontSize="12px">
+              {detailOrder.history[0].order_type.replace("_", " ")}
+            </Text>
           </HStack>
           <HStack justifyContent="space-between">
             <Text fontSize="12px" color="#7C7979">

@@ -201,6 +201,7 @@ const Akun = (props) => {
                 <MenuButton>
                   <AiFillSetting
                     as={Button}
+                    color="#6898C0"
                     fontSize={"22px"}
                     alignSelf="flex-end"
                   />

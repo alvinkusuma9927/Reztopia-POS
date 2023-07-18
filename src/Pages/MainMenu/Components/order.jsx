@@ -377,7 +377,8 @@ const Order = () => {
                       .then((response) => {
                         if (response.status === 200) {
                           // response=> console.log(response)
-                          getCart();
+                          // getCart();
+                          navigate("/MainMenu/riwayat");
                           setIsLoading(false);
                         } else {
                           setIsLoading(false);

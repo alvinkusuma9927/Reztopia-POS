@@ -1,4 +1,16 @@
-import { Button, HStack, Stack, Text } from "@chakra-ui/react";
+import {
+  Button,
+  HStack,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Stack,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +29,8 @@ const Riwayat = () => {
   const [selectedTab, setSelectedTab] = useState("tagihan");
   const port = useSelector((state) => state.port);
   const loginSession = useSelector((state) => state.loginSession);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [itemBatal, setItemBatal] = useState("");
   const getDataTagihan = async () => {
     try {
       setIsLoading(true);
@@ -106,7 +120,12 @@ const Riwayat = () => {
                         <Text as="b">{item.date_order}</Text>
                       </HStack>
 
-                      <Button colorScheme="blue" variant="ghost">
+                      <Button
+                        colorScheme={
+                          item.payment_status === null ? "blue" : "red"
+                        }
+                        variant="ghost"
+                      >
                         {item.payment_status !== null
                           ? item.payment_status
                           : "Belum Memilih Metode Pembayaran"}
@@ -157,31 +176,8 @@ const Riwayat = () => {
                             </Link>
                             <Button
                               onClick={async () => {
-                                try {
-                                  setIsLoading(true);
-                                  await axios
-                                    .get(
-                                      `${apiUrl}/api/cart/failed-order/${item.id_order}`,
-                                      {
-                                        headers: {
-                                          Authorization: `${
-                                            JSON.parse(loginSession).token
-                                              .token_type
-                                          } ${
-                                            JSON.parse(loginSession).token
-                                              .access_token
-                                          }`,
-                                        },
-                                      }
-                                    )
-                                    .then(() => {
-                                      setIsLoading(false);
-                                      getDataTagihan();
-                                      // navigate("/MainMenu/riwayat");
-                                    });
-                                } catch (error) {
-                                  setIsLoading(false);
-                                }
+                                onOpen();
+                                setItemBatal(item.id_order);
                               }}
                               colorScheme="red"
                             >
@@ -275,6 +271,52 @@ const Riwayat = () => {
               )
           : null}
       </div>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Batal</ModalHeader>
+          {/* <ModalCloseButton /> */}
+          <ModalBody>
+            <Text>Apakah anda yakin akan membatalkan pesanan ? </Text>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button
+              colorScheme="red"
+              mr={3}
+              onClick={async () => {
+                try {
+                  setIsLoading(true);
+                  await axios
+                    .get(`${apiUrl}/api/cart/failed-order/${itemBatal}`, {
+                      headers: {
+                        Authorization: `${
+                          JSON.parse(loginSession).token.token_type
+                        } ${JSON.parse(loginSession).token.access_token}`,
+                      },
+                    })
+                    .then(() => {
+                      setIsLoading(false);
+                      getDataTagihan();
+                      onClose();
+                      setItemBatal("");
+                      // navigate("/MainMenu/riwayat");
+                    });
+                } catch (error) {
+                  console.log(error);
+                  setItemBatal("");
+                  setIsLoading(false);
+                }
+              }}
+            >
+              Iya
+            </Button>
+            <Button variant="ghost" onClick={onClose}>
+              Tidak
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   );
 };

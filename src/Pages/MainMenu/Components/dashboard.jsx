@@ -122,10 +122,9 @@ const Dashboard = () => {
             <img
               style={{
                 display: "block",
-                objectFit: "cover",
                 borderRadius: "10px",
               }}
-              src="/public/assets/Carousel1.png"
+              src="/public/assets/carousel-1.png"
               alt=""
             />
           </SwiperSlide>
@@ -133,10 +132,9 @@ const Dashboard = () => {
             <img
               style={{
                 display: "block",
-                objectFit: "cover",
                 borderRadius: "10px",
               }}
-              src="/public/assets/BaksoKomplit.png"
+              src="/public/assets/carousel-2.png"
               alt=""
             />
           </SwiperSlide>
@@ -144,10 +142,9 @@ const Dashboard = () => {
             <img
               style={{
                 display: "block",
-                objectFit: "cover",
                 borderRadius: "10px",
               }}
-              src="/public/assets/MieGoreng.png"
+              src="/public/assets/carousel-3.png"
               alt=""
             />
           </SwiperSlide>
