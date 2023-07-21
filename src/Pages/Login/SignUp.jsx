@@ -151,12 +151,12 @@ const SignUp = () => {
           />
         </InputGroup>
 
-        <HStack marginBottom="20px">
+        {/* <HStack marginBottom="20px">
           <Text>i accept the</Text>
           <Text as="b" color="#6597BF">
             Therm & Condition
           </Text>
-        </HStack>
+        </HStack> */}
 
         <Button
           onClick={submitSignUp}

@@ -28,7 +28,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
-import { Pagination } from "swiper";
+import { Autoplay, Navigation, Pagination } from "swiper";
 import LoadingScreen from "../../../Components/LoadingScreen";
 import { useDispatch, useSelector } from "react-redux";
 import { actions } from "../../../store";
@@ -115,8 +115,13 @@ const Dashboard = () => {
           spaceBetween={30}
           loop={true}
           pagination={{ clickable: true }}
-          modules={[Pagination]}
+          navigation={true}
+          modules={[Autoplay, Pagination, Navigation]}
           className="mySwiper"
+          autoplay={{
+            delay: 3000,
+          }}
+          n
         >
           <SwiperSlide>
             <img

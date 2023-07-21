@@ -237,9 +237,7 @@ const DetailOrder = () => {
             <Text fontSize="12px" color="#7C7979">
               Total Harga
             </Text>
-            <Text fontSize="12px">
-              Rp.{JSON.stringify(detailOrder.history[0].total_order)}
-            </Text>
+            <Text fontSize="12px">Rp.{detailOrder.history[0].total_order}</Text>
           </HStack>
 
           <hr style={{ marginTop: "20px", marginBottom: "20px" }} />
