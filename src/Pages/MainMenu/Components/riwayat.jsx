@@ -120,7 +120,27 @@ const Riwayat = () => {
                         <Text as="b">{item.date_order}</Text>
                       </HStack>
 
-                      <Button
+                      {item.payment_status != null ? (
+                        <Button
+                          color={
+                            `${item.payment_status}`.toUpperCase() === "SUCCESS"
+                              ? "#6aa84f"
+                              : `${item.payment_status}`.toUpperCase() ===
+                                "CANCELED"
+                              ? "#cc0000"
+                              : "#f1c232"
+                          }
+                          variant="ghost"
+                        >
+                          {item.status.toUpperCase()}
+                        </Button>
+                      ) : (
+                        <Button color="#3d85c6">
+                          Belum Memilih Metode Pembayaran
+                        </Button>
+                      )}
+
+                      {/* <Button
                         colorScheme={
                           item.payment_status === null ? "blue" : "red"
                         }
@@ -129,7 +149,7 @@ const Riwayat = () => {
                         {item.payment_status !== null
                           ? item.status.toUpperCase()
                           : "Belum Memilih Metode Pembayaran"}
-                      </Button>
+                      </Button> */}
                     </div>
 
                     <div style={{ display: "flex", marginBottom: "20px" }}>
@@ -147,14 +167,17 @@ const Riwayat = () => {
                         }}
                       />
                       <div>
-                        <Text fontSize="16px" as="b">
-                          {item.name}
-                        </Text>
-
-                        {/* <Text>1 x Rp.15000</Text>
-                <Text color="#7C7979" fontSize="10px">
-                  dan 3 item lainya
-                </Text> */}
+                        <Stack>
+                          <Text fontSize="16px" as="b">
+                            {item.name}
+                          </Text>
+                          <Text>
+                            {item.quantity} x Rp.{item.price_product}
+                          </Text>
+                          {/* <Text color="#7C7979" fontSize="10px">
+                            dan 3 item lainya
+                          </Text> */}
+                        </Stack>
                       </div>
                     </div>
 
@@ -221,9 +244,29 @@ const Riwayat = () => {
                         <Text as="b">{item.date_order}</Text>
                       </HStack>
 
-                      <Button colorScheme="blue" variant="ghost">
+                      {item.payment_status != null ? (
+                        <Button
+                          color={
+                            `${item.payment_status}`.toUpperCase() === "SUCCESS"
+                              ? "#6aa84f"
+                              : `${item.payment_status}`.toUpperCase() ===
+                                "CANCELED"
+                              ? "#cc0000"
+                              : "#f1c232"
+                          }
+                          variant="ghost"
+                        >
+                          {item.status.toUpperCase()}
+                        </Button>
+                      ) : (
+                        <Button color="#3d85c6">
+                          Belum Memilih Metode Pembayaran
+                        </Button>
+                      )}
+
+                      {/* <Button colorScheme="blue" variant="ghost">
                         {item.status.toUpperCase()}
-                      </Button>
+                      </Button> */}
                     </div>
 
                     <div style={{ display: "flex", marginBottom: "20px" }}>
@@ -247,9 +290,9 @@ const Riwayat = () => {
                           <Text>
                             {item.quantity} x Rp.{item.price_product}
                           </Text>
-                          <Text color="#7C7979" fontSize="10px">
+                          {/* <Text color="#7C7979" fontSize="10px">
                             dan 3 item lainya
-                          </Text>
+                          </Text> */}
                         </Stack>
                       </div>
                     </div>

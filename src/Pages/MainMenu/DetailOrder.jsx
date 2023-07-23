@@ -125,7 +125,7 @@ const DetailOrder = () => {
                 {detailOrder.history[0].status_order.toUpperCase()}
               </Text>
             ) : (
-              <Text fontSize="24px" as="b" color="#3d85c6">
+              <Text fontSize="16px" as="b" color="#3d85c6">
                 Belum Memilih Metode Pembayaran
               </Text>
             )}
@@ -231,7 +231,7 @@ const DetailOrder = () => {
                 </Text>
               </HStack>
               <hr style={{ marginTop: "20px", marginBottom: "20px" }} />
-              <HStack justifyContent="space-between">
+              {/* <HStack justifyContent="space-between">
                 <Text fontSize="12px" color="#7C7979">
                   Metode Pembayaran
                 </Text>
@@ -239,7 +239,7 @@ const DetailOrder = () => {
                   {detailOrder.history[0].payment_method_order}
                 </Text>
               </HStack>
-              <hr style={{ marginTop: "20px", marginBottom: "20px" }} />
+              <hr style={{ marginTop: "20px", marginBottom: "20px" }} /> */}
               <HStack justifyContent="space-between">
                 <Text fontSize="12px" color="#7C7979">
                   Total Harga

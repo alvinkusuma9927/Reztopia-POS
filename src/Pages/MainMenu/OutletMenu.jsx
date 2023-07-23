@@ -224,7 +224,7 @@ const OutletMenu = () => {
               <Stack
                 key={product.id_product}
                 onClick={() => openModal(product)}
-                width={"171px"}
+                width={"150px"}
                 marginBottom={"30px"}
                 marginRight={"20px"}
                 cursor={"pointer"}
