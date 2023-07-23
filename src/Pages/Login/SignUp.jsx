@@ -98,7 +98,7 @@ const SignUp = () => {
 
         <Stack width="335.61px" alignSelf="center">
           <Text as="b" alignSelf="flex-start" color="#6597BF" marginTop="40px">
-            Full Name
+            Nama
           </Text>
         </Stack>
         <Input
@@ -166,7 +166,7 @@ const SignUp = () => {
           colorScheme="blue"
           marginBottom="20px"
         >
-          Create Account
+          Membuat Akun
         </Button>
 
         <Center
@@ -177,9 +177,9 @@ const SignUp = () => {
           cursor="pointer"
           marginBottom="20px"
         >
-          <Text marginRight="5px">Exiting Member?</Text>
+          <Text marginRight="5px">Sudah memiliki akun?</Text>
           <Text as="b" color="#6597BF">
-            Sign In
+            Masuk
           </Text>
         </Center>
       </form>

@@ -127,7 +127,7 @@ const Riwayat = () => {
                         variant="ghost"
                       >
                         {item.payment_status !== null
-                          ? item.payment_status
+                          ? item.status.toUpperCase()
                           : "Belum Memilih Metode Pembayaran"}
                       </Button>
                     </div>
@@ -222,7 +222,7 @@ const Riwayat = () => {
                       </HStack>
 
                       <Button colorScheme="blue" variant="ghost">
-                        Selesai
+                        {item.status.toUpperCase()}
                       </Button>
                     </div>
 

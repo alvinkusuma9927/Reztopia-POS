@@ -2,7 +2,7 @@ import { createSlice, configureStore } from "@reduxjs/toolkit";
 const states = createSlice({
   name: "states",
   initialState: {
-    apiUrl: "https://reztopia.biz.id",
+    apiUrl: "https://reztopia.biz.id/public",
     // apiUrl: "http://reztopia.my.id:8000",
     // apiUrl: "http://127.0.0.1:8000",
     // apiUrl: "https://reztopia.000webhostapp.com",

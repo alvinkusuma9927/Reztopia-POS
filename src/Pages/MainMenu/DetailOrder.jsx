@@ -79,7 +79,7 @@ const DetailOrder = () => {
       setIsLoading(false);
     }
   };
-  return detailOrder.history ? (
+  return (
     <>
       {isLoading ? <LoadingScreen /> : null}
       {/* <Text>{JSON.stringify(detailOrder.history)}</Text> */}
@@ -105,151 +105,162 @@ const DetailOrder = () => {
           {detailOrder.history[0].payment_status.toUpperCase()}
         </Text> */}
         <Text>Status Pembayaran</Text>
-        {detailOrder.history[0].payment_status != null ? (
-          <Text
-            fontSize="24px"
-            as="b"
-            color={
-              detailOrder.history[0].payment_status.toUpperCase() === "SUCCESS"
-                ? "#6aa84f"
-                : detailOrder.history[0].payment_status.toUpperCase() ===
-                  "CANCELLED"
-                ? "#cc0000"
-                : "#f1c232"
-            }
-          >
-            {detailOrder.history[0].payment_status.toUpperCase()}
-          </Text>
-        ) : (
-          <Text fontSize="24px" as="b" color="#3d85c6">
-            Belum Memilih Metode Pembayaran
-          </Text>
-        )}
 
-        <HStack
-          marginBottom="20px"
-          marginTop="15px"
-          justifyContent="space-between"
-        >
-          <Text fontSize="12px" color="#7C7979">
-            Tanggal Pembelian
-          </Text>
-          {/* <Text fontSize="12px">01 November 2022, 18:15 WIB</Text> */}
-          <Text fontSize="12px">{detailOrder.history[0].date_order}</Text>
-        </HStack>
+        {detailOrder.history ? (
+          <>
+            {detailOrder.history[0].payment_status != null ? (
+              <Text
+                fontSize="24px"
+                as="b"
+                color={
+                  detailOrder.history[0].payment_status.toUpperCase() ===
+                  "SUCCESS"
+                    ? "#6aa84f"
+                    : detailOrder.history[0].payment_status.toUpperCase() ===
+                      "CANCELLED"
+                    ? "#cc0000"
+                    : "#f1c232"
+                }
+              >
+                {detailOrder.history[0].status_order.toUpperCase()}
+              </Text>
+            ) : (
+              <Text fontSize="24px" as="b" color="#3d85c6">
+                Belum Memilih Metode Pembayaran
+              </Text>
+            )}
 
-        <Text marginBottom="10px" as="b">
-          Detail Product
-        </Text>
+            <HStack
+              marginBottom="20px"
+              marginTop="15px"
+              justifyContent="space-between"
+            >
+              <Text fontSize="12px" color="#7C7979">
+                Tanggal Pembelian
+              </Text>
+              {/* <Text fontSize="12px">01 November 2022, 18:15 WIB</Text> */}
+              <Text fontSize="12px">{detailOrder.history[0].date_order}</Text>
+            </HStack>
 
-        <Box
-          marginBottom="20px"
-          borderRadius="20px"
-          backgroundColor="white"
-          padding="25px"
-          boxShadow="0px 0px 25px rgba(192, 192, 192, 0.2)"
-        >
-          {/* <Text>{JSON.stringify(detailOrder.product)}</Text> */}
+            <Text marginBottom="10px" as="b">
+              Detail Product
+            </Text>
 
-          {detailOrder.product.map((item, index) => (
-            <div key={index} style={{ display: "flex", marginBottom: "20px" }}>
-              <Image
-                height="71px"
-                aspectRatio="1/1"
-                objectFit="cover"
-                maxW={{ base: "100%", sm: "200px" }}
-                src={item.image_product.replace("localhost", port)}
-                borderRadius="20px"
-                alignItems="flex-start"
-                marginRight="20px"
-              />
-              <div>
-                <Text fontSize="16px" as="b">
-                  {item.product_name}
+            <Box
+              marginBottom="20px"
+              borderRadius="20px"
+              backgroundColor="white"
+              padding="25px"
+              boxShadow="0px 0px 25px rgba(192, 192, 192, 0.2)"
+            >
+              {/* <Text>{JSON.stringify(detailOrder.product)}</Text> */}
+
+              {detailOrder.product.map((item, index) => (
+                <div
+                  key={index}
+                  style={{ display: "flex", marginBottom: "20px" }}
+                >
+                  <Image
+                    height="71px"
+                    aspectRatio="1/1"
+                    objectFit="cover"
+                    maxW={{ base: "100%", sm: "200px" }}
+                    src={item.image_product.replace("localhost", port)}
+                    borderRadius="20px"
+                    alignItems="flex-start"
+                    marginRight="20px"
+                  />
+                  <div>
+                    <Text fontSize="16px" as="b">
+                      {item.product_name}
+                    </Text>
+                    <Text>
+                      {item.quantity_order} x Rp.{item.price_product}
+                    </Text>
+                  </div>
+                </div>
+              ))}
+
+              <hr />
+              <HStack justifyContent="space-between" marginTop="10px">
+                <Text color="blue.600">Total</Text>
+                <Text color="blue.600">
+                  Rp.{detailOrder.history[0].total_order}
                 </Text>
-                <Text>
-                  {item.quantity_order} x Rp.{item.price_product}
+              </HStack>
+            </Box>
+
+            <Box
+              borderRadius="20px"
+              backgroundColor="white"
+              padding="25px"
+              boxShadow="0px 0px 25px rgba(192, 192, 192, 0.2)"
+              marginBottom="60px"
+            >
+              <Text as="b">Rincian Pembayaran</Text>
+              <HStack marginTop="20px" justifyContent="space-between">
+                <Text fontSize="12px" color="#7C7979">
+                  Nama Pemesan
                 </Text>
-              </div>
-            </div>
-          ))}
+                <Text fontSize="12px">
+                  {detailOrder.history[0].name_user_order}
+                </Text>
+              </HStack>
+              <HStack justifyContent="space-between">
+                <Text fontSize="12px" color="#7C7979">
+                  Nomor Meja
+                </Text>
+                <Text fontSize="12px">
+                  {detailOrder.history[0].table_number_order}
+                </Text>
+              </HStack>
+              <HStack justifyContent="space-between">
+                <Text fontSize="12px" color="#7C7979">
+                  Keterangan
+                </Text>
+                <Text fontSize="12px">
+                  {detailOrder.history[0].order_type.replace("_", " ")}
+                </Text>
+              </HStack>
+              <HStack justifyContent="space-between">
+                <Text fontSize="12px" color="#7C7979">
+                  Tenant
+                </Text>
+                <Text fontSize="12px">
+                  {detailOrder.history[0].tenant_name_order}
+                </Text>
+              </HStack>
+              <hr style={{ marginTop: "20px", marginBottom: "20px" }} />
+              <HStack justifyContent="space-between">
+                <Text fontSize="12px" color="#7C7979">
+                  Metode Pembayaran
+                </Text>
+                <Text fontSize="12px">
+                  {detailOrder.history[0].payment_method_order}
+                </Text>
+              </HStack>
+              <hr style={{ marginTop: "20px", marginBottom: "20px" }} />
+              <HStack justifyContent="space-between">
+                <Text fontSize="12px" color="#7C7979">
+                  Total Harga
+                </Text>
+                <Text fontSize="12px">
+                  Rp.{detailOrder.history[0].total_order}
+                </Text>
+              </HStack>
 
-          <hr />
-          <HStack justifyContent="space-between" marginTop="10px">
-            <Text color="blue.600">Total</Text>
-            <Text color="blue.600">
-              Rp.{JSON.stringify(detailOrder.history[0].total_order)}
-            </Text>
-          </HStack>
-        </Box>
-
-        <Box
-          borderRadius="20px"
-          backgroundColor="white"
-          padding="25px"
-          boxShadow="0px 0px 25px rgba(192, 192, 192, 0.2)"
-          marginBottom="60px"
-        >
-          <Text as="b">Rincian Pembayaran</Text>
-          <HStack marginTop="20px" justifyContent="space-between">
-            <Text fontSize="12px" color="#7C7979">
-              Nama Pemesan
-            </Text>
-            <Text fontSize="12px">
-              {detailOrder.history[0].name_user_order}
-            </Text>
-          </HStack>
-          <HStack justifyContent="space-between">
-            <Text fontSize="12px" color="#7C7979">
-              Nomor Meja
-            </Text>
-            <Text fontSize="12px">
-              {detailOrder.history[0].table_number_order}
-            </Text>
-          </HStack>
-          <HStack justifyContent="space-between">
-            <Text fontSize="12px" color="#7C7979">
-              Keterangan
-            </Text>
-            <Text fontSize="12px">
-              {detailOrder.history[0].order_type.replace("_", " ")}
-            </Text>
-          </HStack>
-          <HStack justifyContent="space-between">
-            <Text fontSize="12px" color="#7C7979">
-              Tenant
-            </Text>
-            <Text fontSize="12px">
-              {detailOrder.history[0].tenant_name_order}
-            </Text>
-          </HStack>
-          <hr style={{ marginTop: "20px", marginBottom: "20px" }} />
-          <HStack justifyContent="space-between">
-            <Text fontSize="12px" color="#7C7979">
-              Metode Pembayaran
-            </Text>
-            <Text fontSize="12px">
-              {detailOrder.history[0].payment_method_order}
-            </Text>
-          </HStack>
-          <hr style={{ marginTop: "20px", marginBottom: "20px" }} />
-          <HStack justifyContent="space-between">
-            <Text fontSize="12px" color="#7C7979">
-              Total Harga
-            </Text>
-            <Text fontSize="12px">Rp.{detailOrder.history[0].total_order}</Text>
-          </HStack>
-
-          <hr style={{ marginTop: "20px", marginBottom: "20px" }} />
-          <HStack justifyContent="space-between">
-            <Text as="b">Total Belanja</Text>
-            <Text as="b">
-              Rp.{JSON.stringify(detailOrder.history[0].total_order)}
-            </Text>
-          </HStack>
-        </Box>
+              <hr style={{ marginTop: "20px", marginBottom: "20px" }} />
+              <HStack justifyContent="space-between">
+                <Text as="b">Total Belanja</Text>
+                <Text as="b">
+                  Rp.{JSON.stringify(detailOrder.history[0].total_order)}
+                </Text>
+              </HStack>
+            </Box>
+          </>
+        ) : null}
       </div>
     </>
-  ) : null;
+  );
 };
 export default DetailOrder;

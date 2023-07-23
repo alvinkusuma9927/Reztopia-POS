@@ -82,11 +82,16 @@ const OutletMenu = () => {
         if (response.data !== undefined) {
           setDataMenu(response.data);
           let newTypeMenu = [];
+          let addedTypeMenu = [];
           for (let item of response.data) {
-            newTypeMenu.push({
+            let itemData = {
               id: item.id_category,
               name: item.name_category,
-            });
+            };
+            if (!addedTypeMenu.includes(itemData.id)) {
+              newTypeMenu.push(itemData);
+              addedTypeMenu.push(itemData.id);
+            }
           }
           setTypeMenu(newTypeMenu);
         }
@@ -208,6 +213,7 @@ const OutletMenu = () => {
             width: "100%",
             paddingBottom: "70px",
             marginTop: "20px",
+            justifyContent: "center",
           }}
         >
           {dataMenu.map((product) =>
@@ -215,20 +221,19 @@ const OutletMenu = () => {
               .toLowerCase()
               .includes(searchInput.toLocaleLowerCase()) &&
             filterDataMenu == "" ? (
-              <div
+              <Stack
                 key={product.id_product}
                 onClick={() => openModal(product)}
-                style={{
-                  marginBottom: "20px",
-                  marginRight: "20px",
-                  cursor: "pointer",
-                }}
+                width={"171px"}
+                marginBottom={"30px"}
+                marginRight={"20px"}
+                cursor={"pointer"}
               >
                 <img
                   src={product.image_product.replace("localhost", port)}
                   style={{
-                    width: "161px",
-                    height: "171px",
+                    width: "100%",
+                    aspectRatio: "1/1",
                     objectFit: "cover",
                     borderRadius: "20px",
                   }}
@@ -243,7 +248,7 @@ const OutletMenu = () => {
                     {/* <Text>{product.image_product.replace('localhost',port)}</Text> */}
                   </HStack>
                 </Stack>
-              </div>
+              </Stack>
             ) : product.name_product
                 .toLowerCase()
                 .includes(searchInput.toLocaleLowerCase()) &&

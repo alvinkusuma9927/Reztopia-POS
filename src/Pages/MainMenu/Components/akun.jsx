@@ -244,7 +244,7 @@ const Akun = (props) => {
             <Table>
               <Tr>
                 <Td>
-                  <Text as="b">Name</Text>
+                  <Text as="b">Nama</Text>
                 </Td>
 
                 {!isEdit ? (
@@ -281,7 +281,7 @@ const Akun = (props) => {
               </Tr>
               <Tr>
                 <Td>
-                  <Text as="b">Phone</Text>
+                  <Text as="b">Telepon</Text>
                 </Td>
                 {!isEdit ? (
                   <Td>

@@ -137,7 +137,7 @@ const Login = () => {
           colorScheme="blue"
           marginBottom="20px"
         >
-          Login
+          Masuk
         </Button>
         <Button
           onClick={() => {
@@ -148,7 +148,7 @@ const Login = () => {
           variant="outline"
           marginBottom="20px"
         >
-          Register
+          Registrasi
         </Button>
       </form>
     </>

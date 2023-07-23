@@ -165,6 +165,7 @@ const Dashboard = () => {
             width: "100%",
             paddingBottom: "70px",
             marginTop: "10px",
+            justifyContent: "center",
           }}
         >
           {products.map((product) =>
@@ -173,20 +174,24 @@ const Dashboard = () => {
               .includes(searchInput.toLocaleLowerCase()) ? (
               <Link
                 to={`/MainMenu/OutletMenu/${product.id}`}
-                style={{ marginBottom: "20px", marginRight: "20px" }}
+                style={{
+                  width: "171px",
+                  marginBottom: "30px",
+                  marginRight: "20px",
+                }}
                 key={product.id}
               >
                 <img
                   src={product.image.replace("localhost", port)}
                   alt=""
                   style={{
-                    width: "105.28px",
-                    height: "171px",
+                    width: "100%",
+                    aspectRatio: "1/1",
                     objectFit: "cover",
                     borderRadius: "20px",
                   }}
                 />
-                <Stack maxWidth="105.28px">
+                <Stack maxWidth="161px">
                   <Text as="b">{product.name}</Text>
                 </Stack>
               </Link>
