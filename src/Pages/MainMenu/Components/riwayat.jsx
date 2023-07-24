@@ -135,7 +135,7 @@ const Riwayat = () => {
                           {item.status.toUpperCase()}
                         </Button>
                       ) : (
-                        <Button color="#3d85c6">
+                        <Button color="#3d85c6" variant={"ghost"}>
                           Belum Memilih Metode Pembayaran
                         </Button>
                       )}
@@ -195,7 +195,9 @@ const Riwayat = () => {
                         {item.payment_status !== "SUCCESS" ? (
                           <HStack>
                             <Link to={item.payment_url} target="_blank">
-                              <Button colorScheme="teal">Pembayaran</Button>
+                              <Button colorScheme="teal" variant={"ghost"}>
+                                Pembayaran
+                              </Button>
                             </Link>
                             <Button
                               onClick={async () => {
@@ -259,7 +261,7 @@ const Riwayat = () => {
                           {item.status.toUpperCase()}
                         </Button>
                       ) : (
-                        <Button color="#3d85c6">
+                        <Button color="#3d85c6" variant={"ghost"}>
                           Belum Memilih Metode Pembayaran
                         </Button>
                       )}
