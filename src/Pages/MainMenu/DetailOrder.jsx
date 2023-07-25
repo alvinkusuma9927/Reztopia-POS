@@ -122,7 +122,7 @@ const DetailOrder = () => {
                     : "#f1c232"
                 }
               >
-                {detailOrder.history[0].status_order.toUpperCase()}
+                {detailOrder.history[0].payment_status.toUpperCase()}
               </Text>
             ) : (
               <Text fontSize="16px" as="b" color="#3d85c6">
