@@ -33,9 +33,9 @@ const Order = () => {
   const [nomorMeja, setNomorMeja] = useState("");
   const loginSession = useSelector((state) => state.loginSession);
   const order_type_option = useState([
-    { value: "", title: "Choose One" },
-    { value: "dine_in", title: "Dine In" },
-    { value: "take_away", title: "Take Away" },
+    { value: "", title: "Pilih Tipe Pesanan" },
+    { value: "dine_in", title: "Makan Ditempat" },
+    { value: "take_away", title: "Dibungkus" },
   ]);
   const dispatch = useDispatch();
 
@@ -281,7 +281,7 @@ const Order = () => {
                   <Td isNumeric>{JSON.parse(loginSession).name}</Td>
                 </Tr>
                 <Tr>
-                  <Td>Order Type</Td>
+                  <Td>Tipe Pesanan</Td>
                   <Td isNumeric>
                     <Select size="sm" id="order_type">
                       {order_type_option[0].map((type, index) => (

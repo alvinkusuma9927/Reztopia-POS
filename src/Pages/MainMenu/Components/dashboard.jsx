@@ -1,14 +1,21 @@
 import {
   Button,
+  Center,
   HStack,
+  Image,
   Input,
   InputGroup,
   InputLeftElement,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Stack,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import LogoutIcon from "@mui/icons-material/Logout";
+
+import { GiKnifeFork } from "react-icons/gi";
 import { SearchIcon } from "@chakra-ui/icons";
 import {
   Modal,
@@ -33,6 +40,7 @@ import LoadingScreen from "../../../Components/LoadingScreen";
 import { useDispatch, useSelector } from "react-redux";
 import { actions } from "../../../store";
 import { Link, useNavigate } from "react-router-dom";
+import { AiFillSetting } from "react-icons/ai";
 const Dashboard = () => {
   const apiUrl = useSelector((state) => state.apiUrl);
   const [isLoadingPage, setLoading] = useState(true);
@@ -43,6 +51,9 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const port = useSelector((state) => state.port);
+
+  const [tenantLocations, setTenantLocations] = useState([]);
+  const [filterLocation, setFilterLocation] = useState("");
   const getData = async () => {
     await fetch(`${apiUrl}/api/tenant/index`, {
       method: "GET",
@@ -68,6 +79,13 @@ const Dashboard = () => {
         (response) => {
           setProducts(response.data.tenant);
           console.log("succes fetch data");
+          let arr = [];
+          for (let item of response.data.tenant) {
+            if (!arr.includes(item.position)) {
+              arr.push(item.position);
+            }
+          }
+          setTenantLocations(arr);
           setLoading(false);
         },
         (err) => {
@@ -76,6 +94,7 @@ const Dashboard = () => {
         }
       );
   };
+
   useEffect(() => {
     // setTimeout(getData, 10000);
     getData();
@@ -88,14 +107,22 @@ const Dashboard = () => {
           <Text as="b" fontSize="22px">
             Selamat Datang di {isLoadingPage}
           </Text>
-          <LogoutIcon
-            sx={{
-              cursor: "pointer",
-              fontWeight: "bold",
-              color: "rgb(201, 68, 86)",
-            }}
-            onClick={onOpen}
-          />
+
+          <Button variant={"ghost"}>
+            <GiKnifeFork
+              onClick={onOpen}
+              size={"32px"}
+              cursor={"pointer"}
+              color="#6898C0"
+            />
+            {/* <Image
+              src={"/assets/filterLocation.png"}
+              onClick={onOpen}
+              width={"22px"}
+              objectFit={"contain"}
+              cursor={"pointer"}
+            /> */}
+          </Button>
         </HStack>
 
         <Text as="b" fontSize="22px" color="blue.500" marginBottom="20px">
@@ -111,6 +138,7 @@ const Dashboard = () => {
           />
         </InputGroup>
 
+        {/* <Text>{JSON.stringify(filterLocation)}</Text> */}
         <Swiper
           spaceBetween={30}
           loop={true}
@@ -171,7 +199,8 @@ const Dashboard = () => {
           {products.map((product) =>
             product.name
               .toLowerCase()
-              .includes(searchInput.toLocaleLowerCase()) ? (
+              .includes(searchInput.toLocaleLowerCase()) &&
+            product.position.includes(filterLocation) ? (
               <Link
                 to={`/MainMenu/OutletMenu/${product.id}`}
                 style={{
@@ -200,28 +229,37 @@ const Dashboard = () => {
         </div>
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Modal Title</ModalHeader>
-            {/* <ModalCloseButton /> */}
+          <ModalContent width="414px">
+            <ModalHeader>Filter Lokasi</ModalHeader>
+            <ModalCloseButton />
             <ModalBody>
-              <Text>Apakah anda yakin akan logout ? </Text>
+              {tenantLocations.map((type, index) => (
+                <Button
+                  key={index}
+                  colorScheme="blue"
+                  variant="ghost"
+                  marginBottom="20px"
+                  onClick={() => {
+                    setFilterLocation(type);
+                    onClose();
+                  }}
+                >
+                  {type}
+                </Button>
+              ))}
+              <HStack justifyContent="flex-end">
+                <Button
+                  onClick={() => {
+                    setFilterLocation("");
+                    onClose();
+                  }}
+                  colorScheme="blue"
+                  variant="outline"
+                >
+                  Hapus Filter
+                </Button>
+              </HStack>
             </ModalBody>
-
-            <ModalFooter>
-              <Button
-                colorScheme="red"
-                mr={3}
-                onClick={() => {
-                  dispatch(actions.logout());
-                  navigate(0);
-                }}
-              >
-                Logout
-              </Button>
-              <Button variant="ghost" onClick={onClose}>
-                No
-              </Button>
-            </ModalFooter>
           </ModalContent>
         </Modal>
       </div>
