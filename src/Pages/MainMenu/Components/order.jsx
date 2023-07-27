@@ -9,6 +9,7 @@ import {
   NumberInputField,
   Select,
   Table,
+  Tbody,
   Td,
   Text,
   Tr,
@@ -26,7 +27,6 @@ import axios from "axios";
 import LoadingScreen from "../../../Components/LoadingScreen";
 const Order = () => {
   const apiUrl = useSelector((state) => state.apiUrl);
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const cart = useSelector((state) => state.cart);
@@ -266,16 +266,15 @@ const Order = () => {
 
         {cart.length > 0 ? (
           <>
-            <div
-              style={{
-                borderRadius: "20px",
-                backgroundColor: "rgba(159, 188, 213, 0.19)",
-                width: "100%",
-                padding: "16px",
-                marginBottom: "20px",
-              }}
+            <Table
+              padding={"16px"}
+              marginBottom={"20px"}
+              variant="simple"
+              width="100%"
+              borderRadius={"20px"}
+              backgroundColor={"rgba(159, 188, 213, 0.19)"}
             >
-              <Table variant="simple" width="100%">
+              <Tbody>
                 <Tr>
                   <Td>Nama Pemesan</Td>
                   <Td isNumeric>{JSON.parse(loginSession).name}</Td>
@@ -308,8 +307,8 @@ const Order = () => {
                   <Td>Kantin</Td>
                   <Td isNumeric>{cart[0].outlet_name}</Td>
                 </Tr>
-              </Table>
-            </div>
+              </Tbody>
+            </Table>
 
             <div
               style={{
@@ -321,17 +320,19 @@ const Order = () => {
               }}
             >
               <Table variant="simple">
-                <Tr>
-                  <Td>Total Makanan</Td>
-                  <Td isNumeric>
-                    <Text>{cart.length}</Text>
-                  </Td>
-                </Tr>
+                <Tbody>
+                  <Tr>
+                    <Td>Total Makanan</Td>
+                    <Td isNumeric>
+                      <Text>{cart.length}</Text>
+                    </Td>
+                  </Tr>
 
-                <Tr>
-                  <Td>Total Pembayaran</Td>
-                  <Td isNumeric>Rp. {cart[0].total}</Td>
-                </Tr>
+                  <Tr>
+                    <Td>Total Pembayaran</Td>
+                    <Td isNumeric>Rp. {cart[0].total}</Td>
+                  </Tr>
+                </Tbody>
               </Table>
             </div>
             <Button

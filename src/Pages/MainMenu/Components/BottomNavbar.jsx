@@ -8,21 +8,25 @@ import { HStack, Text } from "@chakra-ui/react";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useDispatch, useSelector } from "react-redux";
 import { actions } from "../../../store";
-const BottomNavbar = (props) => {
+const BottomNavbar = ({
+  params,
+  bottomNavbarSelected,
+  setBottomNavbarSelected,
+}) => {
   const dispatch = useDispatch();
   return (
     <div className="bottom-navigation-bar">
       <Link
         to="/MainMenu/dashboard"
         onClick={() => {
-          dispatch(actions.setBottomNavbar({ value: "dashboard" }));
+          setBottomNavbarSelected("dashboard");
         }}
         className="link"
       >
         <HomeOutlinedIcon
           sx={{
             color:
-              props.params === "dashboard" || props.params === undefined
+              params === "dashboard" || params === undefined
                 ? "#6898C0"
                 : "#B7B7B7",
           }}
@@ -31,47 +35,47 @@ const BottomNavbar = (props) => {
       <Link
         to="/MainMenu/order"
         onClick={() => {
-          dispatch(actions.setBottomNavbar({ value: "order" }));
+          setBottomNavbarSelected("order");
         }}
         className="link"
       >
         <ContentPasteOutlinedIcon
-          sx={{ color: props.params === "order" ? "#6898C0" : "#B7B7B7" }}
+          sx={{ color: params === "order" ? "#6898C0" : "#B7B7B7" }}
         />
       </Link>
       {/* <Link
         to="/MainMenu/transaksi"
         onClick={() => {
-          dispatch(actions.setBottomNavbar({ value: "transaksi" }));
+          setBottomNavbarSelected("transaksi");
         }}
         className="link"
       >
         <MdWallet
-          sx={{ color: props.params === "transaksi" ? "#6898C0" : "#B7B7B7" }}
+          sx={{ color: params === "transaksi" ? "#6898C0" : "#B7B7B7" }}
         />
       </Link> */}
 
       <Link
         to="/MainMenu/riwayat"
         onClick={() => {
-          dispatch(actions.setBottomNavbar({ value: "riwayat" }));
+          setBottomNavbarSelected("riwayat");
         }}
         className="link"
       >
         <HistoryOutlinedIcon
-          sx={{ color: props.params === "riwayat" ? "#6898C0" : "#B7B7B7" }}
+          sx={{ color: params === "riwayat" ? "#6898C0" : "#B7B7B7" }}
         />
       </Link>
 
       <Link
         to="/MainMenu/akun"
         onClick={() => {
-          dispatch(actions.setBottomNavbar({ value: "akun" }));
+          setBottomNavbarSelected("akun");
         }}
         className="link"
       >
         <AccountCircleIcon
-          sx={{ color: props.params === "akun" ? "#6898C0" : "#B7B7B7" }}
+          sx={{ color: params === "akun" ? "#6898C0" : "#B7B7B7" }}
         />
       </Link>
     </div>

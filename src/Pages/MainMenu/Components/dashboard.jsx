@@ -105,7 +105,7 @@ const Dashboard = () => {
       <div className="main-menu">
         <HStack justifyContent="space-between" alignItems="center">
           <Text as="b" fontSize="22px">
-            Selamat Datang di {isLoadingPage}
+            Selamat Datang di
           </Text>
 
           <Button variant={"ghost"}>

@@ -21,11 +21,14 @@ const MainMenu = () => {
   const apiUrl = useSelector((state) => state.apiUrl);
   const isLoadingPage = useSelector((state) => state.isLoadingPage);
   const url = useParams();
-  const bottomNavbarSelected = useSelector(
-    (state) => state.bottomNavbarSelected
+  // const bottomNavbarSelected = useSelector(
+  //   (state) => state.bottomNavbarSelected
+  // );
+  const [bottomNavbarSelected, setBottomNavbarSelected] = useState(
+    url?.section
   );
   const dispatch = useDispatch();
-  dispatch(actions.setBottomNavbar({ value: url.section }));
+  // dispatch(actions.setBottomNavbar({ value: url.section }));
 
   const navigate = useNavigate();
 
@@ -37,21 +40,20 @@ const MainMenu = () => {
       navigate("/Login");
     } else {
       if (bottomNavbarSelected === "dashboard") {
-        dispatch(actions.setBottomNavbar({ value: "dashboard" }));
+        setBottomNavbarSelected("dashboard");
       } else if (bottomNavbarSelected === "order") {
-        dispatch(actions.setBottomNavbar({ value: "order" }));
+        setBottomNavbarSelected("order");
       } else if (bottomNavbarSelected === "transaksi") {
-        dispatch(actions.setBottomNavbar({ value: "transaksi" }));
+        setBottomNavbarSelected("transaksi");
       } else if (bottomNavbarSelected === "riwayat") {
-        dispatch(actions.setBottomNavbar({ value: "riwayat" }));
+        setBottomNavbarSelected("riwayat");
       } else if (bottomNavbarSelected === "akun") {
-        dispatch(actions.setBottomNavbar({ value: "akun" }));
+        setBottomNavbarSelected("akun");
       } else {
-        dispatch(actions.setBottomNavbar({ value: "dashboard" }));
+        setBottomNavbarSelected("dashboard");
         navigate("/MainMenu/");
       }
     }
-    dispatch(actions.setIsloading({ value: false }));
   }, [bottomNavbarSelected]);
 
   return (
@@ -71,7 +73,11 @@ const MainMenu = () => {
         <Akun loginSession={loginSession} />
       ) : null}
 
-      <BottomNavbar params={url.section} />
+      <BottomNavbar
+        params={url.section}
+        bottomNavbarSelected={bottomNavbarSelected}
+        setBottomNavbarSelected={setBottomNavbarSelected}
+      />
     </>
   );
 };
