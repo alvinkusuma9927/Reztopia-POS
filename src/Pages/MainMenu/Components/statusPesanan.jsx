@@ -253,7 +253,7 @@ const StatusPesanan = () => {
                   height="100%"
                 >
                   <img
-                    src="/public/assets/UcapanTerimakasih"
+                    src="/assets/UcapanTerimakasih"
                     alt=""
                     style={{
                       width: "100px",

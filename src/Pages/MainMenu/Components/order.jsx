@@ -407,7 +407,7 @@ const Order = () => {
             }}
           >
             <img
-              src="/public/assets/EmptyCart.png"
+              src="/assets/EmptyCart.png"
               alt="EmptyCart"
               style={{ width: "186px", height: "100px", objectFit: "contain" }}
             />

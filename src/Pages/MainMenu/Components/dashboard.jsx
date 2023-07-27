@@ -61,12 +61,7 @@ const Dashboard = () => {
         Authorization: `${JSON.parse(loginSession).token.token_type} ${
           JSON.parse(loginSession).token.access_token
         }`,
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Origin": "*",
-        // "Access-Control-Allow-Methods": "POST,GET",
       },
-      credentials: "include",
     })
       .then(
         (response) => response.json(),
@@ -157,7 +152,7 @@ const Dashboard = () => {
                 display: "block",
                 borderRadius: "10px",
               }}
-              src="/public/assets/carousel-1.png"
+              src="assets/carousel-1.png"
               alt=""
             />
           </SwiperSlide>
@@ -167,7 +162,7 @@ const Dashboard = () => {
                 display: "block",
                 borderRadius: "10px",
               }}
-              src="/public/assets/carousel-2.png"
+              src="assets/carousel-2.png"
               alt=""
             />
           </SwiperSlide>
@@ -177,7 +172,7 @@ const Dashboard = () => {
                 display: "block",
                 borderRadius: "10px",
               }}
-              src="/public/assets/carousel-3.png"
+              src="assets/carousel-3.png"
               alt=""
             />
           </SwiperSlide>
