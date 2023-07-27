@@ -62,7 +62,7 @@ const MainMenu = () => {
       bottomNavbarSelected === undefined ? (
         <Dashboard />
       ) : bottomNavbarSelected === "order" ? (
-        <Order />
+        <Order setBottomNavbarSelected={setBottomNavbarSelected} />
       ) : // Status Pesanan
       bottomNavbarSelected === "transaksi" ? (
         <Transaksi />

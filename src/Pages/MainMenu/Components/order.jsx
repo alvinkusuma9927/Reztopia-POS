@@ -25,7 +25,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { actions } from "../../../store";
 import axios from "axios";
 import LoadingScreen from "../../../Components/LoadingScreen";
-const Order = () => {
+const Order = ({ setBottomNavbarSelected }) => {
   const apiUrl = useSelector((state) => state.apiUrl);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
@@ -380,6 +380,7 @@ const Order = () => {
                           // response=> console.log(response)
                           // getCart();
                           navigate("/MainMenu/riwayat");
+                          setBottomNavbarSelected("riwayat");
                           setIsLoading(false);
                         } else {
                           setIsLoading(false);
