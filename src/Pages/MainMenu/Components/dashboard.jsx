@@ -152,7 +152,7 @@ const Dashboard = () => {
                 display: "block",
                 borderRadius: "10px",
               }}
-              src="assets/carousel-1.png"
+              src="/assets/carousel-1.png"
               alt=""
             />
           </SwiperSlide>
@@ -162,7 +162,7 @@ const Dashboard = () => {
                 display: "block",
                 borderRadius: "10px",
               }}
-              src="assets/carousel-2.png"
+              src="/assets/carousel-2.png"
               alt=""
             />
           </SwiperSlide>
@@ -172,7 +172,7 @@ const Dashboard = () => {
                 display: "block",
                 borderRadius: "10px",
               }}
-              src="assets/carousel-3.png"
+              src="/assets/carousel-3.png"
               alt=""
             />
           </SwiperSlide>
