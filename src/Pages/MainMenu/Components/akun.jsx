@@ -12,6 +12,7 @@ import {
   PopoverTrigger,
   Stack,
   Table,
+  Tbody,
   Td,
   Text,
   Tr,
@@ -240,8 +241,8 @@ const Akun = (props) => {
             src="/assets/Welcome.png"
           />
 
-          <Stack justifyContent="space-between" minHeight="50vh">
-            <Table>
+          <Table>
+            <Tbody>
               <Tr>
                 <Td>
                   <Text as="b">Nama</Text>
@@ -249,7 +250,7 @@ const Akun = (props) => {
 
                 {!isEdit ? (
                   <Td>
-                    <Text phone="" as="b">
+                    <Text noOfLines={2} phone="">
                       {loginSession.name}
                     </Text>
                   </Td>
@@ -257,7 +258,11 @@ const Akun = (props) => {
 
                 {isEdit ? (
                   <Td>
-                    <Input name="name" defaultValue={loginSession.name} />
+                    <Input
+                      noOfLines={2}
+                      name="name"
+                      defaultValue={loginSession.name}
+                    />
                   </Td>
                 ) : null}
               </Tr>
@@ -269,13 +274,17 @@ const Akun = (props) => {
                 {!isEdit ? (
                   <Td>
                     {" "}
-                    <Text as="b">{loginSession.email}</Text>
+                    <Text noOfLines={2}>{loginSession.email}</Text>
                   </Td>
                 ) : null}
 
                 {isEdit ? (
                   <Td>
-                    <Input name="email" defaultValue={loginSession.email} />
+                    <Input
+                      noOfLines={2}
+                      name="email"
+                      defaultValue={loginSession.email}
+                    />
                   </Td>
                 ) : null}
               </Tr>
@@ -285,33 +294,28 @@ const Akun = (props) => {
                 </Td>
                 {!isEdit ? (
                   <Td>
-                    <Text as="b">{loginSession.phone}</Text>
+                    <Text noOfLines={2}>{loginSession.phone}</Text>
                   </Td>
                 ) : null}
 
                 {isEdit ? (
                   <Td>
-                    <Input name="phone" defaultValue={loginSession.phone} />
+                    <Input
+                      noOfLines={2}
+                      name="phone"
+                      defaultValue={loginSession.phone}
+                    />
                   </Td>
                 ) : null}
               </Tr>
-            </Table>
+            </Tbody>
+          </Table>
 
-            {isEdit ? (
-              <Button onClick={updateUser} colorScheme="blue">
-                Perbarui Data
-              </Button>
-            ) : null}
-
-            {/* <Button
-            colorScheme="red"
-            variant="outline"
-            onClick={onOpen}
-            marginBottom="50px"
-          >
-            Logout
-          </Button> */}
-          </Stack>
+          {isEdit ? (
+            <Button onClick={updateUser} colorScheme="blue">
+              Perbarui Data
+            </Button>
+          ) : null}
         </Stack>
 
         {modalType === "logout" ? (

@@ -414,10 +414,10 @@ const Order = ({ setBottomNavbarSelected }) => {
             />
             <Text
               textAlign="center"
-              fontSize="24px"
+              fontSize="20px"
               as="b"
               marginTop="20px"
-              marginBottom="20px"
+              marginBottom="5px"
             >
               Ups Kamu belum menambah menu
             </Text>
