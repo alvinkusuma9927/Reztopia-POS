@@ -255,20 +255,20 @@ const OutletMenu = () => {
                 .toLowerCase()
                 .includes(searchInput.toLocaleLowerCase()) &&
               filterDataMenu == product.id_category ? (
-              <div
+              <Stack
                 key={product.id_product}
                 onClick={() => openModal(product)}
-                style={{
-                  marginBottom: "20px",
-                  marginRight: "20px",
-                  cursor: "pointer",
-                }}
+                width={"40%"}
+                maxWidth={"150px"}
+                marginBottom={"30px"}
+                marginRight={"20px"}
+                cursor={"pointer"}
               >
                 <img
                   src={product.image_product.replace("localhost", port)}
                   style={{
-                    width: "161px",
-                    height: "171px",
+                    width: "100%",
+                    aspectRatio: "1/1",
                     objectFit: "cover",
                     borderRadius: "20px",
                   }}
@@ -283,7 +283,7 @@ const OutletMenu = () => {
                     {/* <Text>{product.image_product.replace('localhost',port)}</Text> */}
                   </HStack>
                 </Stack>
-              </div>
+              </Stack>
             ) : null
           )}
         </div>
