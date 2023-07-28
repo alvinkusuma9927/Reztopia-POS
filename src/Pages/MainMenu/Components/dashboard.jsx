@@ -144,37 +144,15 @@ const Dashboard = () => {
           autoplay={{
             delay: 3000,
           }}
-          n
         >
           <SwiperSlide>
-            <img
-              style={{
-                display: "block",
-                borderRadius: "10px",
-              }}
-              src="/assets/carousel-1.png"
-              alt=""
-            />
+            <Image src="/assets/carousel-1.png" />
           </SwiperSlide>
           <SwiperSlide>
-            <img
-              style={{
-                display: "block",
-                borderRadius: "10px",
-              }}
-              src="/assets/carousel-2.png"
-              alt=""
-            />
+            <Image src="/assets/carousel-2.png" />
           </SwiperSlide>
           <SwiperSlide>
-            <img
-              style={{
-                display: "block",
-                borderRadius: "10px",
-              }}
-              src="/assets/carousel-3.png"
-              alt=""
-            />
+            <Image src="/assets/carousel-3.png" />
           </SwiperSlide>
         </Swiper>
 
