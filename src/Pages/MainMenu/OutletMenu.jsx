@@ -45,12 +45,7 @@ const OutletMenu = () => {
   const [dataMenu, setDataMenu] = useState([]);
   const navigate = useNavigate();
   const [searchInput, setSearchInput] = useState("");
-  const [typeMenu, setTypeMenu] = useState([
-    { id: 1, name: "Daging" },
-    { id: 1, name: "Sayuran" },
-    { id: 1, name: "Snack" },
-    { id: 1, name: "Mie" },
-  ]);
+  const [typeMenu, setTypeMenu] = useState([]);
   const [note, setNote] = useState("");
 
   const [modal, setModal] = useState({ image_product: "" });
@@ -125,7 +120,10 @@ const OutletMenu = () => {
   const sortingDataMenuTerendah = (arr) => {
     for (var i = 0; i < arr.length; i++) {
       for (var j = 0; j < arr.length - i - 1; j++) {
-        if (arr[j].price_after_discount > arr[j + 1].price_after_discount) {
+        if (
+          parseInt(arr[j].price_after_discount) >
+          parseInt(arr[j + 1].price_after_discount)
+        ) {
           var temp = arr[j];
           arr[j] = arr[j + 1];
           arr[j + 1] = temp;
@@ -137,7 +135,10 @@ const OutletMenu = () => {
   const sortingDataMenuTertinggi = (arr) => {
     for (var i = 0; i < arr.length; i++) {
       for (var j = 0; j < arr.length - i - 1; j++) {
-        if (arr[j].price_after_discount < arr[j + 1].price_after_discount) {
+        if (
+          parseInt(arr[j].price_after_discount) <
+          arr[j + 1].price_after_discount
+        ) {
           var temp = arr[j];
           arr[j] = arr[j + 1];
           arr[j + 1] = temp;
@@ -224,7 +225,8 @@ const OutletMenu = () => {
               <Stack
                 key={product.id_product}
                 onClick={() => openModal(product)}
-                width={"150px"}
+                width={"40%"}
+                maxWidth={"150px"}
                 marginBottom={"30px"}
                 marginRight={"20px"}
                 cursor={"pointer"}
