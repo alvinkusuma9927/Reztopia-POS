@@ -177,7 +177,8 @@ const Dashboard = () => {
               <Link
                 to={`/MainMenu/OutletMenu/${product.id}`}
                 style={{
-                  width: "150px",
+                  width: "40%",
+                  maxWidth: "150px",
                   marginBottom: "30px",
                   marginRight: "20px",
                 }}
