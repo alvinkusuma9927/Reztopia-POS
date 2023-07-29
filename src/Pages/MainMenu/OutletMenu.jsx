@@ -99,8 +99,7 @@ const OutletMenu = () => {
     if (!loginSessionAuth(window.location.href.split("/")[3], loginSession)) {
       navigate("/Auth/Login");
     } else {
-      setTimeout(getData, 4000);
-      // getData()
+      getData();
     }
   }, [loginSession]);
 
