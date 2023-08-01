@@ -454,6 +454,7 @@ const OutletMenu = () => {
                         setNote("");
                         onClose();
                       } catch (error) {
+                        console.log(error);
                         toast({
                           title: "Gagal menambahkan barang ke keranjang",
                           status: "error",
