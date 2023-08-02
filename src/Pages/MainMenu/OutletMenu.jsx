@@ -438,6 +438,17 @@ const OutletMenu = () => {
                               // console.log("success menambahkan cart");
                               setIsLoading(false);
                             });
+                          } else if (res.status === 400) {
+                            // console.log("error");
+                            toast({
+                              title: "Pemesanan hanya untuk satu Tenant",
+                              status: "error",
+                              variant: "subtle",
+                              position: "top",
+                              isClosable: true,
+                              duration: 9500,
+                            });
+                            setIsLoading(false);
                           } else {
                             console.log("error");
                             toast({
