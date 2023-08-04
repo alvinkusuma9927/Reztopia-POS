@@ -216,10 +216,15 @@ const DetailOrder = () => {
               </HStack>
               <HStack justifyContent="space-between">
                 <Text fontSize="12px" color="#7C7979">
-                  Keterangan
+                  Tipe Pesanan
                 </Text>
                 <Text fontSize="12px">
-                  {detailOrder.history[0].order_type.replace("_", " ")}
+                  {/* {detailOrder.history[0].order_type.replace("_", " ")} */}
+                  {detailOrder.history[0].order_type == "take_away"
+                    ? "Dibungkus"
+                    : detailOrder.history[0].order_type == "dine_in"
+                    ? "makan di tempat"
+                    : detailOrder.history[0].order_type}
                 </Text>
               </HStack>
               <HStack justifyContent="space-between">
